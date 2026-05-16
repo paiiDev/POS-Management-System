@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Categories";
+}
+
+@model List<POS.Database.Entities.Category>
+
+<div class="container mt-4">
+
+    <h2>Category Management</h2>
+
+    <!-- Create Form -->
+    <form asp-action="Create" method="post" class="mb-3">
+
+        <div class="mb-2">
+            <input type="text"
+                   name="Name"
+                   class="form-control"
+                   placeholder="Enter category name" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Add Category
+        </button>
+
+    </form>
+
+    <!-- Category Table -->
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th width="200">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+
+                    <td>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@item.Id"
+                           class="btn btn-warning btn-sm">
+                            Edit
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.Id"
+                           class="btn btn-danger btn-sm">
+                            Delete
+                        </a>
+
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

@@ -7,4 +7,8 @@
     <UserSecretsId>e8e17095-83ec-4ccb-8f1b-b165c730e338</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\POS.Domain\POS.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using POS.Database.Context;
+using POS.Database.Interfaces;
+using POS.Database.Repositories;
+using POS.Domain.Interfaces;
+using POS.Domain.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"));
+});
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
