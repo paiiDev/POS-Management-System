@@ -2,7 +2,6 @@
 using POS.Database.Interfaces;
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
-using POS.Shared.DTOs.Category;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,71 +17,47 @@ namespace POS.Domain.Services
         {
             _categoryRepository = categoryRepository;
         }
-
-
-
-        public async Task<Result<List<CategoryDto>>> GetAllCategoriesAsync()
+        public async Task<Result<List<Category>>> GetAllCategoriesAsync()
         {
             try
             {
-                var result = await _categoryRepository.GetAllCategoriesAsync();
-
-                if (result == null || !result.Any())
-                {
-                    return Result<List<CategoryDto>>.Failure("No categories found.");
-                }
-
-                var categories = result.Select(c => new CategoryDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                }).ToList();
-
-                return Result<List<CategoryDto>>.Success(categories);
+                var categories = await _categoryRepository.GetAllCategoriesAsync();
+                return Result<List<Category>>.Success(categories);
             }
             catch (Exception ex)
             {
-                return Result<List<CategoryDto>>.Failure(ex.Message);
+                return Result<List<Category>>.Failure(ex.Message);
             }
         }
-
-
-
-        public async Task<Result<CategoryDto?>> GetCategoryByIdAsync(int id)
+        public async Task<Result<Category?>> GetCategoryByIdAsync(int id)
         {
             try
             {
-                var result = await _categoryRepository.GetCategoryByIdAsync(id);
-                if(result == null )
-                {
-                    return Result<CategoryDto?>.Failure("Category not found.");
-                }
-                var category = new CategoryDto
-                {
-                    Id = result.Id,
-                    Name = result.Name,
-                };
-                return Result<CategoryDto?>.Success(category);
+                var category = await _categoryRepository.GetCategoryByIdAsync(id);
+                return Result<Category?>.Success(category);
             }
             catch (Exception ex)
             {
-                return Result<CategoryDto?>.Failure(ex.Message);
+                return Result<Category?>.Failure(ex.Message);
             }
         }
-
-
-
-        public async Task<Result<bool>> AddCategoryAsync(CategoryDto dto)
+        public async Task<Result<Category>> AddCategoryAsync(Category category)
         {
             try
             {
-                var category = new Category
-                {
-                    Name = dto.Name,
-                };
-
-                await _categoryRepository.AddCategoryAsync(category);
-               
+                var addedCategory = await _categoryRepository.AddCategoryAsync(category);
+                return Result<Category>.Success(addedCategory);
+            }
+            catch (Exception ex)
+            {
+                return Result<Category>.Failure(ex.Message);
+            }
+        }
+        public async Task<Result<bool>> UpdateCategoryAsync(Category category)
+        {
+            try
+            {
+                await _categoryRepository.UpdateCategoryAsync(category);
                 return Result<bool>.Success(true);
             }
             catch (Exception ex)
@@ -90,31 +65,6 @@ namespace POS.Domain.Services
                 return Result<bool>.Failure(ex.Message);
             }
         }
-
-
-
-        public async Task<Result<bool>> UpdateCategoryAsync(UpdateCategoryDto dto)
-        {
-            try
-            {
-                var category = new Category
-                {
-                    Id = dto.Id,
-                    Name = dto.Name,
-                };
-
-                 await _categoryRepository.UpdateCategoryAsync(category);
-
-                return Result<bool>.Success(true);
-            }
-            catch (Exception ex)
-            {
-                return Result<bool>.Failure(ex.Message);
-            }
-        }
-
-
-
         public async Task<Result<bool>> DeleteCategoryAsync(int id)
         {
             try

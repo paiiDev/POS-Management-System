@@ -31,17 +31,18 @@ namespace POS.Database.Repositories
         }
 
         //Create
-        public async Task AddCategoryAsync(Category category)
+        public async Task<Category> AddCategoryAsync(Category category)
         {
             _dbContext.Categories.Add(category);
             await _dbContext.SaveChangesAsync();
+            return category;
         }
 
         //Update
         public async Task UpdateCategoryAsync(Category category)
         {
             _dbContext.Categories.Update(category);
-            await _dbContext.SaveChangesAsync(); 
+            await _dbContext.SaveChangesAsync();
         }
 
         //Delete
