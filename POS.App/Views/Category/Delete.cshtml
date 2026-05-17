@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Delete";
+}
+
+@model POS.Shared.DTOs.Category.CategoryDto
+
+<div class="container mt-4">
+
+    <h2>Delete Category</h2>
+
+    <div class="alert alert-warning">
+
+        Are you sure you want to delete this category?
+
+    </div>
+
+    <div class="card p-3 mb-3">
+
+        <h5>Category Information</h5>
+
+        <hr />
+
+        <p>
+            <strong>Id:</strong>
+            @Model.Id
+        </p>
+
+        <p>
+            <strong>Name:</strong>
+            @Model.Name
+        </p>
+
+    </div>
+
+    <form asp-action="DeleteConfirmed" method="post">
+
+        <!-- Hidden Id -->
+        <input type="hidden" asp-for="Id" />
+
+        <button type="submit"
+                class="btn btn-danger">
+            Delete
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
