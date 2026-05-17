@@ -1,5 +1,6 @@
 ﻿using POS.Database.Entities;
 using POS.Shared.Common;
+using POS.Shared.DTOs.Category;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,13 @@ namespace POS.Domain.Interfaces
 {
     public interface ICategoryService
     {
-        Task<Result<List<Category>>> GetAllCategoriesAsync();
+        Task<Result<List<CategoryDto>>> GetAllCategoriesAsync();
 
-        Task<Result<Category?>> GetCategoryByIdAsync(int id);
+        Task<Result<CategoryDto?>> GetCategoryByIdAsync(int id);
 
-        Task<Result<Category>> AddCategoryAsync(Category category);
+        Task<Result<bool>> AddCategoryAsync(CategoryDto dto);
 
-        Task<Result<bool>> UpdateCategoryAsync(Category category);
+        Task<Result<bool>> UpdateCategoryAsync(UpdateCategoryDto dto);
 
         Task<Result<bool>> DeleteCategoryAsync(int id);
     }
