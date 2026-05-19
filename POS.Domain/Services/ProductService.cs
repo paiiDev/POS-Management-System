@@ -37,6 +37,7 @@ namespace POS.Domain.Services
                     Price = x.Price,
                     StockQuantity = x.StockQuantity,
                     CategoryId = x.CategoryId,
+                    CategoryName = x.Category.Name
                 }).ToList();
 
                 return Result<List<ProductDto>>.Success(products);

@@ -21,7 +21,7 @@ namespace POS.Database.Repositories
 
         public async Task<List<Product>> GetAllProductsAsync()
         {
-            return await _dbContext.Products.AsNoTracking().Where(x => !x.IsDeleted).ToListAsync();
+            return await _dbContext.Products.Include(p => p.Category).AsNoTracking().Where(x => !x.IsDeleted).ToListAsync();
         }
 
 
