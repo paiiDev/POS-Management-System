@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace POS.Shared.DTOs.Product
 {
-    internal class CreateProductDto
+    public class CreateProductDto
     {
+        public string Name { get; set; } = null!;
+
+        public string Barcode { get; set; } = null!;
+
+        public decimal Price { get; set; }
+
+        public int StockQuantity { get; set; }
+
+        public int CategoryId { get; set; }
     }
 }

@@ -22,4 +22,6 @@ namespace POS.Shared.DTOs.Product
 
 
     }
+
+
 }
