@@ -3,6 +3,7 @@ using POS.Database.Interfaces;
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Product;
+using POS.Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,11 +28,7 @@ namespace POS.Domain.Services
             try
             {
                 var result = await _productRepository.GetAllProductsAsync();
-                if (result.Count == 0)
-                {
-                    return Result<List<ProductDto>>.Failure("No products found.");
-                } 
-
+               
                 var products = result.Select(x => new ProductDto
                 {
                     Id = x.Id,
@@ -51,7 +48,7 @@ namespace POS.Domain.Services
         }
 
 
-        public async Task<Result<ProductDto>> GetProductById(int id)
+        public async Task<Result<ProductDto>> GetProductByIdAsync(int id)
         {
             try
             {
@@ -84,21 +81,15 @@ namespace POS.Domain.Services
         {
             try
             {
-                if (string.IsNullOrEmpty(dto.Name))
+                if( dto is null)
                 {
-                    return Result<bool>.Failure("Product name is required.");
+                    return Result<bool>.Failure("Product data is required.");
                 }
-                if (dto.Price <= 0)
+
+                var validationResult = ProductValidationHelper.ValidateProduct(dto.Name, dto.Barcode, dto.Price, dto.StockQuantity, dto.CategoryId);
+                if(validationResult is not null && !validationResult.IsSuccess)
                 {
-                    return Result<bool>.Failure("Price must be greater than 0");
-                }
-                if (dto.StockQuantity < 0)
-                {
-                    return Result<bool>.Failure("Invalid stock quantity.");
-                }
-                if (dto.CategoryId <= 0)
-                {
-                    return Result<bool>.Failure("Invalid product category.");
+                    return validationResult;
                 }
 
                 var isCategoryIdExist = await _categoryRepository.GetCategoryByIdAsync(dto.CategoryId);
@@ -116,8 +107,8 @@ namespace POS.Domain.Services
 
                 var product = new Product
                 {
-                    Name = dto.Name,
-                    Barcode = dto.Barcode,
+                    Name = dto.Name.Trim(),
+                    Barcode = dto.Barcode.Trim(),
                     Price = dto.Price,
                     StockQuantity = dto.StockQuantity,
                     CategoryId = dto.CategoryId,
@@ -138,22 +129,15 @@ namespace POS.Domain.Services
         {
             try
             {
-                if (string.IsNullOrEmpty(dto.Name))
+                if(dto.Id <= 0)
                 {
-                    return Result<bool>.Failure("Product name is required.");
-                }
-                if (dto.Price <= 0)
-                {
-                    return Result<bool>.Failure("Price must be greater than 0");
-                }
-                if (dto.StockQuantity < 0)
-                {
-                    return Result<bool>.Failure("Invalid stock quantity.");
+                    return Result<bool>.Failure("Invalid product id");
                 }
 
-                if (dto.CategoryId <= 0)
+                var validationResult = ProductValidationHelper.ValidateProduct(dto.Name, dto.Barcode, dto.Price, dto.StockQuantity, dto.CategoryId);
+                if(validationResult is not null && !validationResult.IsSuccess)
                 {
-                    return Result<bool>.Failure("Invalid product category.");
+                    return validationResult;
                 }
 
                 var isCategoryIdExist = await _categoryRepository.GetCategoryByIdAsync(dto.CategoryId);
@@ -166,14 +150,14 @@ namespace POS.Domain.Services
                 var existingBarCode = products.Any(x => x.Barcode == dto.Barcode && x.Id != dto.Id );
                 if (existingBarCode)
                 {
-                return Result<bool>.Success(false);
+                return Result<bool>.Failure("Product barcode musst be unique.");
                 }
 
                 var product = new Product
                 {
                     Id = dto.Id,
-                    Name = dto.Name,
-                    Barcode = dto.Barcode,
+                    Name = dto.Name.Trim(),
+                    Barcode = dto.Barcode.Trim(),
                     Price = dto.Price,
                     StockQuantity = dto.StockQuantity,
                     CategoryId = dto.CategoryId,
