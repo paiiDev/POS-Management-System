@@ -67,6 +67,7 @@ namespace POS.Domain.Services
                     Price = result.Price,
                     StockQuantity = result.StockQuantity,
                     CategoryId = result.CategoryId,
+                    CategoryName = result.Category.Name
                 };
 
                 return Result<ProductDto>.Success(product);

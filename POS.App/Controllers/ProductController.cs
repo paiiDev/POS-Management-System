@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using POS.Database.Entities;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Category;
 using POS.Shared.DTOs.Product;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace POS.App.Controllers
@@ -30,6 +32,7 @@ namespace POS.App.Controllers
         }
 
 
+
         public async Task<IActionResult> Create()
         {
             await LoadCategoriesAsync();
@@ -39,6 +42,11 @@ namespace POS.App.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateProductDto productDto)
         {
+            if (!ModelState.IsValid)
+            {
+                await LoadCategoriesAsync();
+                return View(productDto);
+            }
             var result = await _productService.CreateProductAsync(productDto);
             if (!result.IsSuccess)
             {
@@ -51,7 +59,73 @@ namespace POS.App.Controllers
         }
 
 
-    private async Task LoadCategoriesAsync()
+        public async Task<IActionResult> Edit(int id)
+        {
+            var result = await _productService.GetProductByIdAsync(id);
+            if (!result.IsSuccess)
+            {
+                return View(); 
+            }
+            
+            var dto = new UpdateProductDto { 
+                        Id = result.Value.Id, 
+                        Name=result.Value.Name, 
+                        Barcode=result.Value.Barcode, 
+                        Price=result.Value.Price, 
+                        StockQuantity=result.Value.StockQuantity, 
+                        CategoryId=result.Value.CategoryId 
+                        };
+
+            await LoadCategoriesAsync();
+            return View(dto);
+        }
+
+
+
+        [ActionName("SubmitEdit")]
+        public async Task<IActionResult> Edit(UpdateProductDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+            var result = await _productService.UpdateProductAsync(request);
+            if (!result.IsSuccess)
+            {
+                await LoadCategoriesAsync();
+                ModelState.AddModelError(string.Empty, "Failed to upate product: " + result.Error);
+                return View(request);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _productService.GetProductByIdAsync(id);
+            if (!result.IsSuccess)
+            {
+                return View();
+            }
+
+            return View(result.Value);
+        }
+
+        public async Task<IActionResult> ConfirmedDelete(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var result = await _productService.DeleteProductAsync(id);
+            if (!result.IsSuccess)
+            {
+                return View();
+            }
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        private async Task LoadCategoriesAsync()
         {
             var result = await _categoryService.GetAllCategoriesAsync();
             if (!result.IsSuccess)
@@ -60,9 +134,6 @@ namespace POS.App.Controllers
                 TempData["ErrorMessage"] = result.Error;
             }
                 ViewBag.Categories = result.Value;
-
-
-
         }
     }
 }

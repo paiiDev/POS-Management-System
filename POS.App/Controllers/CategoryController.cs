@@ -2,6 +2,7 @@
 using POS.Database.Entities;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Category;
+using POS.Shared.DTOs.Product;
 using System.Threading.Tasks;
 
 namespace POS.App.Controllers
@@ -54,11 +55,12 @@ namespace POS.App.Controllers
             if (!result.IsSuccess)
             {
                 TempData["ErrorMessage"] = result.Error;
-                return View(id);
+                return View(result.Error);
             }
             var dto = new UpdateCategoryDto { Id = result!.Value!.Id, Name = result.Value.Name };
             return View(dto);
         }
+
 
 
         [HttpPost]

@@ -7,26 +7,18 @@
 
 <div class="container mt-4">
 
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
     <h2>Category Management</h2>
 
-    <!-- Create Form -->
-    <form asp-action="Create" method="post" class="mb-3">
-
-        <div class="mb-2">
-            <input type="text"
-                   name="Name"
-                   class="form-control"
-                   placeholder="Enter category name" />
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-            Add Category
-        </button>
-
-    </form>
+    <a asp-action="Create"
+       class="btn btn-primary my-5">
+        Create Product
+    </a>
+    </div>
 
     <!-- Category Table -->
-    <table class="table table-bordered">
+    <table class="table table-bordered ">
 
         <thead>
             <tr>
@@ -68,7 +60,3 @@
 
 </div>
 
-@section Scripts
-{
-    <partial name="_ValidationScriptsPartial" />
-}
