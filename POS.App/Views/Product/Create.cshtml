@@ -1,0 +1,105 @@
+﻿@model POS.Shared.DTOs.Product.CreateProductDto
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Create Product</h2>
+
+    <form asp-action="Create" method="post">
+
+        <div class="mb-3">
+
+            <label asp-for="Name" class="form-label"></label>
+
+            <input asp-for="Name" class="form-control" />
+
+            <span asp-validation-for="Name"
+                  class="text-danger"></span>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label asp-for="Barcode" class="form-label"></label>
+
+            <input asp-for="Barcode" class="form-control" />
+
+            <span asp-validation-for="Barcode"
+                  class="text-danger"></span>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label asp-for="Price" class="form-label"></label>
+
+            <input asp-for="Price"
+                   type="number"
+                   step="0.01"
+                   class="form-control" />
+
+            <span asp-validation-for="Price"
+                  class="text-danger"></span>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label asp-for="StockQuantity"
+                   class="form-label"></label>
+
+            <input asp-for="StockQuantity"
+                   type="number"
+                   class="form-control" />
+
+            <span asp-validation-for="StockQuantity"
+                  class="text-danger"></span>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label asp-for="CategoryId"
+                   class="form-label"></label>
+
+            <select asp-for="CategoryId"
+                    class="form-select">
+
+                <option value="">
+                    -- Select Category --
+                </option>
+                @if(ViewBag.Categories != null && ViewBag.Categories.Count > 0)
+                {
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </select>
+
+            <span asp-validation-for="CategoryId"
+                  class="text-danger"></span>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+
+            Create
+
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+
+            Back
+
+        </a>
+
+    </form>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

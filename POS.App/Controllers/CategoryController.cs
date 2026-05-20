@@ -19,8 +19,9 @@ namespace POS.App.Controllers
         {
             var result = await _categoryService.GetAllCategoriesAsync();
             if (!result.IsSuccess) 
-            { 
-                return View("Error", result.Error);
+            {
+                TempData["ErrorMessage"] = result.Error;
+                return View();
             }
             return View(result.Value);
         }
@@ -32,7 +33,8 @@ namespace POS.App.Controllers
             var result = await _categoryService.AddCategoryAsync(request);
             if (!result.IsSuccess)
             {
-                return View("Error", result.Error);
+                TempData["ErrorMessage"] = result.Error;
+                return View(request);
             }
             return RedirectToAction("Index");
         }   
@@ -43,7 +45,8 @@ namespace POS.App.Controllers
             var result = await _categoryService.GetCategoryByIdAsync(id);
             if (!result.IsSuccess)
             {
-                return View("Error", result.Error);
+                TempData["ErrorMessage"] = result.Error;
+                return View(id);
             }
             var dto = new UpdateCategoryDto { Id = result!.Value!.Id, Name = result.Value.Name };
             return View(dto);
@@ -56,7 +59,8 @@ namespace POS.App.Controllers
             var result = await _categoryService.UpdateCategoryAsync(request);
             if (!result.IsSuccess)
             {
-                return View("Error", result.Error);
+                TempData["ErrorMessage"] = result.Error;
+                return View(request);
             }
             return RedirectToAction("Index");
         }
@@ -67,7 +71,8 @@ namespace POS.App.Controllers
             var result = await _categoryService.GetCategoryByIdAsync(id);
             if (!result.IsSuccess)
             {
-                return View("Error", result.Error);
+                TempData["ErrorMessage"] = result.Error;
+                return View();
             }
 
             var dto = new CategoryDto
@@ -84,7 +89,8 @@ namespace POS.App.Controllers
             var result = await _categoryService.DeleteCategoryAsync(id);
             if (!result.IsSuccess)
             {
-                return View("Error", result.Error);
+                TempData["ErrorMessage"] = result.Error;
+                return View();
             }
             return RedirectToAction("index");
         }
