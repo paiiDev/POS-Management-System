@@ -72,7 +72,7 @@ namespace POS.Domain.Services
 
 
 
-        public async Task<Result<bool>> AddCategoryAsync(CategoryDto dto)
+        public async Task<Result<bool>> AddCategoryAsync(CreateCategoryDto dto)
         {
             try
             {

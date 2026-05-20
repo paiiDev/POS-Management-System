@@ -15,7 +15,7 @@ namespace POS.Domain.Interfaces
 
         Task<Result<CategoryDto?>> GetCategoryByIdAsync(int id);
 
-        Task<Result<bool>> AddCategoryAsync(CategoryDto dto);
+        Task<Result<bool>> AddCategoryAsync(CreateCategoryDto dto);
 
         Task<Result<bool>> UpdateCategoryAsync(UpdateCategoryDto dto);
 

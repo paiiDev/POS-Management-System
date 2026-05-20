@@ -26,17 +26,25 @@ namespace POS.App.Controllers
             return View(result.Value);
         }
 
+        public IActionResult Create()
+        {
+           return View();
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryDto request)
+        public async Task<IActionResult> Create(CreateCategoryDto request)
         {
+            if(!ModelState.IsValid)
+            {
+                return View(request);
+            }
             var result = await _categoryService.AddCategoryAsync(request);
             if (!result.IsSuccess)
             {
                 TempData["ErrorMessage"] = result.Error;
                 return View(request);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }   
         
 

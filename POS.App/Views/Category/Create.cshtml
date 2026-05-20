@@ -1,0 +1,30 @@
+﻿@using POS.Shared.DTOs.Category
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+@model CreateCategoryDto
+<!-- Create Form -->
+<form asp-action="Create" method="post" class="mb-3">
+
+    <div class="mb-2">
+        <label asp-for="Name" class="form-label"></label>
+        <input type="text"
+               name="Name"
+               class="form-control"
+               placeholder="Enter category name" />
+        <span asp-validation-for="Name"
+              class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Add Category
+    </button>
+
+</form>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
