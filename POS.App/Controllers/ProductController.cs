@@ -40,6 +40,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateProductDto productDto)
         {
             if (!ModelState.IsValid)
@@ -64,7 +65,8 @@ namespace POS.App.Controllers
             var result = await _productService.GetProductByIdAsync(id);
             if (!result.IsSuccess)
             {
-                return View(); 
+                TempData["ErrorMessage"] = result.Error;
+                return RedirectToAction(nameof(Index));
             }
             
             var dto = new UpdateProductDto { 
@@ -82,12 +84,14 @@ namespace POS.App.Controllers
         }
 
 
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [ActionName("SubmitEdit")]
         public async Task<IActionResult> Edit(UpdateProductDto request)
         {
             if (!ModelState.IsValid)
             {
+                await LoadCategoriesAsync();
                 return View(request);
             }
             var result = await _productService.UpdateProductAsync(request);
@@ -105,12 +109,15 @@ namespace POS.App.Controllers
             var result = await _productService.GetProductByIdAsync(id);
             if (!result.IsSuccess)
             {
-                return View();
+                TempData["ErrorMessage"] = result.Error;
+                return RedirectToAction(nameof(Index));
             }
 
             return View(result.Value);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmedDelete(int id)
         {
             if (!ModelState.IsValid)
@@ -120,7 +127,8 @@ namespace POS.App.Controllers
             var result = await _productService.DeleteProductAsync(id);
             if (!result.IsSuccess)
             {
-                return View();
+                TempData["ErrorMessage"] = result.Error;
+                return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Index));
 
@@ -133,8 +141,10 @@ namespace POS.App.Controllers
             {
                 ViewBag.Categories = new List<CategoryDto>();
                 TempData["ErrorMessage"] = result.Error;
+                return;
             }
-                ViewBag.Categories = result.Value;
+
+            ViewBag.Categories = result.Value;
         }
     }
 }

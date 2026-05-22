@@ -1,4 +1,4 @@
-﻿using POS.Database.Entities;
+using POS.Database.Entities;
 using POS.Database.Interfaces;
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
@@ -28,7 +28,7 @@ namespace POS.Domain.Services
             try
             {
                 var result = await _productRepository.GetAllProductsAsync();
-               
+
                 var products = result.Select(x => new ProductDto
                 {
                     Id = x.Id,
@@ -96,6 +96,9 @@ namespace POS.Domain.Services
                     return validationResult;
                 }
 
+                var productName = dto.Name.Trim();
+                var barcode = dto.Barcode.Trim();
+
                 var isCategoryIdExist = await _categoryRepository.GetCategoryByIdAsync(dto.CategoryId);
                 if (isCategoryIdExist is null)
                 {
@@ -103,7 +106,7 @@ namespace POS.Domain.Services
                 }
 
                 var products = await _productRepository.GetAllProductsAsync();
-                var existingBarCode = products.Any(x => x.Barcode == dto.Barcode);
+                var existingBarCode = products.Any(x => x.Barcode.Trim() == barcode);
                 if(existingBarCode)
                 {
                     return Result<bool>.Failure("Product's barcode must be unique.");
@@ -111,8 +114,8 @@ namespace POS.Domain.Services
 
                 var product = new Product
                 {
-                    Name = dto.Name.Trim(),
-                    Barcode = dto.Barcode.Trim(),
+                    Name = productName,
+                    Barcode = barcode,
                     CostPrice = dto.CostPrice,
                     SellingPrice = dto.SellingPrice,
                     StockQuantity = dto.StockQuantity,
@@ -134,7 +137,11 @@ namespace POS.Domain.Services
         {
             try
             {
-                if(dto.Id <= 0)
+                if(dto is null)
+                {
+                    return Result<bool>.Failure("Product data is required.");
+                }
+                if (dto.Id <= 0)
                 {
                     return Result<bool>.Failure("Invalid product id");
                 }
@@ -145,6 +152,15 @@ namespace POS.Domain.Services
                     return validationResult;
                 }
 
+                var existingProduct = await _productRepository.GetProductByIdAsync(dto.Id);
+                if (existingProduct is null)
+                {
+                    return Result<bool>.Failure("Product not found.");
+                }
+
+                var productName = dto.Name.Trim();
+                var barcode = dto.Barcode.Trim();
+
                 var isCategoryIdExist = await _categoryRepository.GetCategoryByIdAsync(dto.CategoryId);
                 if (isCategoryIdExist is null)
                 {
@@ -152,17 +168,17 @@ namespace POS.Domain.Services
                 }
 
                 var products = await _productRepository.GetAllProductsAsync();
-                var existingBarCode = products.Any(x => x.Barcode == dto.Barcode && x.Id != dto.Id );
+                var existingBarCode = products.Any(x => x.Barcode.Trim() == barcode && x.Id != dto.Id );
                 if (existingBarCode)
                 {
-                return Result<bool>.Failure("Product barcode musst be unique.");
+                    return Result<bool>.Failure("Product barcode must be unique.");
                 }
 
                 var product = new Product
                 {
                     Id = dto.Id,
-                    Name = dto.Name.Trim(),
-                    Barcode = dto.Barcode.Trim(),
+                    Name = productName,
+                    Barcode = barcode,
                     CostPrice = dto.CostPrice,
                     SellingPrice = dto.SellingPrice,
                     StockQuantity = dto.StockQuantity,
@@ -183,6 +199,17 @@ namespace POS.Domain.Services
         {
             try
             {
+                if (id <= 0)
+                {
+                    return Result<bool>.Failure("Invalid product id.");
+                }
+
+                var existingProduct = await _productRepository.GetProductByIdAsync(id);
+                if (existingProduct is null)
+                {
+                    return Result<bool>.Failure("Product not found.");
+                }
+
                 await _productRepository.DeleteProductAsync(id);
                 return Result<bool>.Success(true);
             }

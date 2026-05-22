@@ -9,7 +9,7 @@ namespace POS.Shared.Helpers
 {
     public static class ProductValidationHelper
     {
-        public static Result<bool>? ValidateProduct(string name, string barcode, decimal costPrice, decimal sellingPrice, int stockQuantity, int categoryId)
+        public static Result<bool>? ValidateProduct(string? name, string? barcode, decimal costPrice, decimal sellingPrice, int stockQuantity, int categoryId)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -19,13 +19,13 @@ namespace POS.Shared.Helpers
             {
                 return Result<bool>.Failure("Product barcode cannot be empty.");
             }
-            if (costPrice < 0)
+            if (costPrice <= 0)
             {
-                return Result<bool>.Failure("Product cost price cannot be negative.");
+                return Result<bool>.Failure("Product cost price must be greater than 0.");
             }
-            if (sellingPrice < 0)
+            if (sellingPrice <= 0)
             {
-                return Result<bool>.Failure("Product selling price cannot be negative.");
+                return Result<bool>.Failure("Product selling price must be greater than 0.");
             }
             if (stockQuantity < 0)
             {
