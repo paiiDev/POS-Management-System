@@ -34,7 +34,8 @@ namespace POS.Domain.Services
                     Id = x.Id,
                     Name = x.Name,
                     Barcode = x.Barcode,
-                    Price = x.Price,
+                    CostPrice = x.CostPrice,
+                    SellingPrice = x.SellingPrice,
                     StockQuantity = x.StockQuantity,
                     CategoryId = x.CategoryId,
                     CategoryName = x.Category.Name
@@ -64,7 +65,8 @@ namespace POS.Domain.Services
                     Id = result.Id,
                     Name = result.Name,
                     Barcode = result.Barcode,
-                    Price = result.Price,
+                    CostPrice = result.CostPrice,
+                    SellingPrice = result.SellingPrice,
                     StockQuantity = result.StockQuantity,
                     CategoryId = result.CategoryId,
                     CategoryName = result.Category.Name
@@ -88,7 +90,7 @@ namespace POS.Domain.Services
                     return Result<bool>.Failure("Product data is required.");
                 }
 
-                var validationResult = ProductValidationHelper.ValidateProduct(dto.Name, dto.Barcode, dto.Price, dto.StockQuantity, dto.CategoryId);
+                var validationResult = ProductValidationHelper.ValidateProduct(dto.Name, dto.Barcode, dto.CostPrice, dto.SellingPrice, dto.StockQuantity, dto.CategoryId);
                 if(validationResult is not null && !validationResult.IsSuccess)
                 {
                     return validationResult;
@@ -111,7 +113,8 @@ namespace POS.Domain.Services
                 {
                     Name = dto.Name.Trim(),
                     Barcode = dto.Barcode.Trim(),
-                    Price = dto.Price,
+                    CostPrice = dto.CostPrice,
+                    SellingPrice = dto.SellingPrice,
                     StockQuantity = dto.StockQuantity,
                     CategoryId = dto.CategoryId,
 
@@ -136,7 +139,7 @@ namespace POS.Domain.Services
                     return Result<bool>.Failure("Invalid product id");
                 }
 
-                var validationResult = ProductValidationHelper.ValidateProduct(dto.Name, dto.Barcode, dto.Price, dto.StockQuantity, dto.CategoryId);
+                var validationResult = ProductValidationHelper.ValidateProduct(dto.Name, dto.Barcode, dto.CostPrice, dto.SellingPrice, dto.StockQuantity, dto.CategoryId);
                 if(validationResult is not null && !validationResult.IsSuccess)
                 {
                     return validationResult;
@@ -160,7 +163,8 @@ namespace POS.Domain.Services
                     Id = dto.Id,
                     Name = dto.Name.Trim(),
                     Barcode = dto.Barcode.Trim(),
-                    Price = dto.Price,
+                    CostPrice = dto.CostPrice,
+                    SellingPrice = dto.SellingPrice,
                     StockQuantity = dto.StockQuantity,
                     CategoryId = dto.CategoryId,
                 };

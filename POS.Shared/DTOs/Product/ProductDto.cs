@@ -14,7 +14,9 @@ namespace POS.Shared.DTOs.Product
 
         public string Barcode { get; set; } = null!;
 
-        public decimal Price { get; set; }
+        public decimal CostPrice { get; set; }
+
+        public decimal SellingPrice { get; set; }
 
         public int StockQuantity { get; set; }
 

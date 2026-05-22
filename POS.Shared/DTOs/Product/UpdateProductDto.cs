@@ -18,8 +18,11 @@ namespace POS.Shared.DTOs.Product
         [StringLength(30, ErrorMessage = "Barcode cannot exceed 30 characters.")]
         public string Barcode { get; set; } = null!;
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0")]
-        public decimal Price { get; set; }
+        [Range(0.01, double.MaxValue, ErrorMessage = "Cost Price must be greater than 0")]
+        public decimal CostPrice { get; set; }
+
+        [Range(0.01, double.MaxValue, ErrorMessage = "Selling Price must be greater than 0")]
+        public decimal SellingPrice { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Quantity cannot be negative.")]
         public int StockQuantity { get; set; }

@@ -71,8 +71,9 @@ namespace POS.App.Controllers
                         Id = result.Value.Id, 
                         Name=result.Value.Name, 
                         Barcode=result.Value.Barcode, 
-                        Price=result.Value.Price, 
-                        StockQuantity=result.Value.StockQuantity, 
+                        CostPrice=result.Value.CostPrice, 
+                        SellingPrice=result.Value.SellingPrice,
+                        StockQuantity =result.Value.StockQuantity, 
                         CategoryId=result.Value.CategoryId 
                         };
 

@@ -47,7 +47,8 @@ namespace POS.Database.Repositories
                 existingProduct.Id = product.Id;
                 existingProduct.Name = product.Name;
                 existingProduct.Barcode = product.Barcode;
-                existingProduct.Price = product.Price;
+                existingProduct.CostPrice = product.CostPrice;
+                existingProduct.SellingPrice = product.SellingPrice;
                 existingProduct.StockQuantity = product.StockQuantity;
                 existingProduct.CategoryId = product.CategoryId;
                 await _dbContext.SaveChangesAsync();
