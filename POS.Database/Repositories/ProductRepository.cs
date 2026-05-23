@@ -30,6 +30,11 @@ namespace POS.Database.Repositories
             return await _dbContext.Products.Include(p => p.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         }
 
+        public async Task<List<Product>> GetProductsforCreateSale(List<int> productIds)
+        {
+            return await _dbContext.Products.Where(x => productIds.Contains(x.Id) && !x.IsDeleted).ToListAsync();
+        }
+
 
         public async Task CreateProductAsync(Product product)
         {

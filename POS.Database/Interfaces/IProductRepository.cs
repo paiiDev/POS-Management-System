@@ -11,6 +11,7 @@ namespace POS.Database.Interfaces
     {
         Task<List<Product>> GetAllProductsAsync();
         Task<Entities.Product?> GetProductByIdAsync(int id);
+        Task<List<Product>> GetProductsforCreateSale(List<int> productIds);
         Task CreateProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(int id);

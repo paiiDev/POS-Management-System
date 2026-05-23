@@ -32,7 +32,7 @@ public partial class AppDbContext : DbContext
     {
 
 
-        ာmodelBuilder.HasSequence<int>("OrderNumbers", schema: "shared")
+        modelBuilder.HasSequence<int>("OrderNumbers", schema: "shared")
             .StartsAt(1)
             .IncrementsBy(1);
 
