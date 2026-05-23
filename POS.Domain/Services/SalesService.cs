@@ -24,13 +24,13 @@ namespace POS.Domain.Services
             _generateInvoiceHelper = generateInvoice;
         }
 
-        public async Task<Result<bool>> CreateSaleAsync(CreateSaleDto dto)
+        public async Task<Result<SaleResponseDto>> CreateSaleAsync(CreateSaleDto dto)
         {
             try
             {
                 if (dto is null || dto.Items == null || !dto.Items.Any())
                 {
-                    return Result<bool>.Failure("Sale data is required");
+                    return Result<SaleResponseDto>.Failure("Sale must contain at least one item");
                 }
 
                 var mergedProductIds = dto.Items.GroupBy(i => i.ProductId)
@@ -47,7 +47,7 @@ namespace POS.Domain.Services
 
                 if (products.Count != productIds.Count)
                 {
-                    return Result<bool>.Failure("One or more products not found");
+                    return Result<SaleResponseDto>.Failure("One or more products not found");
                 }
 
                 decimal totalAmount = 0;
@@ -61,17 +61,17 @@ namespace POS.Domain.Services
 
                     if (item.Quantity <= 0)
                     {
-                        return Result<bool>.Failure($"Quantity for product {product.Name} must be greater than zero");
+                        return Result<SaleResponseDto>.Failure($"Quantity for product {product.Name} must be greater than zero");
                     }
 
                     if (product.StockQuantity == 0)
                     {
-                        return Result<bool>.Failure($"Product {product.Name} is out of stock");
+                        return Result<SaleResponseDto>.Failure($"Product {product.Name} is out of stock");
                     }
 
                     if (product.StockQuantity < item.Quantity)
                     {
-                        return Result<bool>.Failure($"Insufficient stock for product {product.Name}");
+                        return Result<SaleResponseDto>.Failure($"Insufficient stock for product {product.Name}");
                     }
                    
 
@@ -102,13 +102,13 @@ namespace POS.Domain.Services
 
                 await _salesRepository.CreateSaleAsync(sale);
 
-                return Result<bool>.Success(true);
+                return Result<SaleResponseDto>.Success(new SaleResponseDto { InvoiceNumber = generatedInvoiceNo });
 
 
             }
             catch (Exception ex)
             {
-                return Result<bool>.Failure($"An error occurred while creating the sale: {ex.Message}");
+                return Result<SaleResponseDto>.Failure($"An error occurred while creating the sale: {ex.Message}");
             }
             
         }

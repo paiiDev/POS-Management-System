@@ -10,7 +10,7 @@ namespace POS.Domain.Interfaces
 {
     public interface ISalesService
     {
-        Task<Result<bool>> CreateSaleAsync(CreateSaleDto dto);
+        Task<Result<SaleResponseDto>> CreateSaleAsync(CreateSaleDto dto);
 
        
 
