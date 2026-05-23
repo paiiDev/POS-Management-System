@@ -33,7 +33,15 @@ namespace POS.Domain.Services
                     return Result<bool>.Failure("Sale data is required");
                 }
 
-                var productIds = dto.Items.Select(i => i.ProductId).ToList();
+                var mergedProductIds = dto.Items.GroupBy(i => i.ProductId)
+                    .Select(g => new CreateSaleItemDto
+                    {
+                        ProductId = g.Key,
+                        Quantity = g.Sum(i => i.Quantity)
+                    })
+                    .ToList();
+
+                var productIds = mergedProductIds.Select(i => i.ProductId).ToList();
 
                 var products = await _productRepository.GetProductsforCreateSale(productIds);
 
@@ -47,7 +55,7 @@ namespace POS.Domain.Services
                 var saleItems = new List<SaleItem>();
                 var productDict = products.ToDictionary(p => p.Id);
 
-                foreach (var item in dto.Items)
+                foreach (var item in mergedProductIds)
                 {
                     var product = productDict[item.ProductId];
 
