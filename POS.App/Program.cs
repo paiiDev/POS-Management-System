@@ -4,6 +4,7 @@ using POS.Database.Interfaces;
 using POS.Database.Repositories;
 using POS.Domain.Interfaces;
 using POS.Domain.Services;
+using POS.Shared.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+builder.Services.AddScoped<IGenerateInvoiceHelper, GenerateInvoiceHelper>();
+builder.Services.AddScoped<ISalesService, SalesService>();
 
 var app = builder.Build();
 

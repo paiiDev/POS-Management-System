@@ -30,6 +30,13 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+
+        ာmodelBuilder.HasSequence<int>("OrderNumbers", schema: "shared")
+            .StartsAt(1)
+            .IncrementsBy(1);
+
+
         modelBuilder.Entity<Category>(entity =>
         {
             entity.Property(e => e.Name).HasMaxLength(100);
