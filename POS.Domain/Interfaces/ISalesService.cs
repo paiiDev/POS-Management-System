@@ -1,5 +1,6 @@
 ﻿using POS.Shared.Common;
 using POS.Shared.DTOs.Sales;
+using POS.Shared.DTOs.VoidLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,16 @@ namespace POS.Domain.Interfaces
     {
         Task<Result<SaleResponseDto>> CreateSaleAsync(CreateSaleDto dto);
 
-        Task<Result<List<SaleDto>>> GetAllSalesAsync();
+        Task<Result<List<SaleDto>>> GetAllPaidSalesAsync();
+
+        Task<Result<List<SaleDto>>> GetAllVoidedSalesAsync();
+
+        Task<Result<VoidLogDetailsDto>> GetVoidLogBySaleIdAsync(int saleId);
+
 
         Task<Result<SaleDto>> GetSaleByIdAsync(int id);
+
+        Task<Result<VoidLogDto>> CreateVoidLogAsync(VoidLogDto dto);
 
     }
 }

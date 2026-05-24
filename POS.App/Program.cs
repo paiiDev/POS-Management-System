@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using POS.Database.Context;
 using POS.Database.Interfaces;
 using POS.Database.Repositories;
 using POS.Domain.Interfaces;
 using POS.Domain.Services;
+using POS.Shared.Common;
 using POS.Shared.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,8 +26,42 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<IGenerateInvoiceHelper, GenerateInvoiceHelper>();
 builder.Services.AddScoped<ISalesService, SalesService>();
+builder.Services.AddScoped<IVoidLog, VoidLogRepository>();
+
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.LogoutPath = "/Auth/Logout";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
+
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+    });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    int AdminId = SystemUser.DefaultAdminId; 
+    if (!dbContext.Users.Any(u => u.Id == AdminId))
+    {
+        var defaultAdminHash = BCrypt.Net.BCrypt.HashPassword("Admin123");
+
+        dbContext.Database.ExecuteSqlInterpolated($@"
+            SET IDENTITY_INSERT dbo.Users ON;
+            INSERT INTO dbo.Users (Id, UserName, FullName, PasswordHash, Role, CreatedAt)
+            VALUES ({AdminId}, {SystemUser.DefaultAdminUserName}, {SystemUser.DefaultAdminFullName}, {defaultAdminHash}, {SystemUser.AdminRole}, SYSUTCDATETIME());
+            SET IDENTITY_INSERT dbo.Users OFF;");
+    }
+}
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -40,10 +76,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();

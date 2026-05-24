@@ -11,10 +11,15 @@
 
     <h2>Category Management</h2>
 
-    <a asp-action="Create"
-       class="btn btn-primary my-5">
-        Create Product
-    </a>
+        @if (User.IsInRole("Admin"))
+        {
+
+            <a asp-action="Create"
+               class="btn btn-primary my-5">
+                Create Product
+            </a>
+        }
+       
     </div>
 
     <!-- Category Table -->
@@ -24,7 +29,11 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
-                <th width="200">Actions</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th width="200">Actions</th>
+
+                }
             </tr>
         </thead>
 
@@ -36,21 +45,26 @@
                     <td>@item.Id</td>
                     <td>@item.Name</td>
 
-                    <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <td>
 
-                        <a asp-action="Edit"
-                           asp-route-id="@item.Id"
-                           class="btn btn-warning btn-sm">
-                            Edit
-                        </a>
+                            <a asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
 
-                        <a asp-action="Delete"
-                           asp-route-id="@item.Id"
-                           class="btn btn-danger btn-sm">
-                            Delete
-                        </a>
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-danger btn-sm">
+                                Delete
+                            </a>
 
-                    </td>
+                        </td>
+                    }
+
+                    
                 </tr>
             }
 

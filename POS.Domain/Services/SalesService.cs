@@ -1,11 +1,16 @@
-﻿using POS.Database.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using POS.Database.Entities;
 using POS.Database.Interfaces;
+using POS.Database.Context;
+using POS.Database.Repositories;
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Sales;
+using POS.Shared.DTOs.VoidLog;
 using POS.Shared.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,11 +22,15 @@ namespace POS.Domain.Services
         private readonly ISaleRepository _salesRepository;
         private readonly IProductRepository _productRepository;
         private readonly IGenerateInvoiceHelper _generateInvoiceHelper;
-        public SalesService(ISaleRepository saleRepository, IProductRepository productRepository, IGenerateInvoiceHelper generateInvoice)
+        private readonly IVoidLog _voidLogRepository;
+        private readonly AppDbContext _dbContext;
+        public SalesService(ISaleRepository saleRepository, IProductRepository productRepository, IGenerateInvoiceHelper generateInvoice, IVoidLog voidLogRepository, AppDbContext dbContext)
         {
             _salesRepository = saleRepository;
             _productRepository = productRepository;
             _generateInvoiceHelper = generateInvoice;
+            _voidLogRepository = voidLogRepository;
+            _dbContext = dbContext;
         }
 
         public async Task<Result<SaleResponseDto>> CreateSaleAsync(CreateSaleDto dto)
@@ -95,14 +104,15 @@ namespace POS.Domain.Services
                 var sale = new Sale
                 {
                     InvoiceNo = generatedInvoiceNo,
-                    SaleDate = DateTime.UtcNow,
+                    SaleDate = DateTime.UtcNow.AddHours(6).AddMinutes(30),
+                    UserId = dto.UserId > 0 ? dto.UserId : SystemUser.DefaultCashierId,
                     TotalAmount = totalAmount,
                     SaleItems = saleItems,
                 };
 
                 await _salesRepository.CreateSaleAsync(sale);
 
-                return Result<SaleResponseDto>.Success(new SaleResponseDto { InvoiceNumber = generatedInvoiceNo });
+                return Result<SaleResponseDto>.Success(new SaleResponseDto { Id = sale.Id, InvoiceNumber = generatedInvoiceNo });
 
 
             }
@@ -113,16 +123,13 @@ namespace POS.Domain.Services
 
         }
 
-        public async Task<Result<List<SaleDto>>> GetAllSalesAsync()
+        public async Task<Result<List<SaleDto>>> GetAllPaidSalesAsync()
         {
             try
             {
-                var result = await _salesRepository.GetAllSalesAsync();
+                var result = await _salesRepository.GetAllPaidSalesAsync();
 
-                if (result is null || !result.Any())
-                {
-                    return Result<List<SaleDto>>.Failure("No sales found");
-                }
+               
 
                 var sales = result.Select(s => new SaleDto
                 {
@@ -130,6 +137,40 @@ namespace POS.Domain.Services
                     InvoiceNo = s.InvoiceNo,
                     SaleDate = s.SaleDate,
                     TotalAmount = s.TotalAmount,
+                    Status = s.Status,
+                    Items = s.SaleItems.Select(i => new SaleItemDto
+                    {
+                        ProductName = i.Product.Name,
+                        Quantity = i.Quantity,
+                        SubTotal = i.SubTotal,
+                        UnitPrice = i.UnitPrice
+                    }).ToList()
+                }).ToList();
+
+                return Result<List<SaleDto>>.Success(sales);
+
+            }
+            catch (Exception ex)
+            {
+                return Result<List<SaleDto>>.Failure($"An error occurred while retrieving sales: {ex.Message}");
+            }
+        }
+
+        public async Task<Result<List<SaleDto>>> GetAllVoidedSalesAsync()
+        {
+            try
+            {
+                var result = await _salesRepository.GetAllVoidedSalesAsync();
+
+
+
+                var sales = result.Select(s => new SaleDto
+                {
+                    Id = s.Id,
+                    InvoiceNo = s.InvoiceNo,
+                    SaleDate = s.SaleDate,
+                    TotalAmount = s.TotalAmount,
+                    Status = s.Status,
                     Items = s.SaleItems.Select(i => new SaleItemDto
                     {
                         ProductName = i.Product.Name,
@@ -154,16 +195,19 @@ namespace POS.Domain.Services
             try
             {
                 var result = await _salesRepository.GetSaleByIdAsync(id);
-                if (result is null)
+
+                if(result is null)
                 {
                     return Result<SaleDto>.Failure("Sale not found");
                 }
+
                 var sale = new SaleDto
                 {
                     Id = result.Id,
                     InvoiceNo = result.InvoiceNo,
                     SaleDate = result.SaleDate,
                     TotalAmount = result.TotalAmount,
+                    Status = result.Status,
                     Items = result.SaleItems.Select(i => new SaleItemDto
                     {
                         ProductName = i.Product.Name,
@@ -177,6 +221,89 @@ namespace POS.Domain.Services
             catch (Exception ex)
             {
                 return Result<SaleDto>.Failure($"An error occurred while retrieving the sale: {ex.Message}");
+            }
+        }
+
+
+
+        public async Task<Result<VoidLogDto>> CreateVoidLogAsync(VoidLogDto dto)
+        {
+            try
+            {
+                await using var transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+                var sale = await _salesRepository.GetSaleForUpdateAsync(dto.SaleId);
+                if (sale == null)
+                {
+                    return Result<VoidLogDto>.Failure("Sale not found.");
+                }
+
+                var existingVoidLog = await _voidLogRepository.GetVoidLogBySaleIdAsync(dto.SaleId);
+                if (sale.Status == "Voided" || existingVoidLog != null)
+                {
+                    return Result<VoidLogDto>.Failure("Sale is already voided.");
+                }
+
+                sale.Status = "Voided";
+
+                foreach (var item in sale.SaleItems)
+                {
+                    if (item.Product != null)
+                    {
+                        item.Product.StockQuantity += item.Quantity;
+                    }
+                }
+
+                var voidLog = new Database.Entities.VoidLog
+                {
+                    SaleId = sale.Id,
+                    InvoiceNo = sale.InvoiceNo,
+                    VoidedAmount = sale.TotalAmount,
+                    Reason = dto.Reason,
+                    VoidedAt = DateTime.UtcNow.AddHours(6).AddMinutes(30),
+                    CashierName = sale.User?.UserName ?? "Default Cashier"
+                };
+
+                await _voidLogRepository.CreateVoidLogAsync(voidLog);
+                await _salesRepository.UpdateSaleAsync(sale);
+                await transaction.CommitAsync();
+                return Result<VoidLogDto>.Success(dto);
+
+            }
+            catch (Exception ex)
+            {
+                return Result<VoidLogDto>.Failure(ex.Message);
+            }
+        }
+
+        public async Task<Result<VoidLogDetailsDto>> GetVoidLogBySaleIdAsync(int saleId)
+        {
+            try
+            {
+                if(saleId <= 0)
+                {
+                    return Result<VoidLogDetailsDto>.Failure("Sale ID is required");
+                }
+                var result = await _voidLogRepository.GetVoidLogBySaleIdAsync(saleId);
+                if (result is null)
+                {
+                    return Result<VoidLogDetailsDto>.Failure("Void log not found");
+                }
+
+                var voidLog = new VoidLogDetailsDto
+                {
+                    SaleId = result.SaleId,
+                    InvoiceNo = result.InvoiceNo,
+                    Reason = result.Reason,
+                    VoidedAmount = result.VoidedAmount,
+                    VoidedAt = result.VoidedAt,
+                    CashierName = result.CashierName,
+                };
+
+                return Result<VoidLogDetailsDto>.Success(voidLog);
+            }
+            catch (Exception ex)
+            {
+                return Result<VoidLogDetailsDto>.Failure(ex.Message);
             }
         }
     }

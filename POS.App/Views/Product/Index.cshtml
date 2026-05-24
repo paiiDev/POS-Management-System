@@ -6,10 +6,15 @@
 
         <h2>Product List</h2>
 
-        <a asp-action="Create"
-           class="btn btn-primary">
-            Create Product
-        </a>
+        @if (User.IsInRole("Admin"))
+        {
+
+            <a asp-action="Create"
+               class="btn btn-primary">
+                Create Product
+            </a>
+        }
+
 
     </div>
 
@@ -21,11 +26,18 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Barcode</th>
-                <th>Cost Price</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th>Cost Price</th>
+                }
                 <th>Selling Price</th>
                 <th>Stock</th>
-                <th>Category Id</th>
-                <th>Actions</th>
+                <th>Category</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th>Actions</th>
+
+                }
             </tr>
 
         </thead>
@@ -36,39 +48,59 @@
             {
                 foreach (var item in Model)
                 {
-                    <tr>
 
-                        <td>@item.Id</td>
 
-                        <td>@item.Name</td>
+                    <tr class="@(item.StockQuantity == 0 ? "table-danger" : item.StockQuantity < 5 ? "table-warning" : "")">
 
-                        <td>@item.Barcode</td>
+                            <td>@item.Id</td>
 
-                        <td>@item.CostPrice</td>
+                            <td>@item.Name</td>
 
-                        <td>@item.SellingPrice</td>
+                            <td>@item.Barcode</td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td>@item.CostPrice</td>
 
-                        <td>@item.StockQuantity</td>
+                            }
 
-                        <td>@item.CategoryName</td>
+                            <td>@item.SellingPrice</td>
 
-                        <td>
 
-                            <a asp-action="Edit"
-                               asp-route-id="@item.Id"
-                               class="btn btn-warning btn-sm">
-                                Edit
-                            </a>
+                            @if(item.StockQuantity == 0)
+                            {
+                                <td class="text-danger fw-bold">Out of Stock</td>
+                            }
+                            else
+                            {
+                                <td>@item.StockQuantity</td>
+                           }
 
-                            <a asp-action="Delete"
-                               asp-route-id="@item.Id"
-                               class="btn btn-danger btn-sm">
-                                Delete
-                            </a>
 
-                        </td>
+                            <td>@item.CategoryName</td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td>
 
-                    </tr>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-warning btn-sm">
+                                        Edit
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-danger btn-sm">
+                                        Delete
+                                    </a>
+
+                                </td>
+                            }
+
+
+                        </tr>
+                    
+                        
+                    
                 }
             }
             else

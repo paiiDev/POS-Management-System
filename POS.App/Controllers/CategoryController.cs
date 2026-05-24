@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using POS.Database.Entities;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Category;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace POS.App.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -16,6 +18,7 @@ namespace POS.App.Controllers
             _categoryService = categoryService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var result = await _categoryService.GetAllCategoriesAsync();
@@ -27,12 +30,16 @@ namespace POS.App.Controllers
             return View(result.Value);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
            return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCategoryDto request)
         {
             if(!ModelState.IsValid)
@@ -46,9 +53,10 @@ namespace POS.App.Controllers
                 return View(request);
             }
             return RedirectToAction(nameof(Index));
-        }   
-        
+        }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async  Task<IActionResult> Edit(int id)
         {
             var result = await _categoryService.GetCategoryByIdAsync(id);
@@ -64,6 +72,8 @@ namespace POS.App.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateCategoryDto request)
         {
             var result = await _categoryService.UpdateCategoryAsync(request);
@@ -75,7 +85,8 @@ namespace POS.App.Controllers
             return RedirectToAction("Index");
         }
 
-
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public  async Task<IActionResult> Delete(int id)
         {
             var result = await _categoryService.GetCategoryByIdAsync(id);
@@ -94,6 +105,9 @@ namespace POS.App.Controllers
         }
 
 
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _categoryService.DeleteCategoryAsync(id);

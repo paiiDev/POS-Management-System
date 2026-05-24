@@ -22,14 +22,19 @@ namespace POS.Database.Repositories
 
         public async Task CreateSaleAsync(Sale sale)
         {
-            _dbContext.Sales.Add(sale);
+             _dbContext.Sales.Add(sale);
             await _dbContext.SaveChangesAsync();
         }
 
 
-        public async Task<List<Sale>> GetAllSalesAsync()
+        public async Task<List<Sale>> GetAllPaidSalesAsync()
         {
-            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).AsNoTracking().OrderByDescending(s => s.SaleDate).ToListAsync();
+            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).Where(s => s.Status == "Paid").AsNoTracking().OrderByDescending(s => s.SaleDate).ToListAsync();
+        }
+
+        public async Task<List<Sale>> GetAllVoidedSalesAsync()
+        {
+            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).Where(s => s.Status == "Voided").AsNoTracking().OrderByDescending(s => s.SaleDate).ToListAsync();
         }
 
 
@@ -37,5 +42,33 @@ namespace POS.Database.Repositories
         {
             return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
-    }
+
+        public async Task<Sale?>  GetSaleForUpdateAsync(int id)
+        {
+            return await _dbContext.Sales
+                .Include(s => s.User)
+                .Include(s => s.SaleItems)
+                .ThenInclude(si => si.Product)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task UpdateSaleAsync(Sale sale)
+        {
+            var existingSale = await _dbContext.Sales.FirstOrDefaultAsync(x => x.Id == sale.Id);
+            if (existingSale != null)
+            {
+
+                existingSale.Id = sale.Id;
+                existingSale.InvoiceNo = sale.InvoiceNo;
+                existingSale.TotalAmount = sale.TotalAmount;
+                existingSale.SaleDate = sale.SaleDate;
+                existingSale.UserId = sale.UserId;
+                existingSale.Status = sale.Status;
+
+                 _dbContext.Sales.Update(existingSale);
+                await _dbContext.SaveChangesAsync();
+
+            }
+        }
+        }
 }

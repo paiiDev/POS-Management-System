@@ -26,17 +26,11 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-   
+    public virtual DbSet<VoidLog> VoidLogs { get; set; }
 
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
-
-        modelBuilder.HasSequence<int>("OrderNumbers", schema: "shared")
-            .StartsAt(1)
-            .IncrementsBy(1);
-
-
         modelBuilder.Entity<Category>(entity =>
         {
             entity.Property(e => e.Name).HasMaxLength(100);
@@ -59,7 +53,11 @@ public partial class AppDbContext : DbContext
         {
             entity.Property(e => e.InvoiceNo).HasMaxLength(50);
             entity.Property(e => e.SaleDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasDefaultValue("Paid");
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.UserId).HasDefaultValue(1);
 
             entity.HasOne(d => d.User).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.UserId)
@@ -86,9 +84,28 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.FullName)
+                .HasMaxLength(100)
+                .HasDefaultValue("Name");
             entity.Property(e => e.Role).HasMaxLength(20);
             entity.Property(e => e.UserName).HasMaxLength(50);
         });
+
+        modelBuilder.Entity<VoidLog>(entity =>
+        {
+            entity.ToTable("VoidLog");
+
+            entity.Property(e => e.CashierName).HasMaxLength(50);
+            entity.Property(e => e.InvoiceNo).HasMaxLength(50);
+            entity.Property(e => e.VoidedAmount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.VoidedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.VoidLogs)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Sales_Id_VoidLog_SaleId");
+        });
+        modelBuilder.HasSequence<int>("OrderNumbers");
 
         OnModelCreatingPartial(modelBuilder);
     }
