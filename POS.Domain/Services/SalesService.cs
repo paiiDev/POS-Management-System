@@ -119,10 +119,7 @@ namespace POS.Domain.Services
             {
                 var result = await _salesRepository.GetAllSalesAsync();
 
-                if (result is null || !result.Any())
-                {
-                    return Result<List<SaleDto>>.Failure("No sales found");
-                }
+               
 
                 var sales = result.Select(s => new SaleDto
                 {
@@ -154,10 +151,7 @@ namespace POS.Domain.Services
             try
             {
                 var result = await _salesRepository.GetSaleByIdAsync(id);
-                if (result is null)
-                {
-                    return Result<SaleDto>.Failure("Sale not found");
-                }
+               
                 var sale = new SaleDto
                 {
                     Id = result.Id,
