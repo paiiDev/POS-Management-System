@@ -4,6 +4,7 @@ using POS.Database.Interfaces;
 using POS.Database.Repositories;
 using POS.Domain.Interfaces;
 using POS.Domain.Services;
+using POS.Shared.Common;
 using POS.Shared.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,8 @@ builder.Services.AddScoped<IGenerateInvoiceHelper, GenerateInvoiceHelper>();
 builder.Services.AddScoped<ISalesService, SalesService>();
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

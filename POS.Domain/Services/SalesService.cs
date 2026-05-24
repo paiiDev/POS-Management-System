@@ -96,6 +96,7 @@ namespace POS.Domain.Services
                 {
                     InvoiceNo = generatedInvoiceNo,
                     SaleDate = DateTime.UtcNow,
+                    UserId = 1,
                     TotalAmount = totalAmount,
                     SaleItems = saleItems,
                 };
@@ -154,7 +155,7 @@ namespace POS.Domain.Services
                
                 var sale = new SaleDto
                 {
-                    Id = result.Id,
+                    Id = result!.Id,
                     InvoiceNo = result.InvoiceNo,
                     SaleDate = result.SaleDate,
                     TotalAmount = result.TotalAmount,
