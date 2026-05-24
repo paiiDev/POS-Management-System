@@ -22,7 +22,7 @@ namespace POS.Database.Repositories
 
         public async Task CreateSaleAsync(Sale sale)
         {
-            _dbContext.Sales.Add(sale);
+             _dbContext.Sales.Add(sale);
             await _dbContext.SaveChangesAsync();
         }
 
