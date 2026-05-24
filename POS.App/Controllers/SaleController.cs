@@ -34,7 +34,7 @@ namespace POS.App.Controllers
             var result = await _salesService.CreateSaleAsync(request);
             if (!result.IsSuccess)
             {
-                ViewBag.Error = "No result";
+                ViewBag.Error = result.Error;
                 await LoadProducts();
                 return View("CreateSale", request);
             }

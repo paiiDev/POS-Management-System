@@ -20,6 +20,13 @@
 
     <form asp-action="Create" method="post">
 
+        @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+
         <div asp-validation-summary="ModelOnly"
              class="text-danger mb-3">
         </div>
