@@ -29,6 +29,11 @@ namespace POS.Domain.Services
             {
                 var result = await _productRepository.GetAllProductsAsync();
 
+                if(result is null || !result.Any())
+                {
+                    return Result<List<ProductDto>>.Failure("No products found.");
+                }
+
                 var products = result.Select(x => new ProductDto
                 {
                     Id = x.Id,

@@ -73,18 +73,18 @@ namespace POS.Domain.Services
                     {
                         return Result<SaleResponseDto>.Failure($"Insufficient stock for product {product.Name}");
                     }
-                   
+
 
                     decimal subTotalAmount = product.SellingPrice * item.Quantity;
                     totalAmount += subTotalAmount;
 
-                       var saleItem = new SaleItem
-                       {
-                           ProductId = product.Id,
-                           Quantity = item.Quantity,
-                           SubTotal = subTotalAmount,
-                           UnitPrice = product.SellingPrice,
-                       };
+                    var saleItem = new SaleItem
+                    {
+                        ProductId = product.Id,
+                        Quantity = item.Quantity,
+                        SubTotal = subTotalAmount,
+                        UnitPrice = product.SellingPrice,
+                    };
 
                     saleItems.Add(saleItem);
 
@@ -110,7 +110,74 @@ namespace POS.Domain.Services
             {
                 return Result<SaleResponseDto>.Failure($"An error occurred while creating the sale: {ex.Message}");
             }
-            
+
+        }
+
+        public async Task<Result<List<SaleDto>>> GetAllSalesAsync()
+        {
+            try
+            {
+                var result = await _salesRepository.GetAllSalesAsync();
+
+                if (result is null || !result.Any())
+                {
+                    return Result<List<SaleDto>>.Failure("No sales found");
+                }
+
+                var sales = result.Select(s => new SaleDto
+                {
+                    Id = s.Id,
+                    InvoiceNo = s.InvoiceNo,
+                    SaleDate = s.SaleDate,
+                    TotalAmount = s.TotalAmount,
+                    Items = s.SaleItems.Select(i => new SaleItemDto
+                    {
+                        ProductName = i.Product.Name,
+                        Quantity = i.Quantity,
+                        SubTotal = i.SubTotal,
+                        UnitPrice = i.UnitPrice
+                    }).ToList()
+                }).ToList();
+
+                return Result<List<SaleDto>>.Success(sales);
+
+            }
+            catch (Exception ex)
+            {
+                return Result<List<SaleDto>>.Failure($"An error occurred while retrieving sales: {ex.Message}");
+            }
+        }
+
+
+        public async Task<Result<SaleDto>> GetSaleByIdAsync(int id)
+        {
+            try
+            {
+                var result = await _salesRepository.GetSaleByIdAsync(id);
+                if (result is null)
+                {
+                    return Result<SaleDto>.Failure("Sale not found");
+                }
+                var sale = new SaleDto
+                {
+                    Id = result.Id,
+                    InvoiceNo = result.InvoiceNo,
+                    SaleDate = result.SaleDate,
+                    TotalAmount = result.TotalAmount,
+                    Items = result.SaleItems.Select(i => new SaleItemDto
+                    {
+                        ProductName = i.Product.Name,
+                        Quantity = i.Quantity,
+                        SubTotal = i.SubTotal,
+                        UnitPrice = i.UnitPrice
+                    }).ToList()
+                };
+                return Result<SaleDto>.Success(sale);
+            }
+            catch (Exception ex)
+            {
+                return Result<SaleDto>.Failure($"An error occurred while retrieving the sale: {ex.Message}");
+            }
         }
     }
 }

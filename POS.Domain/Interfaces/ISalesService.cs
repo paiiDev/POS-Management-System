@@ -12,7 +12,9 @@ namespace POS.Domain.Interfaces
     {
         Task<Result<SaleResponseDto>> CreateSaleAsync(CreateSaleDto dto);
 
-       
+        Task<Result<List<SaleDto>>> GetAllSalesAsync();
+
+        Task<Result<SaleDto>> GetSaleByIdAsync(int id);
 
     }
 }
