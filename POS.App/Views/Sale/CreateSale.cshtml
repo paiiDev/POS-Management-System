@@ -5,6 +5,7 @@
 
 @{
     ViewData["Title"] = "Create Sale";
+    var products = ViewBag.Products as IEnumerable<ProductDto> ?? Enumerable.Empty<ProductDto>();
 }
 
 <div class="container mt-4">
@@ -53,8 +54,9 @@
                     <tbody id="saleItemsBody">
 
                         <tr>
-
                             <td>
+                                <input type="hidden" name="Items.Index" value="0" />
+
                                 <select name="Items[0].ProductId"
                                         class="form-select">
 
@@ -62,14 +64,11 @@
                                         -- Select Product --
                                     </option>
 
-                                    @if (ViewBag.Products != null)
+                                    @foreach (var product in products)
                                     {
-                                        @foreach (var product in ViewBag.Products)
-                                        {
-                                            <option value="@product.Id">
-                                                @product.Name
-                                            </option>
-                                        }
+                                        <option value="@product.Id">
+                                            @product.Name
+                                        </option>
                                     }
 
                                 </select>
@@ -137,6 +136,8 @@
 
                 row.innerHTML = `
                     <td>
+                        <input type="hidden" name="Items.Index" value="${rowIndex}" />
+
                         <select name="Items[${rowIndex}].ProductId"
                                 class="form-select">
 
@@ -144,7 +145,7 @@
                                 -- Select Product --
                             </option>
 
-                            @foreach (var product in ViewBag.Products)
+                            @foreach (var product in products)
                             {
                                     <option value="@product.Id">
                                         @product.Name
