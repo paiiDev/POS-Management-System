@@ -95,7 +95,7 @@ namespace POS.Domain.Services
                 var sale = new Sale
                 {
                     InvoiceNo = generatedInvoiceNo,
-                    SaleDate = DateTime.UtcNow,
+                    SaleDate = DateTime.UtcNow.AddHours(6).AddMinutes(30),
                     UserId = 1,
                     TotalAmount = totalAmount,
                     SaleItems = saleItems,
@@ -103,7 +103,7 @@ namespace POS.Domain.Services
 
                 await _salesRepository.CreateSaleAsync(sale);
 
-                return Result<SaleResponseDto>.Success(new SaleResponseDto { InvoiceNumber = generatedInvoiceNo });
+                return Result<SaleResponseDto>.Success(new SaleResponseDto { Id = sale.Id, InvoiceNumber = generatedInvoiceNo });
 
 
             }

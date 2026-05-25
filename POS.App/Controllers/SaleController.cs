@@ -39,7 +39,22 @@ namespace POS.App.Controllers
                 return View("CreateSale", request);
             }
 
-            return RedirectToAction("Index", "Home");
+            var saleId = result.Value.Id;
+
+            return RedirectToAction("ConfirmSale", new { id = saleId });
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmSale(int id)
+        {
+            var result = await _salesService.GetSaleByIdAsync(id);
+            if (!result.IsSuccess || result.Value is null)
+            {
+                ViewBag.Error = result.Error;
+                return View();
+            }
+            return View(result.Value);
         }
 
         [HttpGet]
@@ -51,6 +66,20 @@ namespace POS.App.Controllers
                 ViewBag.Error = result.Error;
                 return View();
             }
+            return View(result.Value);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> SaleDetails(int id)
+        {
+            var result = await _salesService.GetSaleByIdAsync(id);
+            if (!result.IsSuccess)
+            {
+                ViewBag.Error = result.Error;
+                return View();
+            }
+
             return View(result.Value);
         }
 
