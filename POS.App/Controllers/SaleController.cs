@@ -51,8 +51,7 @@ namespace POS.App.Controllers
             var result = await _salesService.GetSaleByIdAsync(id);
             if (!result.IsSuccess || result.Value is null)
             {
-                ViewBag.Error = result.Error;
-                return View();
+                return NotFound(result.Error);
             }
             return View(result.Value);
         }
@@ -64,7 +63,7 @@ namespace POS.App.Controllers
             if (!result.IsSuccess || result.Value is null)
             {
                 ViewBag.Error = result.Error;
-                return View();
+                return View(new List<SaleDto>());
             }
             return View(result.Value);
         }
@@ -74,10 +73,9 @@ namespace POS.App.Controllers
         public async Task<IActionResult> SaleDetails(int id)
         {
             var result = await _salesService.GetSaleByIdAsync(id);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Value is null)
             {
-                ViewBag.Error = result.Error;
-                return View();
+                return NotFound(result.Error);
             }
 
             return View(result.Value);
@@ -95,6 +93,4 @@ namespace POS.App.Controllers
             ViewBag.Products = products.Value;
         }
     }
-
-    
-    }
+}
