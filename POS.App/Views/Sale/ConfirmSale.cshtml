@@ -43,7 +43,7 @@
                 <div class="col-md-4">
                     <label class="fw-bold">Total Amount</label>
                     <p class="fw-bold text-success">
-                        @Model.TotalAmount.ToString("C")
+                        @Model.TotalAmount.ToString("#,##0 Ks")
                     </p>
                 </div>
 
@@ -83,7 +83,7 @@
                             </td>
 
                             <td>
-                                @item.UnitPrice.ToString("C", new CultureInfo("my-MM"))
+                                @item.UnitPrice.ToString("#,##0 Ks")
                             </td>
 
                             <td>
@@ -91,7 +91,7 @@
                             </td>
 
                             <td class="fw-bold">
-                                @item.SubTotal.ToString("C", new CultureInfo("my-MM"))
+                                @item.SubTotal.ToString("#,##0 Ks")
                             </td>
 
                         </tr>
@@ -109,7 +109,7 @@
                         </td>
 
                         <td class="fw-bold text-success">
-                            @Model.TotalAmount.ToString("C")
+                            @Model.TotalAmount.ToString("#,##0 Ks")
                         </td>
 
                     </tr>
