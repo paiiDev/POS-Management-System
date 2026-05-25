@@ -8,6 +8,7 @@ namespace POS.Shared.DTOs.Sales
 {
     public class SaleResponseDto
     {
+        public int Id { get; set; }
         public string InvoiceNumber { get; set; } = string.Empty;
     }
 }
