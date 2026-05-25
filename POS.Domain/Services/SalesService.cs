@@ -96,7 +96,7 @@ namespace POS.Domain.Services
                 {
                     InvoiceNo = generatedInvoiceNo,
                     SaleDate = DateTime.UtcNow.AddHours(6).AddMinutes(30),
-                    UserId = 1,
+                    UserId = SystemUser.DefaultCashierId,
                     TotalAmount = totalAmount,
                     SaleItems = saleItems,
                 };
@@ -152,10 +152,15 @@ namespace POS.Domain.Services
             try
             {
                 var result = await _salesRepository.GetSaleByIdAsync(id);
-               
+
+                if(result is null)
+                {
+                    return Result<SaleDto>.Failure("Sale not found");
+                }
+
                 var sale = new SaleDto
                 {
-                    Id = result!.Id,
+                    Id = result.Id,
                     InvoiceNo = result.InvoiceNo,
                     SaleDate = result.SaleDate,
                     TotalAmount = result.TotalAmount,
