@@ -28,7 +28,18 @@ builder.Services.AddScoped<ISalesService, SalesService>();
 
 var app = builder.Build();
 
-
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    if (!dbContext.Users.Any(u => u.Id == SystemUser.DefaultCashierId))
+    {
+        dbContext.Database.ExecuteSqlInterpolated($@"
+            SET IDENTITY_INSERT dbo.Users ON;
+            INSERT INTO dbo.Users (Id, UserName, PasswordHash, Role, CreatedAt)
+            VALUES ({SystemUser.DefaultCashierId}, {SystemUser.DefaultCashierUserName}, {string.Empty}, {SystemUser.DefaultCashierRole}, SYSUTCDATETIME());
+            SET IDENTITY_INSERT dbo.Users OFF;");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -21,7 +21,14 @@
 
     </div>
 
-    @if (!Model.Any())
+    @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
     {
         <div class="alert alert-info">
             No sales transactions found.
