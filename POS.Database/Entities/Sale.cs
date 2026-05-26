@@ -15,7 +15,11 @@ public partial class Sale
 
     public int UserId { get; set; }
 
+    public string Status { get; set; } = null!;
+
     public virtual ICollection<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
 
     public virtual User User { get; set; } = null!;
+
+    public virtual ICollection<VoidLog> VoidLogs { get; set; } = new List<VoidLog>();
 }
