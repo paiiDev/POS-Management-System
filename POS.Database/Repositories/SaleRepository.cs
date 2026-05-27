@@ -37,5 +37,29 @@ namespace POS.Database.Repositories
         {
             return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
-    }
+
+        public async Task<Sale?>  GetSaleForUpdateAsync(int id)
+        {
+            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task UpdateSaleAsync(Sale sale)
+        {
+            var existingSale = await _dbContext.Sales.FirstOrDefaultAsync(x => x.Id == sale.Id);
+            if (existingSale != null)
+            {
+
+                existingSale.Id = sale.Id;
+                existingSale.InvoiceNo = sale.InvoiceNo;
+                existingSale.TotalAmount = sale.TotalAmount;
+                existingSale.SaleDate = sale.SaleDate;
+                existingSale.UserId = sale.UserId;
+                existingSale.Status = sale.Status;
+
+                 _dbContext.Sales.Update(existingSale);
+                await _dbContext.SaveChangesAsync();
+
+            }
+        }
+        }
 }

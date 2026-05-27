@@ -47,6 +47,7 @@
                             <th>Invoice No</th>
                             <th>Date</th>
                             <th>Total Amount</th>
+                            <th>Status</th>
                             <th width="150">Actions</th>
                         </tr>
                     </thead>
@@ -70,11 +71,21 @@
                                 </td>
 
                                 <td>
+                                    @sale.Status
+                                </td>
+
+                                <td>
 
                                     <a asp-action="SaleDetails"
                                        asp-route-id="@sale.Id"
                                        class="btn btn-info btn-sm">
                                         Details
+                                    </a>
+
+                                    <a asp-action="VoidSale"
+                                       asp-route-id="@sale.Id"
+                                       class="btn btn-danger btn-sm">
+                                        Void
                                     </a>
 
                                 </td>

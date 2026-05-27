@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Sales;
+using POS.Shared.DTOs.VoidLog;
 using System.Threading.Tasks;
 
 namespace POS.App.Controllers
@@ -80,6 +81,73 @@ namespace POS.App.Controllers
 
             return View(result.Value);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> VoidSale(int id)
+        {
+           if(id <= 0)
+            {
+                return BadRequest("Sale ID is required.");
+            }
+
+           var sale = await _salesService.GetSaleByIdAsync(id);
+            if (!sale.IsSuccess || sale.Value is null)
+            {
+                return NotFound(sale.Error);
+            }
+
+
+            return View("ConfirmSale", sale.Value);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmVoidSale(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest("Sale ID is required.");
+            }
+
+            var sale = await _salesService.GetSaleByIdAsync(id);
+            if(!sale.IsSuccess || sale.Value is null)
+            {
+                return NotFound(sale.Error);
+            }
+
+            return View(sale.Value);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VoidSaleConfirmed(VoidLogDto request)
+        {
+            if (!ModelState.IsValid || string.IsNullOrWhiteSpace(request.Reason))
+            {
+                ViewBag.Error = "Please provide a valid reason.";
+                var sale = await _salesService.GetSaleByIdAsync(request.SaleId);
+                return View(sale);
+            }
+
+            if (request.SaleId <= 0)
+            {
+                return BadRequest("Sale ID is required.");
+            }
+
+            var result = await _salesService.CreateVoidLogAsync(request);
+
+            if (!result.IsSuccess)
+            {
+                ViewBag.Error = result.Error;
+                var sale = await _salesService.GetSaleByIdAsync(request.SaleId);
+                if (!sale.IsSuccess || sale.Value is null)
+                {
+                    return NotFound(sale.Error);
+                }
+                return View("ConfirmVoidSale", sale.Value);
+            }
+            return RedirectToAction("ViewSaleTransactions");
+        }
+
 
         private async Task LoadProducts()
         {

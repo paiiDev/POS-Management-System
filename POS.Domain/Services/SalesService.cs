@@ -1,8 +1,10 @@
 ﻿using POS.Database.Entities;
 using POS.Database.Interfaces;
+using POS.Database.Repositories;
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Sales;
+using POS.Shared.DTOs.VoidLog;
 using POS.Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -17,11 +19,13 @@ namespace POS.Domain.Services
         private readonly ISaleRepository _salesRepository;
         private readonly IProductRepository _productRepository;
         private readonly IGenerateInvoiceHelper _generateInvoiceHelper;
-        public SalesService(ISaleRepository saleRepository, IProductRepository productRepository, IGenerateInvoiceHelper generateInvoice)
+        private readonly IVoidLog _voidLogRepository;
+        public SalesService(ISaleRepository saleRepository, IProductRepository productRepository, IGenerateInvoiceHelper generateInvoice, IVoidLog voidLogRepository)
         {
             _salesRepository = saleRepository;
             _productRepository = productRepository;
             _generateInvoiceHelper = generateInvoice;
+            _voidLogRepository = voidLogRepository;
         }
 
         public async Task<Result<SaleResponseDto>> CreateSaleAsync(CreateSaleDto dto)
@@ -128,6 +132,7 @@ namespace POS.Domain.Services
                     InvoiceNo = s.InvoiceNo,
                     SaleDate = s.SaleDate,
                     TotalAmount = s.TotalAmount,
+                    Status = s.Status,
                     Items = s.SaleItems.Select(i => new SaleItemDto
                     {
                         ProductName = i.Product.Name,
@@ -179,5 +184,54 @@ namespace POS.Domain.Services
                 return Result<SaleDto>.Failure($"An error occurred while retrieving the sale: {ex.Message}");
             }
         }
+
+
+
+        public async Task<Result<VoidLogDto>> CreateVoidLogAsync(VoidLogDto dto)
+        {
+            try
+            {
+                var sale = await _salesRepository.GetSaleForUpdateAsync(dto.SaleId);
+                if (sale == null)
+                {
+                    return Result<VoidLogDto>.Failure("Sale not found.");
+                }
+
+                if (sale.Status == "Voided")
+                {
+                    return Result<VoidLogDto>.Failure("Sale is already voided.");
+                }
+
+                sale.Status = "Voided";
+
+                foreach (var item in sale.SaleItems)
+                {
+                    if (item.Product != null)
+                    {
+                        item.Product.StockQuantity += item.Quantity;
+                    }
+                }
+
+                var voidLog = new Database.Entities.VoidLog
+                {
+                    SaleId = sale.Id,
+                    InvoiceNo = sale.InvoiceNo,
+                    VoidedAmount = sale.TotalAmount,
+                    Reason = dto.Reason,
+                    VoidedAt = DateTime.UtcNow.AddHours(6).AddMinutes(30),
+                    CashierName = sale.User?.UserName ?? "Default Cashier"
+                };
+
+                await _voidLogRepository.CreateVoidLogAsync(voidLog);
+                await _salesRepository.UpdateSaleAsync(sale);
+                return Result<VoidLogDto>.Success(dto);
+
+            }
+            catch (Exception ex)
+            {
+                return Result<VoidLogDto>.Failure(ex.Message);
+            }
+        }
+
     }
 }
