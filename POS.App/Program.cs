@@ -25,6 +25,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<IGenerateInvoiceHelper, GenerateInvoiceHelper>();
 builder.Services.AddScoped<ISalesService, SalesService>();
+builder.Services.AddScoped<IVoidLog, VoidLogRepository>();
 
 var app = builder.Build();
 

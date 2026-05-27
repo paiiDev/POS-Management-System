@@ -118,11 +118,18 @@
 
             </table>
 
-            <div class="d-flex justify-content-end align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
 
+
+
+                <a asp-action="ConfirmVoidSale"
+                    asp-route-id="@Model.Id"
+                   class="btn btn-danger w-25">
+                    Void Sale
+                </a>
 
                 <a asp-action="CreateSale"
-                   class="btn btn-success w-100">
+                   class="btn btn-success w-25">
                     Ok
                 </a>
 
