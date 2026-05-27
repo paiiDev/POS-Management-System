@@ -14,5 +14,9 @@ namespace POS.Database.Interfaces
         Task<List<Sale>> GetAllSalesAsync();
 
         Task<Sale?> GetSaleByIdAsync(int id);
+
+        Task<Sale?> GetSaleForUpdateAsync(int id);
+
+        Task UpdateSaleAsync(Sale sale);
     }
 }

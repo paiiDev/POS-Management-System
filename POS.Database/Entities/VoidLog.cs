@@ -9,7 +9,7 @@ public partial class VoidLog
 
     public int SaleId { get; set; }
 
-    public int InvoiceNo { get; set; }
+    public string InvoiceNo { get; set; } = null!;
 
     public decimal VoidedAmount { get; set; }
 
