@@ -28,8 +28,6 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<VoidLog> VoidLogs { get; set; }
 
-   
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
@@ -94,6 +92,7 @@ public partial class AppDbContext : DbContext
             entity.ToTable("VoidLog");
 
             entity.Property(e => e.CashierName).HasMaxLength(50);
+            entity.Property(e => e.InvoiceNo).HasMaxLength(50);
             entity.Property(e => e.VoidedAmount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.VoidedAt).HasColumnType("datetime");
 
