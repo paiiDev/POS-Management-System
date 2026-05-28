@@ -47,25 +47,47 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmSale(int id)
+        public async Task<IActionResult> ConfirmSale(int id, string from = "Create")
         {
             var result = await _salesService.GetSaleByIdAsync(id);
             if (!result.IsSuccess || result.Value is null)
             {
                 return NotFound(result.Error);
             }
+            ViewBag.From = from;
             return View(result.Value);
         }
 
         [HttpGet]
         public async Task<IActionResult> ViewSaleTransactions()
         {
-            var result = await _salesService.GetAllSalesAsync();
+            var result = await _salesService.GetAllPaidSalesAsync();
             if (!result.IsSuccess || result.Value is null)
             {
                 ViewBag.Error = result.Error;
                 return View(new List<SaleDto>());
             }
+            return View(result.Value);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VoidedSaleTransactions()
+        {
+            var result = await _salesService.GetAllVoidedSalesAsync();
+            if (!result.IsSuccess || result.Value is null)
+            {
+                ViewBag.Error = result.Error;
+                return View(new List<SaleDto>());
+            }
+            return View(result.Value);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> VoidedSaleDetails(int Id)
+        {
+            var result = await _salesService.GetVoidLogBySaleIdAsync(Id);
+            if(!result.IsSuccess || result.Value is null) { return NotFound(result.Error); }
             return View(result.Value);
         }
 
