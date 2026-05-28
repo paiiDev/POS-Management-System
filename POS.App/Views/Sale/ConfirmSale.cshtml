@@ -108,6 +108,7 @@
                             Grand Total
                         </td>
 
+                      
                         <td class="fw-bold text-success">
                             @Model.TotalAmount.ToString("#,##0 Ks")
                         </td>
@@ -120,18 +121,32 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4">
 
+                @if(ViewBag.From == "Create")
+                {
+                    <a asp-action="ConfirmVoidSale"
+                         asp-route-id="@Model.Id"
+                         class="btn btn-danger w-25">
+                        Void Sale
+                    </a>
 
+                    <a asp-action="CreateSale"
+                       class="btn btn-success w-25">
+                        Ok
+                    </a>
+                }
+                else 
+                {
+                    <a asp-action="ConfirmVoidSale"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-danger w-25">
+                        Void Sale
+                    </a>
 
-                <a asp-action="ConfirmVoidSale"
-                    asp-route-id="@Model.Id"
-                   class="btn btn-danger w-25">
-                    Void Sale
-                </a>
-
-                <a asp-action="CreateSale"
-                   class="btn btn-success w-25">
-                    Ok
-                </a>
+                    <a asp-action="ViewSaleTransactions"
+                       class="btn btn-secondary w-25">
+                        Cancel
+                    </a>
+                }  
 
             </div>
 

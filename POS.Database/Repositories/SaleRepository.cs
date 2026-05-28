@@ -27,9 +27,14 @@ namespace POS.Database.Repositories
         }
 
 
-        public async Task<List<Sale>> GetAllSalesAsync()
+        public async Task<List<Sale>> GetAllPaidSalesAsync()
         {
-            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).AsNoTracking().OrderByDescending(s => s.SaleDate).ToListAsync();
+            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).Where(s => s.Status == "Paid").AsNoTracking().OrderByDescending(s => s.SaleDate).ToListAsync();
+        }
+
+        public async Task<List<Sale>> GetAllVoidedSalesAsync()
+        {
+            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).Where(s => s.Status == "Voided").AsNoTracking().OrderByDescending(s => s.SaleDate).ToListAsync();
         }
 
 
