@@ -118,13 +118,46 @@ namespace POS.Domain.Services
 
         }
 
-        public async Task<Result<List<SaleDto>>> GetAllSalesAsync()
+        public async Task<Result<List<SaleDto>>> GetAllPaidSalesAsync()
         {
             try
             {
-                var result = await _salesRepository.GetAllSalesAsync();
+                var result = await _salesRepository.GetAllPaidSalesAsync();
 
                
+
+                var sales = result.Select(s => new SaleDto
+                {
+                    Id = s.Id,
+                    InvoiceNo = s.InvoiceNo,
+                    SaleDate = s.SaleDate,
+                    TotalAmount = s.TotalAmount,
+                    Status = s.Status,
+                    Items = s.SaleItems.Select(i => new SaleItemDto
+                    {
+                        ProductName = i.Product.Name,
+                        Quantity = i.Quantity,
+                        SubTotal = i.SubTotal,
+                        UnitPrice = i.UnitPrice
+                    }).ToList()
+                }).ToList();
+
+                return Result<List<SaleDto>>.Success(sales);
+
+            }
+            catch (Exception ex)
+            {
+                return Result<List<SaleDto>>.Failure($"An error occurred while retrieving sales: {ex.Message}");
+            }
+        }
+
+        public async Task<Result<List<SaleDto>>> GetAllVoidedSalesAsync()
+        {
+            try
+            {
+                var result = await _salesRepository.GetAllVoidedSalesAsync();
+
+
 
                 var sales = result.Select(s => new SaleDto
                 {
@@ -233,5 +266,32 @@ namespace POS.Domain.Services
             }
         }
 
+        public async Task<Result<VoidLogDetailsDto>> GetVoidLogBySaleIdAsync(int saleId)
+        {
+            try
+            {
+                if(saleId <= 0)
+                {
+                    return Result<VoidLogDetailsDto>.Failure("Sale ID is required");
+                }
+                var result = await _voidLogRepository.GetVoidLogBySaleIdAsync(saleId);
+
+                var voidLog = new VoidLogDetailsDto
+                {
+                    SaleId = result!.SaleId,
+                    InvoiceNo = result.InvoiceNo,
+                    Reason = result.Reason,
+                    VoidedAmount = result.VoidedAmount,
+                    VoidedAt = result.VoidedAt,
+                    CashierName = result.CashierName,
+                };
+
+                return Result<VoidLogDetailsDto>.Success(voidLog);
+            }
+            catch (Exception ex)
+            {
+                return Result<VoidLogDetailsDto>.Failure(ex.Message);
+            }
+        }
     }
 }

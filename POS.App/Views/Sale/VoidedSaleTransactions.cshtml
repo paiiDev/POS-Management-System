@@ -1,0 +1,97 @@
+﻿@using POS.Shared.DTOs.Sales
+@using System.Globalization
+
+
+@model List<SaleDto>
+
+@{
+    ViewData["Title"] = "Voided Sale Transactions";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>Voided Sales Transactions</h2>
+
+
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            No voided sales transactions found.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Invoice No</th>
+                            <th>Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th width="150">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var sale in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    @sale.InvoiceNo
+                                </td>
+
+                                <td>
+                                    @sale.SaleDate.ToString("dd MMM yyyy hh:mm tt")
+                                </td>
+
+                                <td>
+                                    @sale.TotalAmount.ToString("#,##0 Ks")
+                                </td>
+
+                                <td>
+                                    @sale.Status
+                                </td>
+
+                                <td>
+
+                                    <a asp-action="VoidedSaleDetails"
+                                       asp-route-id="@sale.Id"
+                                       class="btn btn-info btn-sm">
+                                        Details
+                                    </a>
+
+                                   
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    }
+
+</div>
