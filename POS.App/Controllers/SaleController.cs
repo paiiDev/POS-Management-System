@@ -147,7 +147,12 @@ namespace POS.App.Controllers
             {
                 ViewBag.Error = "Please provide a valid reason.";
                 var sale = await _salesService.GetSaleByIdAsync(request.SaleId);
-                return View(sale);
+                if (!sale.IsSuccess || sale.Value is null)
+                {
+                    return NotFound(sale.Error);
+                }
+
+                return View("ConfirmVoidSale", sale.Value);
             }
 
             if (request.SaleId <= 0)
@@ -167,7 +172,7 @@ namespace POS.App.Controllers
                 }
                 return View("ConfirmVoidSale", sale.Value);
             }
-            return RedirectToAction("ViewSaleTransactions");
+            return RedirectToAction("VoidedSaleTransactions");
         }
 
 
