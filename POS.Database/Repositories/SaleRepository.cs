@@ -45,7 +45,11 @@ namespace POS.Database.Repositories
 
         public async Task<Sale?>  GetSaleForUpdateAsync(int id)
         {
-            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Sales
+                .Include(s => s.User)
+                .Include(s => s.SaleItems)
+                .ThenInclude(si => si.Product)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task UpdateSaleAsync(Sale sale)
