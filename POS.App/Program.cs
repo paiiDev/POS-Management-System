@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using POS.Database.Context;
 using POS.Database.Interfaces;
@@ -27,6 +28,14 @@ builder.Services.AddScoped<IGenerateInvoiceHelper, GenerateInvoiceHelper>();
 builder.Services.AddScoped<ISalesService, SalesService>();
 builder.Services.AddScoped<IVoidLog, VoidLogRepository>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -42,6 +51,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -55,6 +66,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
