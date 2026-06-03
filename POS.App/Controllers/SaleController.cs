@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Sales;
 using POS.Shared.DTOs.VoidLog;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace POS.App.Controllers
 {
+    [Authorize]
     public class SaleController : Controller
     {
         private readonly ISalesService _salesService;
