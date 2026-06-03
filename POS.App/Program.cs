@@ -28,12 +28,18 @@ builder.Services.AddScoped<IGenerateInvoiceHelper, GenerateInvoiceHelper>();
 builder.Services.AddScoped<ISalesService, SalesService>();
 builder.Services.AddScoped<IVoidLog, VoidLogRepository>();
 
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login";
-        options.LogoutPath = "/Account/Logout";
-        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.LoginPath = "/Auth/Login";
+        options.LogoutPath = "/Auth/Logout";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
+
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
     });
 
 var app = builder.Build();
@@ -41,12 +47,16 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    if (!dbContext.Users.Any(u => u.Id == SystemUser.DefaultCashierId))
+
+    int adminId = 1; 
+    if (!dbContext.Users.Any(u => u.Id == adminId))
     {
+        var defaultAdminHash = BCrypt.Net.BCrypt.HashPassword("admin123");
+
         dbContext.Database.ExecuteSqlInterpolated($@"
             SET IDENTITY_INSERT dbo.Users ON;
             INSERT INTO dbo.Users (Id, UserName, PasswordHash, Role, CreatedAt)
-            VALUES ({SystemUser.DefaultCashierId}, {SystemUser.DefaultCashierUserName}, {string.Empty}, {SystemUser.DefaultCashierRole}, SYSUTCDATETIME());
+            VALUES ({adminId}, 'admin', {defaultAdminHash}, 'Admin', SYSUTCDATETIME());
             SET IDENTITY_INSERT dbo.Users OFF;");
     }
 }
@@ -71,6 +81,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();

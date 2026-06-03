@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using POS.Database.Entities;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Category;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace POS.App.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
