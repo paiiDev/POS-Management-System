@@ -17,6 +17,8 @@ namespace POS.App.Controllers
             _salesService = salesService;
             _productService = productService;
         }
+
+        [HttpGet]
         public async Task<IActionResult> CreateSale()
         {
             await LoadProducts();
@@ -24,6 +26,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateSaleDto request)
         {
@@ -49,6 +52,7 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> ConfirmSale(int id, string from = "Create")
         {
             var result = await _salesService.GetSaleByIdAsync(id);
@@ -73,6 +77,19 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> SaleDetails(int id)
+        {
+            var result = await _salesService.GetSaleByIdAsync(id);
+            if (!result.IsSuccess || result.Value is null)
+            {
+                return NotFound(result.Error);
+            }
+
+            return View(result.Value);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> VoidedSaleTransactions()
         {
             var result = await _salesService.GetAllVoidedSalesAsync();
@@ -86,6 +103,7 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> VoidedSaleDetails(int Id)
         {
             var result = await _salesService.GetVoidLogBySaleIdAsync(Id);
@@ -95,18 +113,7 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> SaleDetails(int id)
-        {
-            var result = await _salesService.GetSaleByIdAsync(id);
-            if (!result.IsSuccess || result.Value is null)
-            {
-                return NotFound(result.Error);
-            }
-
-            return View(result.Value);
-        }
-
-        [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> VoidSale(int id)
         {
            if(id <= 0)
@@ -125,6 +132,7 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> ConfirmVoidSale(int id)
         {
             if (id <= 0)
@@ -142,6 +150,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VoidSaleConfirmed(VoidLogDto request)
         {
