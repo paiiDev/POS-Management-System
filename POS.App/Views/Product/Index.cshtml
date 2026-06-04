@@ -6,10 +6,15 @@
 
         <h2>Product List</h2>
 
-        <a asp-action="Create"
-           class="btn btn-primary">
-            Create Product
-        </a>
+        @if (User.IsInRole("admin"))
+        {
+
+            <a asp-action="Create"
+               class="btn btn-primary">
+                Create Product
+            </a>
+        }
+
 
     </div>
 
@@ -25,7 +30,11 @@
                 <th>Selling Price</th>
                 <th>Stock</th>
                 <th>Category Id</th>
-                <th>Actions</th>
+                @if (User.IsInRole("admin"))
+                {
+                    <th>Actions</th>
+
+                }
             </tr>
 
         </thead>
@@ -51,22 +60,25 @@
                         <td>@item.StockQuantity</td>
 
                         <td>@item.CategoryName</td>
+                        @if (User.IsInRole("admin"))
+                        {
+                            <td>
 
-                        <td>
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-warning btn-sm">
+                                    Edit
+                                </a>
 
-                            <a asp-action="Edit"
-                               asp-route-id="@item.Id"
-                               class="btn btn-warning btn-sm">
-                                Edit
-                            </a>
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-danger btn-sm">
+                                    Delete
+                                </a>
 
-                            <a asp-action="Delete"
-                               asp-route-id="@item.Id"
-                               class="btn btn-danger btn-sm">
-                                Delete
-                            </a>
-
-                        </td>
+                            </td>
+                        }
+                       
 
                     </tr>
                 }
