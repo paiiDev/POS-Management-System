@@ -27,7 +27,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                                 </li>
-                                @if (User.IsInRole("admin"))
+                                @if (User.IsInRole("Admin"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
@@ -42,7 +42,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Sale" asp-action="ViewSaleTransactions">Sale Transactions</a>
                                 </li>
-                                @if (User.IsInRole("admin"))
+                                @if (User.IsInRole("Admin"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Sale" asp-action="VoidedSaleTransactions">Voided Sale Transactions</a>
@@ -56,7 +56,7 @@
                         <div class="d-flex align-items-center justify-content-around">
                             <span class="fw-bold fs-5 text-primary mx-2">@User.GetFullName()</span>
 
-                            @if (User.IsInRole("admin"))
+                            @if (User.IsInRole("Admin"))
                             {
                                     <div>(Admin)</div>
                             } else

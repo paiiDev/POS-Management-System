@@ -9,5 +9,7 @@ namespace POS.Shared.DTOs.Sales
     public class CreateSaleDto
     {
         public List<CreateSaleItemDto> Items { get; set; } = new List<CreateSaleItemDto>();
+
+        public int UserId { get; set; }
     }
 }

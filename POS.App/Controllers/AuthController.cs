@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Auth;
-using System.Threading.Tasks;
 
 namespace POS.App.Controllers
 {
@@ -16,6 +15,7 @@ namespace POS.App.Controllers
             _authService = authService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
@@ -27,6 +27,7 @@ namespace POS.App.Controllers
         }
 
 
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginDto request)
@@ -57,6 +58,7 @@ namespace POS.App.Controllers
         }
 
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -65,6 +67,7 @@ namespace POS.App.Controllers
             return RedirectToAction("Login", "Auth");
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult AccessDenied()
         {
