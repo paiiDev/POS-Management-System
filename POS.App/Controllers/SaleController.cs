@@ -26,7 +26,6 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateSaleDto request)
         {
@@ -52,7 +51,6 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> ConfirmSale(int id, string from = "Create")
         {
             var result = await _salesService.GetSaleByIdAsync(id);

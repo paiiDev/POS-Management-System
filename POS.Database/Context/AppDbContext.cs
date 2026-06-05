@@ -28,6 +28,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<VoidLog> VoidLogs { get; set; }
 
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
@@ -83,6 +84,9 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.FullName)
+                .HasMaxLength(100)
+                .HasDefaultValue("Name");
             entity.Property(e => e.Role).HasMaxLength(20);
             entity.Property(e => e.UserName).HasMaxLength(50);
         });
@@ -91,7 +95,6 @@ public partial class AppDbContext : DbContext
         {
             entity.ToTable("VoidLog");
 
-            entity.HasIndex(e => e.SaleId).IsUnique();
             entity.Property(e => e.CashierName).HasMaxLength(50);
             entity.Property(e => e.InvoiceNo).HasMaxLength(50);
             entity.Property(e => e.VoidedAmount).HasColumnType("decimal(18, 2)");
