@@ -95,6 +95,23 @@ public partial class AppDbContext : DbContext
         {
             entity.ToTable("VoidLog");
 
+            entity.HasIndex(e => e.SaleId).IsUnique();
+            entity.Property(e => e.CashierName).HasMaxLength(50);
+            entity.Property(e => e.InvoiceNo).HasMaxLength(50);
+            entity.Property(e => e.VoidedAmount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.VoidedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Sale).WithMany(p => p.VoidLogs)
+                .HasForeignKey(d => d.SaleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Sales_Id_VoidLog_SaleId");
+        });
+        modelBuilder.HasSequence<int>("OrderNumbers");
+
+        modelBuilder.Entity<VoidLog>(entity =>
+        {
+            entity.ToTable("VoidLog");
+
             entity.Property(e => e.CashierName).HasMaxLength(50);
             entity.Property(e => e.InvoiceNo).HasMaxLength(50);
             entity.Property(e => e.VoidedAmount).HasColumnType("decimal(18, 2)");
