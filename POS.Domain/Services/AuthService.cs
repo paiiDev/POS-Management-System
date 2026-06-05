@@ -38,6 +38,7 @@ namespace POS.Domain.Services
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim("FullName", user.FullName),
                     new Claim(ClaimTypes.Role, user.Role),
                     new Claim("UserId", user.Id.ToString())
                 };
