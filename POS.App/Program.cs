@@ -48,15 +48,15 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    int adminId = 1; 
-    if (!dbContext.Users.Any(u => u.Id == adminId))
+    int AdminId = SystemUser.DefaultAdminId; 
+    if (!dbContext.Users.Any(u => u.Id == AdminId))
     {
-        var defaultAdminHash = BCrypt.Net.BCrypt.HashPassword("admin123");
+        var defaultAdminHash = BCrypt.Net.BCrypt.HashPassword("Admin123");
 
         dbContext.Database.ExecuteSqlInterpolated($@"
             SET IDENTITY_INSERT dbo.Users ON;
-            INSERT INTO dbo.Users (Id, UserName, PasswordHash, Role, CreatedAt)
-            VALUES ({adminId}, 'admin', {defaultAdminHash}, 'Admin', SYSUTCDATETIME());
+            INSERT INTO dbo.Users (Id, UserName, FullName, PasswordHash, Role, CreatedAt)
+            VALUES ({AdminId}, {SystemUser.DefaultAdminUserName}, {SystemUser.DefaultAdminFullName}, {defaultAdminHash}, {SystemUser.AdminRole}, SYSUTCDATETIME());
             SET IDENTITY_INSERT dbo.Users OFF;");
     }
 }

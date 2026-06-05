@@ -36,7 +36,7 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             await LoadCategoriesAsync();
@@ -44,7 +44,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateProductDto productDto)
         {
@@ -66,7 +66,7 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var result = await _productService.GetProductByIdAsync(id);
@@ -92,7 +92,7 @@ namespace POS.App.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         [ActionName("SubmitEdit")]
         public async Task<IActionResult> Edit(UpdateProductDto request)
@@ -113,7 +113,7 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _productService.GetProductByIdAsync(id);
@@ -127,7 +127,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmedDelete(int id)
         {

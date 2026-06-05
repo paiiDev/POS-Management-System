@@ -14,5 +14,11 @@ namespace POS.Shared.Extensions
             var claim = principal.Claims.FirstOrDefault(x => x.Type == "FullName");
             return claim != null ? claim.Value : "Unknown user";
         }
+
+        public static int GetUserId(this ClaimsPrincipal principal)
+        {
+            var claim = principal.Claims.FirstOrDefault(x => x.Type == "UserId");
+            return int.TryParse(claim?.Value, out var userId) ? userId : 0;
+        }
     }
 }
