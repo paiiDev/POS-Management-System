@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Sales;
 using POS.Shared.DTOs.VoidLog;
+using POS.Shared.Extensions;
 using System.Threading.Tasks;
 
 namespace POS.App.Controllers
@@ -36,6 +37,7 @@ namespace POS.App.Controllers
                 return View("CreateSale", request);
             }
 
+            request.UserId = User.GetUserId();
             var result = await _salesService.CreateSaleAsync(request);
             if (!result.IsSuccess)
             {
@@ -87,7 +89,7 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> VoidedSaleTransactions()
         {
             var result = await _salesService.GetAllVoidedSalesAsync();
@@ -101,7 +103,7 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> VoidedSaleDetails(int Id)
         {
             var result = await _salesService.GetVoidLogBySaleIdAsync(Id);
@@ -111,7 +113,7 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> VoidSale(int id)
         {
            if(id <= 0)
@@ -130,7 +132,7 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ConfirmVoidSale(int id)
         {
             if (id <= 0)
@@ -148,7 +150,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VoidSaleConfirmed(VoidLogDto request)
         {

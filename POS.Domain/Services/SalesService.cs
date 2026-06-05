@@ -105,7 +105,7 @@ namespace POS.Domain.Services
                 {
                     InvoiceNo = generatedInvoiceNo,
                     SaleDate = DateTime.UtcNow.AddHours(6).AddMinutes(30),
-                    UserId = SystemUser.DefaultCashierId,
+                    UserId = dto.UserId > 0 ? dto.UserId : SystemUser.DefaultCashierId,
                     TotalAmount = totalAmount,
                     SaleItems = saleItems,
                 };

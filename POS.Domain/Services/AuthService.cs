@@ -29,17 +29,21 @@ namespace POS.Domain.Services
                     return Result<ClaimsPrincipal>.Failure("Invalid login data.");
                 }
 
-                var user = await _authRepository.GetDataByUsernameAsync(dto.Username);
+                var user = await _authRepository.GetDataByUsernameAsync(dto.Username.Trim());
                 if(user is null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 {
                     return Result<ClaimsPrincipal>.Failure("Invalid username or password.");
                 }
 
+                var role = string.Equals(user.Role, SystemUser.AdminRole, StringComparison.OrdinalIgnoreCase)
+                    ? SystemUser.AdminRole
+                    : user.Role;
+
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim("FullName", user.FullName),
-                    new Claim(ClaimTypes.Role, user.Role),
+                    new Claim("FullName", string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName),
+                    new Claim(ClaimTypes.Role, role),
                     new Claim("UserId", user.Id.ToString())
                 };
 
