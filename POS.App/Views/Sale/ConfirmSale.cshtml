@@ -123,12 +123,15 @@
 
                 @if(ViewBag.From == "Create")
                 {
-                    <a asp-action="ConfirmVoidSale"
-                         asp-route-id="@Model.Id"
-                         class="btn btn-danger w-25">
-                        Void Sale
-                    </a>
-
+                    if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="ConfirmVoidSale"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-danger w-25">
+                            Void Sale
+                        </a>
+                    }
+                   
                     <a asp-action="CreateSale"
                        class="btn btn-success w-25">
                         Ok
@@ -136,11 +139,14 @@
                 }
                 else 
                 {
-                    <a asp-action="ConfirmVoidSale"
-                       asp-route-id="@Model.Id"
-                       class="btn btn-danger w-25">
-                        Void Sale
-                    </a>
+                    if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="ConfirmVoidSale"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-danger w-25">
+                            Void Sale
+                        </a>
+                    }
 
                     <a asp-action="ViewSaleTransactions"
                        class="btn btn-secondary w-25">

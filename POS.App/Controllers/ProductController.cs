@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using POS.Database.Entities;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Category;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace POS.App.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
@@ -33,6 +35,8 @@ namespace POS.App.Controllers
 
 
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             await LoadCategoriesAsync();
@@ -40,6 +44,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateProductDto productDto)
         {
@@ -60,6 +65,8 @@ namespace POS.App.Controllers
         }
 
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var result = await _productService.GetProductByIdAsync(id);
@@ -85,6 +92,7 @@ namespace POS.App.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         [ActionName("SubmitEdit")]
         public async Task<IActionResult> Edit(UpdateProductDto request)
@@ -104,6 +112,8 @@ namespace POS.App.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _productService.GetProductByIdAsync(id);
@@ -117,6 +127,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmedDelete(int id)
         {

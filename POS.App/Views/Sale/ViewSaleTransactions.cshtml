@@ -82,11 +82,16 @@
                                         Details
                                     </a>
 
-                                    <a asp-action="VoidSale"
-                                       asp-route-id="@sale.Id"
-                                       class="btn btn-danger btn-sm">
-                                        Void
-                                    </a>
+                                    @if(User.IsInRole("Admin"))
+                                    {
+
+                                        <a asp-action="VoidSale"
+                                           asp-route-id="@sale.Id"
+                                           class="btn btn-danger btn-sm">
+                                            Void
+                                        </a>
+                                    }
+
 
                                 </td>
 
