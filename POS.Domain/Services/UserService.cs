@@ -69,20 +69,23 @@ namespace POS.Domain.Services
             }
         }
 
-        public async Task<Result<bool>> AddUserAsync(CreateUserDto dto)
+        public async Task<Result<bool>> CreateUserAsync(CreateUserDto dto)
         {
             try
             {
+
+                var hasedPassword = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash);
+
                 var user = new User
                 {
-                    UserName = dto.UserName,
-                    FullName = dto.FullName,
-                    PasswordHash = dto.PasswordHash,
+                    UserName = dto.UserName.Trim(),
+                    FullName = dto.FullName.Trim(),
+                    PasswordHash = hasedPassword,
                     Role = dto.Role,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow.AddHours(6).AddMinutes(30)
                 };
 
-                await _userRepository.AddUserAsync(user);
+                await _userRepository.CreateUserAsync(user);
                 return Result<bool>.Success(true);
             }
             catch (Exception ex)

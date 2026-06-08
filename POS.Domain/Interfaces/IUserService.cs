@@ -14,7 +14,7 @@ namespace POS.Domain.Interfaces
         
         Task<Result<List<UserDto>>> GetAllUsersAsync();
         Task<Result<UserDto?>> GetUserByIdAsync(int id);
-        Task<Result<bool>> AddUserAsync(CreateUserDto dto);
+        Task<Result<bool>> CreateUserAsync(CreateUserDto dto);
         Task<Result<bool>> UpdateUserAsync(UpdateUserDto dto);
         Task<Result<bool>> DeleteUserAsync(int id);
     }
