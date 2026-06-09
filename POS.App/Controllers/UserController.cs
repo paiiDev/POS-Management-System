@@ -45,6 +45,7 @@ namespace POS.App.Controllers
                 ViewBag.Error = result.Error;
                 return View("CreateUser", request);
             }
+            TempData["SuccessMessage"] = "User account created successfully";
             return RedirectToAction("Index");
         }
 
@@ -83,6 +84,35 @@ namespace POS.App.Controllers
                 return View("Edit", request);
             }
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _userService.GetUserByIdAsync(id);
+            if (!result.IsSuccess)
+            {
+                TempData["ErrorMessage"] = result.Error;
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(result.Value);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        [ActionName("Delete")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var result = await _userService.DeleteUserAsync(id);
+            if (!result.IsSuccess)
+            {
+                TempData["ErrorMessage"] = result.Error;
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["SuccessMessage"] = "User deleted successfully";
+            return RedirectToAction("index");
         }
     }
 }
