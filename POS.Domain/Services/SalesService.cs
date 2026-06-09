@@ -138,6 +138,7 @@ namespace POS.Domain.Services
                     SaleDate = s.SaleDate,
                     TotalAmount = s.TotalAmount,
                     Status = s.Status,
+                    CashierName = s.User.FullName?? "Default Cashier",
                     Items = s.SaleItems.Select(i => new SaleItemDto
                     {
                         ProductName = i.Product.Name,
@@ -171,6 +172,7 @@ namespace POS.Domain.Services
                     SaleDate = s.SaleDate,
                     TotalAmount = s.TotalAmount,
                     Status = s.Status,
+                    CashierName = s.User.FullName ?? "Default Cashier",
                     Items = s.SaleItems.Select(i => new SaleItemDto
                     {
                         ProductName = i.Product.Name,
@@ -208,6 +210,7 @@ namespace POS.Domain.Services
                     SaleDate = result.SaleDate,
                     TotalAmount = result.TotalAmount,
                     Status = result.Status,
+                    CashierName = result.User?.FullName ?? "Default Cashier",
                     Items = result.SaleItems.Select(i => new SaleItemDto
                     {
                         ProductName = i.Product.Name,

@@ -106,7 +106,6 @@ namespace POS.Domain.Services
 
                 user.UserName = dto.UserName;
                 user.FullName = dto.FullName;
-                user.PasswordHash = dto.PasswordHash;
                 user.Role = dto.Role;
 
                 await _userRepository.UpdateUserAsync(user);

@@ -18,8 +18,6 @@ namespace POS.Shared.DTOs.User
         [Required(ErrorMessage = "Full name is required.")]
         public string FullName { get; set; } = null!;
 
-        [Required(ErrorMessage = "Password is required.")]
-        public string PasswordHash { get; set; } = null!;
 
         [Required(ErrorMessage = "Role is required.")]
         public string Role { get; set; } = null!;
