@@ -20,7 +20,7 @@ namespace POS.Database.Repositories
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.AsNoTracking().ToListAsync();
         }
 
         public async Task<User?> GetUserByIdAsync(int id)
@@ -36,16 +36,25 @@ namespace POS.Database.Repositories
 
         public async Task UpdateUserAsync(User user)
         {
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+            if (existingUser != null) 
+            { 
+                existingUser.UserName = user.UserName;
+                existingUser.FullName = user.FullName;
+                existingUser.Role = user.Role;
+                existingUser.CreatedAt = user.CreatedAt;
+                await _context.SaveChangesAsync();
+            }
+            
         }
 
         public async Task DeleteUserAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (user != null)
             {
-                _context.Users.Remove(user);
+                user.IsDeleted = true;
+                user.DeletedAt = DateTime.Now.AddHours(6).AddMinutes(30);
                 await _context.SaveChangesAsync();
             }
         }
