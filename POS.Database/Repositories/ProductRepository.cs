@@ -27,7 +27,7 @@ namespace POS.Database.Repositories
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await _dbContext.Products.Include(p => p.Category).AsNoTracking().IgnoreQueryFilters().FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Products.Include(p => p.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Product>> GetProductsforCreateSale(List<int> productIds)

@@ -29,23 +29,46 @@ namespace POS.Database.Repositories
 
         public async Task<List<Sale>> GetAllPaidSalesAsync()
         {
-            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).Include(u => u.User).Where(s => s.Status == "Paid").AsNoTracking().OrderByDescending(s => s.SaleDate).ToListAsync();
+            return await _dbContext.Sales
+                .IgnoreQueryFilters()
+                .Include(s => s.SaleItems)
+                .ThenInclude(si => si.Product)
+                .Include(u => u.User)
+                .Where(s => s.Status == "Paid")
+                .AsNoTracking()
+                .OrderByDescending(s => s.SaleDate)
+                .ToListAsync();
         }
 
         public async Task<List<Sale>> GetAllVoidedSalesAsync()
         {
-            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).Include(u => u.User).Where(s => s.Status == "Voided").AsNoTracking().OrderByDescending(s => s.SaleDate).ToListAsync();
+            return await _dbContext.Sales
+                .IgnoreQueryFilters()
+                .Include(s => s.SaleItems)
+                .ThenInclude(si => si.Product)
+                .Include(u => u.User)
+                .Where(s => s.Status == "Voided")
+                .AsNoTracking()
+                .OrderByDescending(s => s.SaleDate)
+                .ToListAsync();
         }
 
 
         public async Task<Sale?> GetSaleByIdAsync(int id)
         {
-            return await _dbContext.Sales.Include(s => s.SaleItems).ThenInclude(si => si.Product).Include(u => u.User).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Sales
+                .IgnoreQueryFilters()
+                .Include(s => s.SaleItems)
+                .ThenInclude(si => si.Product)
+                .Include(u => u.User)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Sale?>  GetSaleForUpdateAsync(int id)
         {
             return await _dbContext.Sales
+                .IgnoreQueryFilters()
                 .Include(s => s.User)
                 .Include(s => s.SaleItems)
                 .ThenInclude(si => si.Product)

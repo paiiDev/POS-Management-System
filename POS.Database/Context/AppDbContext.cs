@@ -37,7 +37,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<Product>().HasQueryFilter(c => !c.IsDeleted);
+        modelBuilder.Entity<Category>().HasQueryFilter(c => !c.IsDeleted);
 
         modelBuilder.Entity<Product>(entity =>
         {
@@ -98,8 +98,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UserName).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted)
-            ;
+        modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
         modelBuilder.Entity<VoidLog>(entity =>
         {
             entity.ToTable("VoidLog");

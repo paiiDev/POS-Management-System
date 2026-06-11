@@ -141,7 +141,7 @@ namespace POS.Domain.Services
                     CashierName = s.User.FullName?? "Default Cashier",
                     Items = s.SaleItems.Select(i => new SaleItemDto
                     {
-                        ProductName = i.Product.Name,
+                        ProductName = GetProductName(i),
                         Quantity = i.Quantity,
                         SubTotal = i.SubTotal,
                         UnitPrice = i.UnitPrice
@@ -175,7 +175,7 @@ namespace POS.Domain.Services
                     CashierName = s.User.FullName ?? "Default Cashier",
                     Items = s.SaleItems.Select(i => new SaleItemDto
                     {
-                        ProductName = i.Product.Name,
+                        ProductName = GetProductName(i),
                         Quantity = i.Quantity,
                         SubTotal = i.SubTotal,
                         UnitPrice = i.UnitPrice
@@ -213,7 +213,7 @@ namespace POS.Domain.Services
                     CashierName = result.User?.FullName ?? "Default Cashier",
                     Items = result.SaleItems.Select(i => new SaleItemDto
                     {
-                        ProductName = i.Product.Name,
+                        ProductName = GetProductName(i),
                         Quantity = i.Quantity,
                         SubTotal = i.SubTotal,
                         UnitPrice = i.UnitPrice
@@ -308,6 +308,11 @@ namespace POS.Domain.Services
             {
                 return Result<VoidLogDetailsDto>.Failure(ex.Message);
             }
+        }
+
+        private static string GetProductName(SaleItem item)
+        {
+            return item.Product?.Name ?? $"Deleted product #{item.ProductId}";
         }
     }
 }
