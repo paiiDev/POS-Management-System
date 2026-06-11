@@ -28,11 +28,12 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<VoidLog> VoidLogs { get; set; }
 
-   
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Category>(entity =>
         {
+            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 
@@ -83,10 +84,16 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
+            entity.HasIndex(e => e.UserName, "IX_Users_UserName_NotDeleted")
+                .IsUnique()
+                .HasFilter("([isDeleted]=(0))");
+
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.DeletedAt).HasColumnType("datetime");
             entity.Property(e => e.FullName)
                 .HasMaxLength(100)
                 .HasDefaultValue("Name");
+            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
             entity.Property(e => e.Role).HasMaxLength(20);
             entity.Property(e => e.UserName).HasMaxLength(50);
         });

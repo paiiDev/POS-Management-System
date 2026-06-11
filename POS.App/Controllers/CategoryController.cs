@@ -114,7 +114,7 @@ namespace POS.App.Controllers
             if (!result.IsSuccess)
             {
                 TempData["ErrorMessage"] = result.Error;
-                return View();
+                return RedirectToAction("index");
             }
             return RedirectToAction("index");
         }

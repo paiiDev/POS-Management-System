@@ -48,6 +48,11 @@
                             <th>Date</th>
                             <th>Total Amount</th>
                             <th>Status</th>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <th>Invoice By</th>
+
+                            }
                             <th width="150">Actions</th>
                         </tr>
                     </thead>
@@ -73,6 +78,14 @@
                                 <td>
                                     @sale.Status
                                 </td>
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <td>
+                                        @sale.CashierName
+                                    </td>
+                                }
+                               
 
                                 <td>
 
