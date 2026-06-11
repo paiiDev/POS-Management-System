@@ -78,7 +78,7 @@ namespace POS.Domain.Services
             {
                 var category = new Category
                 {
-                    Name = dto.Name,
+                    Name = dto.Name.Trim(),
                 };
 
                 await _categoryRepository.AddCategoryAsync(category);

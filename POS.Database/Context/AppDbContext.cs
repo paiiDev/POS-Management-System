@@ -37,8 +37,6 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<Category>().HasQueryFilter(c => !c.IsDeleted);
-
         modelBuilder.Entity<Product>(entity =>
         {
             entity.Property(e => e.Barcode).HasMaxLength(50);
@@ -51,8 +49,6 @@ public partial class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Categories_Id__Products_CategoryId");
         });
-
-        modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted && !p.Category.IsDeleted );
 
         modelBuilder.Entity<Sale>(entity =>
         {
@@ -88,6 +84,10 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
+            entity.HasIndex(e => e.UserName, "IX_Users_UserName_NotDeleted")
+                .IsUnique()
+                .HasFilter("([isDeleted]=(0))");
+
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.DeletedAt).HasColumnType("datetime");
             entity.Property(e => e.FullName)
@@ -98,7 +98,6 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UserName).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
         modelBuilder.Entity<VoidLog>(entity =>
         {
             entity.ToTable("VoidLog");

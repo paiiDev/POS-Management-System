@@ -28,6 +28,11 @@ namespace POS.Database.Repositories
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }
 
+        public async Task<User?> GetUserByUserNameAsync(string userName)
+        {
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserName == userName);
+        }
+
         public async Task CreateUserAsync(User user)
         {
             await _context.Users.AddAsync(user);

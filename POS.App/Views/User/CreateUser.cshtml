@@ -12,6 +12,14 @@
                 <div class="card-header bg-primary text-white py-3">
                     <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>Add New User</h4>
                 </div>
+
+                  @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+
                 <div class="card-body p-4">
                     
                     <form asp-action="CreateUser" method="post">
@@ -33,6 +41,12 @@
                             <label asp-for="PasswordHash" class="form-label fw-bold">Password</label>
                             <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Enter strong password" />
                             <span asp-validation-for="PasswordHash" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label fw-bold">Confirm Password</label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Please confirm password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-4">

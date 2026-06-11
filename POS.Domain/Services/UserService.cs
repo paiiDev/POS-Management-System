@@ -75,15 +75,21 @@ namespace POS.Domain.Services
             {
 
                 var hasedPassword = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash);
+                var existingUser = await _userRepository.GetUserByUserNameAsync(dto.UserName.Trim());
 
-                var user = new User
+                if (existingUser != null)
                 {
-                    UserName = dto.UserName.Trim(),
-                    FullName = dto.FullName.Trim(),
-                    PasswordHash = hasedPassword,
-                    Role = dto.Role,
-                    CreatedAt = DateTime.UtcNow.AddHours(6).AddMinutes(30)
-                };
+                    return Result<bool>.Failure("A user with the same username already exists.");
+                } 
+
+                    var user = new User
+                    {
+                        UserName = dto.UserName.Trim(),
+                        FullName = dto.FullName.Trim(),
+                        PasswordHash = hasedPassword,
+                        Role = dto.Role,
+                        CreatedAt = DateTime.UtcNow.AddHours(6).AddMinutes(30)
+                    };
 
                 await _userRepository.CreateUserAsync(user);
                 return Result<bool>.Success(true);

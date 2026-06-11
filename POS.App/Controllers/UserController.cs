@@ -39,6 +39,7 @@ namespace POS.App.Controllers
                 ViewBag.Error = "Please fill in all required fields.";
                 return View("CreateUser", request);
             }
+
             var result = await _userService.CreateUserAsync(request);
             if (!result.IsSuccess)
             {

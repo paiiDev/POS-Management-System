@@ -14,5 +14,7 @@ namespace POS.Database.Interfaces
         Task  CreateUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int id);
+
+        Task<User?> GetUserByUserNameAsync(string userName);
     }
 }
