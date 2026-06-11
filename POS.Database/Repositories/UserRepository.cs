@@ -47,7 +47,6 @@ namespace POS.Database.Repositories
                 existingUser.UserName = user.UserName;
                 existingUser.FullName = user.FullName;
                 existingUser.Role = user.Role;
-                existingUser.CreatedAt = user.CreatedAt;
                 await _context.SaveChangesAsync();
             }
             

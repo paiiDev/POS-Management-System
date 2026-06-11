@@ -56,21 +56,30 @@ namespace POS.App.Controllers
         {
             if (id == 0)
             {
-                ViewBag.Error = "User ID is required.";
+                TempData["ErrorMessage"] = "User ID is required.";
+                return RedirectToAction(nameof(Index));
             }
 
             var result = await _userService.GetUserByIdAsync(id);
             if (!result.IsSuccess)
             {
-                ViewBag.Error = result.Error;
-                return View();
+                TempData["ErrorMessage"] = result.Error;
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(result.Value);
+            var user = result.Value!;
+            return View(new UpdateUserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Role = user.Role
+            });
         }
 
         [HttpPost]
         [ActionName("Edit")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPostAsync(UpdateUserDto request)
         {
             if (!ModelState.IsValid)
@@ -101,7 +110,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteAsync(int id)
         {

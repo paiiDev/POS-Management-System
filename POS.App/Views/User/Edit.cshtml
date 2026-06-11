@@ -1,5 +1,5 @@
 ﻿@using POS.Shared.DTOs.User
-@model UserDto
+@model UpdateUserDto
 
 @{
     ViewData["Title"] = "Edit User";
@@ -12,6 +12,14 @@
                 <div class="card-header bg-primary text-white py-3">
                     <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>Edit User</h4>
                 </div>
+
+                @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+
                 <div class="card-body p-4">
                     
                     <form asp-action="Edit" method="post">

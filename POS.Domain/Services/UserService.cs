@@ -73,6 +73,11 @@ namespace POS.Domain.Services
         {
             try
             {
+                var role = NormalizeRole(dto.Role);
+                if (role is null)
+                {
+                    return Result<bool>.Failure("Please select a valid user role.");
+                }
 
                 var hasedPassword = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash);
                 var existingUser = await _userRepository.GetUserByUserNameAsync(dto.UserName.Trim());
@@ -87,7 +92,7 @@ namespace POS.Domain.Services
                         UserName = dto.UserName.Trim(),
                         FullName = dto.FullName.Trim(),
                         PasswordHash = hasedPassword,
-                        Role = dto.Role,
+                        Role = role,
                         CreatedAt = DateTime.UtcNow.AddHours(6).AddMinutes(30)
                     };
 
@@ -110,9 +115,22 @@ namespace POS.Domain.Services
                     return Result<bool>.Failure("User not found.");
                 }
 
-                user.UserName = dto.UserName;
-                user.FullName = dto.FullName;
-                user.Role = dto.Role;
+                var role = NormalizeRole(dto.Role);
+                if (role is null)
+                {
+                    return Result<bool>.Failure("Please select a valid user role.");
+                }
+
+                var userName = dto.UserName.Trim();
+                var existingUser = await _userRepository.GetUserByUserNameAsync(userName);
+                if (existingUser != null && existingUser.Id != dto.Id)
+                {
+                    return Result<bool>.Failure("A user with the same username already exists.");
+                }
+
+                user.UserName = userName;
+                user.FullName = dto.FullName.Trim();
+                user.Role = role;
 
                 await _userRepository.UpdateUserAsync(user);
                 return Result<bool>.Success(true);
@@ -140,6 +158,21 @@ namespace POS.Domain.Services
             {
                 return Result<bool>.Failure($"An error occurred while deleting the user: {ex.Message}");
             }
+        }
+
+        private static string? NormalizeRole(string role)
+        {
+            if (string.Equals(role, SystemUser.AdminRole, StringComparison.OrdinalIgnoreCase))
+            {
+                return SystemUser.AdminRole;
+            }
+
+            if (string.Equals(role, SystemUser.DefaultCashierRole, StringComparison.OrdinalIgnoreCase))
+            {
+                return SystemUser.DefaultCashierRole;
+            }
+
+            return null;
         }
     }
 }
