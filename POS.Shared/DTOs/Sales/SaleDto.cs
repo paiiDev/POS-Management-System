@@ -16,6 +16,7 @@ namespace POS.Shared.DTOs.Sales
 
         public decimal TotalAmount { get; set; }
 
+        public string CashierName { get; set; } = string.Empty;
         public string Status { get; set; } = null!;
 
         public List<SaleItemDto> Items { get; set; } = new();

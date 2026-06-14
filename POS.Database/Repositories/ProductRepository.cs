@@ -21,18 +21,18 @@ namespace POS.Database.Repositories
 
         public async Task<List<Product>> GetAllProductsAsync()
         {
-            return await _dbContext.Products.Include(p => p.Category).AsNoTracking().Where(x => !x.IsDeleted).ToListAsync();
+            return await _dbContext.Products.Include(p => p.Category).AsNoTracking().ToListAsync();
         }
 
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await _dbContext.Products.Include(p => p.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+            return await _dbContext.Products.Include(p => p.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Product>> GetProductsforCreateSale(List<int> productIds)
         {
-            return await _dbContext.Products.Where(x => productIds.Contains(x.Id) && !x.IsDeleted).ToListAsync();
+            return await _dbContext.Products.Where(x => productIds.Contains(x.Id)).ToListAsync();
         }
 
 
@@ -45,7 +45,7 @@ namespace POS.Database.Repositories
 
         public async Task UpdateProductAsync(Product product)
         {
-            var existingProduct = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == product.Id && !x.IsDeleted);
+            var existingProduct = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == product.Id);
             if (existingProduct != null)
             {
 
@@ -63,7 +63,7 @@ namespace POS.Database.Repositories
 
         public async Task DeleteProductAsync(int id)
         {
-            var product = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+            var product = await _dbContext.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (product != null)
             {
                 product.IsDeleted = true;

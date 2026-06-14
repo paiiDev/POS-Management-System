@@ -30,22 +30,30 @@
 
             <div class="row mb-3">
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="fw-bold">Invoice No</label>
                     <p>@Model.InvoiceNo</p>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="fw-bold">Sale Date</label>
                     <p>@Model.SaleDate.ToString("dd MMM yyyy hh:mm tt")</p>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="fw-bold">Total Amount</label>
                     <p class="fw-bold text-success">
                         @Model.TotalAmount.ToString("#,##0 Ks")
                     </p>
                 </div>
+
+                <div class="col-md-3">
+                    <label class="fw-bold">Cashier </label>
+                    <p class="fw-bold text-success">
+                        @Model.CashierName
+                    </p>
+                </div>
+
 
             </div>
 
