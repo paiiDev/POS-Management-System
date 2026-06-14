@@ -1,70 +1,219 @@
-﻿@using POS.Shared.DTOs.Auth
-@model LoginDto
-
-@{
-    ViewData["Title"] = "Login";
+﻿@{
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Paii POS System | Sign In</title>
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=fallback">
+    <link rel="stylesheet" href="~/lib/adminlte/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="~/lib/adminlte/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/lib/adminlte/dist/css/adminlte.min.css">
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5 col-xl-4">
+    <style>
+        body {
+            /* နောက်ခံအရောင်အပြော့ */
+            background-color: #e8ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
 
-            <div class="card login-card border-0">
+        .login-wrapper {
+            display: flex;
+            width: 900px;
+            max-width: 95%;
+            height: 550px;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
 
-                <div class="login-header">
-                    <i class="fas fa-store fa-3x mb-3"></i>
-                    <h3 class="fw-bold mb-0 text-center">POS System</h3>
-                    <p class="text-white-50 mb-0 mt-1">Welcome back! Please log in.</p>
-                </div>
+        /* ဘယ်ဘက် အပြာရင့်ရောင် အပိုင်း */
+        .left-side {
+            background-color: #1a3b5c;
+            color: white;
+            width: 40%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
 
-                <div class="login-body">
+        /* ညာဘက် အဖြူ/အပြာနု လှိုင်းပါသော အပိုင်း */
+        .right-side {
+            background-color: #f4f7fa;
+            width: 60%;
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            /* လှိုင်းပုံစံ Background SVG */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23e6ecf2' fill-opacity='1' d='M0,256L48,229.3C96,203,192,149,288,154.7C384,160,480,224,576,218.7C672,213,768,139,864,128C960,117,1056,171,1152,197.3C1248,224,1344,224,1392,224L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: bottom;
+            background-repeat: no-repeat;
+        }
 
-                    @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
-                    {
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-circle me-2"></i> @ViewBag.Error
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    }
+        /* ဘယ်ဘက်ခြမ်း စာသားနှင့် ပုံများ */
+        .brand-logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
 
-                    <form asp-controller="Auth" asp-action="Login" method="post">
+            .brand-logo i {
+                color: #e63946;
+                margin-right: 10px;
+            }
 
+        .center-icon {
+            text-align: center;
+            font-size: 6rem;
+            color: #e63946;
+            margin: auto 0;
+        }
 
-                        <div class="mb-4">
-                            <label asp-for="Username" class="form-label fw-semibold text-secondary">Username</label>
-                            <div class="input-group">
-                                <span class="input-group-text text-muted"><i class="fas fa-user"></i></span>
-                                <input asp-for="Username" class="form-control" placeholder="Enter username" autocomplete="off" />
-                            </div>
-                            <span asp-validation-for="Username" class="text-danger small mt-1 d-block"></span>
-                        </div>
+        .pos-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-                        <div class="mb-4">
-                            <label asp-for="Password" class="form-label fw-semibold text-secondary">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text text-muted"><i class="fas fa-lock"></i></span>
-                                <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
-                            </div>
-                            <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
-                        </div>
+        /* ညာဘက်ခြမ်း Form Elements များ */
+        .sub-title {
+            color: #e63946;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
 
-                        <div class="d-grid mt-5">
-                            <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-pill">
-                                <i class="fas fa-sign-in-alt me-2"></i> Login
-                            </button>
-                        </div>
+        .main-title {
+            color: #1a3b5c;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
 
-                    </form>
-                </div>
+        .form-control {
+            padding: 24px 15px;
+            border: 1px solid #dcdcdc;
+            border-radius: 4px;
+            font-size: 1rem;
+            color: #4a4a4a;
+        }
+
+            .form-control:focus {
+                border-color: #1a3b5c;
+                box-shadow: none;
+            }
+
+       
+
+        .forgot-link {
+            color: #458bbb;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+            .forgot-link:hover {
+                color: #1a3b5c;
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <div class="left-side">
+            <div class="brand-logo">
+                <i class="fas fa-chevron-right"></i> PAII POS
             </div>
 
+            <div class="center-icon">
+                <i class="fas fa-calculator"></i>
+            </div>
+
+            <div class="pos-title">
+                Point of<br>Sale
+            </div>
+        </div>
+
+        <div class="right-side">
+            <p class="sub-title">Point of Sale</p>
+            <h2 class="main-title">Sign in</h2>
+
+            @if(!string.IsNullOrEmpty(ViewBag.Error))
+            {
+                <div id="error-alert" class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 0.9rem;">
+                    <i class="fas fa-exclamation-circle"></i> <span class="text-danger">@ViewBag.Error</span>
+                </div>
+            }
+
+            <div class="card">
+                <div class="card-body login-card-body">
+                    <p class="login-box-msg">Start your session</p>
+
+                    <form asp-controller="Auth" asp-action="Login" method="post">
+                        <div class="input-group mb-3">
+                            <input type="text" name="Username" class="form-control" placeholder="Username" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="password" name="Password" class="form-control" placeholder="Password" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
         </div>
     </div>
-</div>
 
 
+        <script src="~/adminlte/plugins/jquery/jquery.min.js"></script>
+        <script src="~/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="~/adminlte/dist/js/adminlte.min.js"></script>
 
-@section Scripts {
-  <partial name="_ValidationScriptsPartial" />
-}
+        <script>
+            $(document).ready(function() {
+                setTimeout(function() {
+                    $("#error-alert").fadeOut("slow");
+                }, 3000);
+            });
+        </script>
+
+</body>
+
+</html>

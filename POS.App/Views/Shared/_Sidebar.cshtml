@@ -61,11 +61,36 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="/Orders" class="nav-link">
-                        <i class="nav-icon fas fa-shopping-cart"></i>
-                        <p>Orders</p>
+                    <a href="/Products" class="nav-link">
+                        <i class="nav-icon fas fa-box"></i>
+                        <p>Category</p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="/Orders" class="nav-link">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>Sales</p>
+                    </a>
+                </li>
+
+                @if(User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a href="/Users" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>Voided Sales</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="/Users" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>Users</p>
+                        </a>
+                    </li>
+                }
+)
 
             </ul>
         </nav>

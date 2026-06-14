@@ -13,9 +13,11 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-            <a class="nav-link" href="#">
+           <form asp-controller="Auth" asp-action="Logout" method="post" id="logoutForm" class="form-inline">
+            <button type="submit" class="nav-link btn btn-link text-danger border-0" style="padding: 0; background: none;">
                 <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
+            </button>
+            </form>
         </li>
     </ul>
 </nav>
