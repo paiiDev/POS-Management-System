@@ -1,135 +1,51 @@
-﻿@using POS.Shared.Extensions
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - POS.App</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/POS.App.styles.css" asp-append-version="true" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POS System | @ViewData["Title"]</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/lib/adminlte/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/lib/adminlte/dist/css/adminlte.min.css">
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">POS.App</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                        <div>
-                            <ul class="navbar-nav flex-grow-1">
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                                </li>
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
-                                    </li>
-                                }
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Sale" asp-action="CreateSale">Create Sale</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Sale" asp-action="ViewSaleTransactions">Sale Transactions</a>
-                                </li>
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Sale" asp-action="VoidedSaleTransactions">Voided Sale Transactions</a>
-                                    </li>
-                                }
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
 
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">User Management</a>
-                                    </li>
-                                }
+        <!-- 1. Top Navbar (Header) မလာခင် နေရာ -->
+        @await Html.PartialAsync("_Navbar")
 
-                            </ul>
-                        
-                            </div>
-                   
-                        <div class="d-flex align-items-center justify-content-around">
-                            <span class="fw-bold fs-5 text-primary mx-2">@User.GetFullName()</span>
+        <!-- 2. Main Sidebar (ဘယ်ဘက် Menu) နေရာ -->
+        @await Html.PartialAsync("_Sidebar")
 
-                            @if (User.IsInRole("Admin"))
-                            {
-                                    <div>(Admin)</div>
-                            } else
-                            {
-                                    <div>(Cashier)</div>
-                            }
-                                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="nav-link btn btn-danger text-white mx-5">Logout</button>
-                                </form>
-                        </div>
-                       }
+        <!-- 3. Content Wrapper (အလယ်က အဓိက အပြောင်းအလဲဖြစ်မည့် နေရာ) -->
+        <div class="content-wrapper">
+            <section class="content">
+                <div class="container-fluid">
+                    <!-- သက်ဆိုင်ရာ View များ၏ ကုဒ်များ ဝင်လာမည့်နေရာ -->
+                    @RenderBody()
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @{
-    // TempData များထဲတွင် စာသားပါ၊ မပါ စစ်ဆေးခြင်း
-    var successMsg = TempData["SuccessMessage"]?.ToString();
-    var errorMsg = TempData["ErrorMessage"]?.ToString();
-    var hasMessage = !string.IsNullOrEmpty(successMsg) || !string.IsNullOrEmpty(errorMsg);
-
-    // ပါလာသည့် Message အပေါ်မူတည်၍ အရောင်၊ Icon နှင့် ခေါင်းစဉ်ကို ရွေးချယ်ခြင်း
-    var isSuccess = !string.IsNullOrEmpty(successMsg);
-    var alertClass = isSuccess ? "alert-success border-success" : "alert-danger border-danger";
-    var iconClass = isSuccess ? "fa-check-circle text-success" : "fa-exclamation-circle text-danger";
-    var title = isSuccess ? "Success!" : "Error!";
-    var displayMessage = isSuccess ? successMsg : errorMsg;
-}
-
-@if (hasMessage)
-{
-    <div id="autoFadeAlert" class="alert @alertClass alert-dismissible fade show position-fixed shadow-lg" role="alert" style="bottom: 50px; right: 30px; z-index: 1050; min-width: 300px; max-width: 450px; border-left: 5px solid;">
-        <div class="d-flex align-items-center">
-            <i class="fas @iconClass fs-4 me-3 mt-1 align-self-start"></i> <div>
-                <strong>@title</strong><br />
-                <span class="mb-0 text-break">@displayMessage</span>
-            </div>
+            </section>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="top: 10px;"></button>
-    </div>
-}
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - POS.App | Developed by paiiDev
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            setTimeout(function () {
-                var alertBox = document.getElementById('autoFadeAlert');
-                if (alertBox) {
-                    var bsAlert = new bootstrap.Alert(alertBox);
-                    bsAlert.close(); 
-                }
-            }, 3000);
-        });
-    </script>
+        <!-- 4. Footer နေရာ -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2026 <a href="#">Paii POS System</a>.</strong> All rights reserved.
+        </footer>
+
+    </div>
+    <!-- ./wrapper -->
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="~/lib/adminlte/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/lib/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/lib/adminlte/dist/js/adminlte.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
