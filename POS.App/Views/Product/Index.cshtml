@@ -17,13 +17,13 @@
 
 
     </div>
-
-    <table class="table table-bordered table-striped">
+    <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle mb-0">
 
         <thead class="table-dark">
 
             <tr>
-                <th>Id</th>
+                <th>Product Id</th>
                 <th>Name</th>
                 <th>Barcode</th>
                 @if (User.IsInRole("Admin"))
@@ -79,19 +79,23 @@
                             <td>@item.CategoryName</td>
                             @if (User.IsInRole("Admin"))
                             {
-                                <td>
 
-                                    <a asp-action="Edit"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-warning btn-sm">
-                                        Edit
-                                    </a>
+                                <td class="text-center pe-4">
+                                    <div class="btn-group " role="group">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-warning btn-sm mx-2">
+                                            Edit
+                                        </a>
 
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-danger btn-sm">
-                                        Delete
-                                    </a>
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-danger btn-sm">
+                                            Delete
+                                        </a>
+                                    </div>
+
+                                   
 
                                 </td>
                             }
@@ -120,5 +124,6 @@
         </tbody>
 
     </table>
+    </div>
 
 </div>

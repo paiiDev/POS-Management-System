@@ -15,6 +15,8 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
 
+     
+
         <!-- 1. Top Navbar (Header) မလာခင် နေရာ -->
         @await Html.PartialAsync("_Navbar")
 
@@ -23,7 +25,7 @@
 
         <!-- 3. Content Wrapper (အလယ်က အဓိက အပြောင်းအလဲဖြစ်မည့် နေရာ) -->
         <div class="content-wrapper">
-            <section class="content">
+            <section class="content p-1">
                 <div class="container-fluid">
                     <!-- သက်ဆိုင်ရာ View များ၏ ကုဒ်များ ဝင်လာမည့်နေရာ -->
                     @RenderBody()

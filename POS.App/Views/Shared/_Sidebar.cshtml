@@ -1,4 +1,10 @@
 ﻿@using POS.Shared.Extensions
+
+@{
+    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+}
+
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
 
@@ -23,16 +29,16 @@
             </div>
             <div class="info">
                 <div class="d-flex">
-                    <a href="#" class="d-block">
-                        @User.GetFullName()
+                    <a href="#" class="d-block fs-1">
+                        @User.GetFullName() &nbsp;| &nbsp;
                     </a>
                     @if (User.IsInRole("Admin"))
                     {
-                        <span>(Admin)</span>
+                        <span class="text-blue">  Admin </span>
                     }
                     else
                     {
-                        <span>(Cashier)</span>
+                        <span class="text-blue">Cashier </span>
                     }
                 </div>
                
@@ -47,44 +53,51 @@
       
 
                 <li class="nav-item">
-                    <a href="/" class="nav-link active">
+                    <a href="/" class="nav-link @(currentController == "Home" ? "active" : "")">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="/Products" class="nav-link">
-                        <i class="nav-icon fas fa-box"></i>
-                        <p>Products</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="/Products" class="nav-link">
-                        <i class="nav-icon fas fa-box"></i>
-                        <p>Category</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="/Orders" class="nav-link">
+                    <a asp-controller="Sale" asp-action="ViewSaleTransactions" class="nav-link @(currentController == "Sale" && currentAction == "ViewSaleTransactions" ? "active" : "")">
                         <i class="nav-icon fas fa-shopping-cart"></i>
                         <p>Sales</p>
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <form asp-controller="Product" asp-action="Index">
+                        <a asp-controller="Product" asp-action="Index" class="nav-link @(currentController == "Product" ? "active" : "")">
+                            <i class="nav-icon fas fa-box"></i>
+                            <p>Products</p>
+                        </a>
+                    </form>
+                    
+                </li>
+
+                <li class="nav-item">
+                    <a asp-controller="Category" asp-action="Index" class="nav-link @(currentController == "Category" ? "active" : "")">
+                        <i class="nav-icon fas fa-tags"></i>
+                        <p>Categories</p>
+                    </a>
+                </li>
+
+               
+
+        
+
                 @if(User.IsInRole("Admin"))
                 {
                     <li class="nav-item">
-                        <a href="/Users" class="nav-link">
+                        <a asp-controller="Sale" asp-action="VoidedSaleTransactions" class="nav-link @(currentController == "Sale" && currentAction == "VoidedSaleTransactions" ? "active" : "")">
                             <i class="nav-icon fas fa-users"></i>
                             <p>Voided Sales</p>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a href="/Users" class="nav-link">
+                        <a asp-controller="User" asp-action="Index" class="nav-link @(currentController == "User" ? "active" : "")">
                             <i class="nav-icon fas fa-users"></i>
                             <p>Users</p>
                         </a>
