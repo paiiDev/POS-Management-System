@@ -8,182 +8,197 @@
     var products = ViewBag.Products as IEnumerable<ProductDto> ?? Enumerable.Empty<ProductDto>();
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
+    <div class="row">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Create Sale</h2>
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="m-0">Products</h3>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-sm">Back to Home</a>
+            </div>
 
-        <a asp-controller="Home" asp-action="Index"
-           class="btn btn-secondary">
-            Back
-        </a>
+            <div class="row" style="height: 75vh; overflow-y: auto;">
+                @if (products.Any())
+                {
+                    @foreach (var product in products)
+                    {
+                        <div class="col-sm-6 col-md-4 col-lg-3 mb-3">
+                            <div class="card h-100 shadow-sm product-card"
+                                 style="cursor: pointer; transition: 0.2s;"
+                                 onclick="addToCart(@product.Id, '@product.Name', @product.SellingPrice)"
+                                 onmouseover="this.style.transform='scale(1.03)'"
+                                 onmouseout="this.style.transform='scale(1)'">
+
+                                <div class="card-body text-center d-flex flex-column justify-content-center">
+                                    <h5 class="card-title text-primary font-weight-bold mb-2">@product.Name</h5>
+                                    <p class="card-text text-muted mb-3">@product.SellingPrice.ToString("N0") Ks</p>
+                                    <button class="btn btn-outline-primary btn-sm mt-auto">
+                                        <i class="fas fa-plus"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12">
+                        <div class="alert alert-info">No products available.</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <form id="saleForm" asp-action="Create" method="post" class="card shadow-sm" style="height: 100%;">
+
+                @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
+                {
+                    <div class="alert alert-danger m-2" role="alert">@ViewBag.Error</div>
+                }
+                <div asp-validation-summary="ModelOnly" class="text-danger m-2"></div>
+
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Current Sale</h5>
+                </div>
+
+                <div class="card-body p-0" style="height: 50vh; overflow-y: auto;">
+                    <table class="table table-hover table-striped mb-0 text-sm">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th>Item</th>
+                                <th width="80">Qty</th>
+                                <th class="text-right">Subtotal</th>
+                                <th width="40"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartBody">
+                            <tr><td colspan="4" class="text-center text-muted py-4">No items added yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="m-0 font-weight-bold">Total:</h4>
+                        <h4 class="m-0 font-weight-bold text-success" id="cartTotal">0 Ks</h4>
+                    </div>
+
+                    <div id="hiddenInputsContainer"></div>
+
+                    <button type="submit" class="btn btn-success btn-lg btn-block" id="btnCompleteSale" disabled>
+                        Complete Sale
+                    </button>
+                </div>
+            </form>
+        </div>
+
     </div>
-
-    <form asp-action="Create" method="post">
-
-        @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
-        {
-            <div class="alert alert-danger" role="alert">
-                @ViewBag.Error
-            </div>
-        }
-
-        <div asp-validation-summary="ModelOnly"
-             class="text-danger mb-3">
-        </div>
-
-        <div class="card shadow-sm">
-
-            <div class="card-header">
-                <h5 class="mb-0">Sale Items</h5>
-            </div>
-
-            <div class="card-body">
-
-                <table class="table table-bordered align-middle"
-                       id="saleItemsTable">
-
-                    <thead class="table-light">
-                        <tr>
-                            <th>Product</th>
-                            <th width="150">Quantity</th>
-                            <th width="120">Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="saleItemsBody">
-
-                        <tr>
-                            <td>
-                                <input type="hidden" name="Items.Index" value="0" />
-
-                                <select name="Items[0].ProductId"
-                                        class="form-select">
-
-                                    <option value="">
-                                        -- Select Product --
-                                    </option>
-
-                                    @foreach (var product in products)
-                                    {
-                                        <option value="@product.Id">
-                                            @product.Name
-                                        </option>
-                                    }
-
-                                </select>
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       name="Items[0].Quantity"
-                                       class="form-control"
-                                       min="1"
-                                       placeholder="Qty" />
-                            </td>
-
-                            <td>
-                                <button type="button"
-                                        class="btn btn-danger remove-row">
-                                    Remove
-                                </button>
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-                <button type="button"
-                        class="btn btn-outline-primary"
-                        id="addRowBtn">
-                    Add Item
-                </button>
-
-            </div>
-
-            <div class="card-footer text-end">
-
-                <button type="submit"
-                        class="btn btn-success">
-                    Complete Sale
-                </button>
-
-            </div>
-
-        </div>
-
-    </form>
-
 </div>
 
-@section Scripts
-{
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+        // ဝယ်မည့် ပစ္စည်းများကို သိမ်းဆည်းထားမည့် Array
+        let cart = [];
 
-        let rowIndex = 1;
+        // ၁။ ကတ်မှ Add ခလုတ်နှိပ်လျှင် Cart ထဲထည့်မည့် Function
+        function addToCart(id, name, price) {
+            // Cart ထဲမှာ ဒီပစ္စည်း ပါပြီးသားလား စစ်ဆေးပါမည်
+            const existingItem = cart.find(item => item.id === id);
 
-        document.getElementById("addRowBtn")
-            .addEventListener("click", function () {
+            if (existingItem) {
+                existingItem.qty += 1; // ပါပြီးသားဆိုရင် အရေအတွက်ကို ၁ တိုးပါမည်
+            } else {
+                cart.push({ id: id, name: name, price: price, qty: 1 }); // မပါသေးရင် အသစ်ထည့်ပါမည်
+            }
 
-                const tableBody =
-                    document.getElementById("saleItemsBody");
+            renderCart(); // UI ကို Update လုပ်ပါမည်
+        }
 
-                const row = document.createElement("tr");
+        // ၂။ အရေအတွက် (Qty) အတိုးအလျှော့ လုပ်လျှင် အလုပ်လုပ်မည့် Function
+        function updateQty(id, inputElement) {
+            let newQty = parseInt(inputElement.value);
 
-                row.innerHTML = `
-                    <td>
-                        <input type="hidden" name="Items.Index" value="${rowIndex}" />
+            if (isNaN(newQty) || newQty < 1) {
+                newQty = 1; // အနည်းဆုံး ၁ ခုတော့ ရှိရပါမည်
+                inputElement.value = 1;
+            }
 
-                        <select name="Items[${rowIndex}].ProductId"
-                                class="form-select">
+            const item = cart.find(item => item.id === id);
+            if (item) {
+                item.qty = newQty;
+            }
 
-                            <option value="">
-                                -- Select Product --
-                            </option>
+            renderCart(); // UI ကို Update လုပ်ပါမည်
+        }
 
-                            @foreach (var product in products)
-                            {
-                                    <option value="@product.Id">
-                                        @product.Name
-                                    </option>
-                            }
+        // ၃။ Cart ထဲမှ ပြန်ဖျက်မည့် Function
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            renderCart(); // UI ကို Update လုပ်ပါမည်
+        }
 
-                        </select>
+        // ၄။ UI ပေါ်တွင် ဇယားဆွဲခြင်းနှင့် Form အတွက် Data ပြင်ဆင်ခြင်း (Main Engine)
+        function renderCart() {
+            const cartBody = document.getElementById("cartBody");
+            const cartTotal = document.getElementById("cartTotal");
+            const btnCompleteSale = document.getElementById("btnCompleteSale");
+            const hiddenInputsContainer = document.getElementById("hiddenInputsContainer");
+
+            cartBody.innerHTML = "";
+            hiddenInputsContainer.innerHTML = ""; // Controller သို့ပို့မည့် Data အဟောင်းများကို ရှင်းလင်းပါမည်
+            let totalAmount = 0;
+
+            // Cart အလွတ်ဖြစ်နေလျှင်
+            if (cart.length === 0) {
+                cartBody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">No items added yet.</td></tr>`;
+                cartTotal.innerText = "0 Ks";
+                btnCompleteSale.disabled = true; // Complete ခလုတ်ကို ပိတ်ထားပါမည်
+                return;
+            }
+
+            btnCompleteSale.disabled = false; // ပစ္စည်းရှိလျှင် Complete ခလုတ်ကို ဖွင့်ပေးပါမည်
+
+            // Cart ထဲရှိ ပစ္စည်းများကို လှည့်၍ UI ပေါ်တင်ပါမည်
+            cart.forEach((item, index) => {
+                let subtotal = item.price * item.qty;
+                totalAmount += subtotal;
+
+                // (က) ညာဘက် ဇယားတွင် ပြသမည့် HTML
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td class="align-middle">
+                        <div class="font-weight-bold text-primary">${item.name}</div>
+                        <small class="text-muted">${item.price.toLocaleString()} Ks</small>
                     </td>
-
-                    <td>
-                        <input type="number"
-                               name="Items[${rowIndex}].Quantity"
-                               class="form-control"
-                               min="1"
-                               placeholder="Qty" />
+                    <td class="align-middle">
+                        <input type="number" class="form-control form-control-sm text-center"
+                               value="${item.qty}" min="1" onchange="updateQty(${item.id}, this)">
                     </td>
-
-                    <td>
-                        <button type="button"
-                                class="btn btn-danger remove-row">
-                            Remove
+                    <td class="align-middle text-right font-weight-bold">
+                        ${subtotal.toLocaleString()} Ks
+                    </td>
+                    <td class="align-middle text-center">
+                        <button type="button" class="btn btn-sm text-danger" onclick="removeFromCart(${item.id})" style="background: none; border: none;">
+                            <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
                 `;
+                cartBody.appendChild(tr);
 
-                tableBody.appendChild(row);
-
-                rowIndex++;
+                // (ခ) C# MVC Controller သို့ ပို့ရန် Hidden Input များ (အရမ်းအရေးကြီးပါသည်)
+                // DTO ထဲက List<SaleItemDto> Items အတိုင်း အတိအကျ ဝင်သွားအောင် တည်ဆောက်ထားခြင်းဖြစ်သည်
+                hiddenInputsContainer.innerHTML += `
+                    <input type="hidden" name="Items.Index" value="${index}" />
+                    <input type="hidden" name="Items[${index}].ProductId" value="${item.id}" />
+                    <input type="hidden" name="Items[${index}].Quantity" value="${item.qty}" />
+                `;
             });
 
-        document.addEventListener("click", function (e) {
-
-            if (e.target.classList.contains("remove-row")) {
-
-                e.target.closest("tr").remove();
-            }
-
-        });
-
+            // စုစုပေါင်း ကျသင့်ငွေကို ပြသပါမည်
+            cartTotal.innerText = totalAmount.toLocaleString() + " Ks";
+        }
     </script>
 }
