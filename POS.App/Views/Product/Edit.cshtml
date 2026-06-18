@@ -1,133 +1,123 @@
 ﻿@using POS.Shared.DTOs.Product
 @model UpdateProductDto
 
-<div class="container mt-4">
+@{
+    ViewData["Title"] = "Edit Product";
+}
 
-    <h2 class="mb-4">Edit Product</h2>
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-warning card-outline shadow-sm border-0">
 
-    <form asp-action="SubmitEdit" method="post">
+                <div class="card-header bg-transparent">
+                    <h3 class="card-title font-weight-bold m-0">
+                        <i class="fas fa-edit mr-2 text-warning"></i> Edit Product
+                    </h3>
+                </div>
 
-        <!-- Hidden Id -->
-        <input asp-for="Id" type="hidden" />
+                <form asp-action="SubmitEdit" method="post">
 
-        <div class="mb-3">
+                    <input asp-for="Id" type="hidden" />
 
-            <label asp-for="Name"
-                   class="form-label"></label>
+                    <div class="card-body">
 
-            <input asp-for="Name"
-                   class="form-control" />
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Name" class="form-label font-weight-normal"></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light"><i class="fas fa-box text-muted"></i></span>
+                                    </div>
+                                    <input asp-for="Name" class="form-control" placeholder="Enter product name" />
+                                </div>
+                                <span asp-validation-for="Name" class="text-danger text-sm mt-1 d-block"></span>
+                            </div>
 
-            <span asp-validation-for="Name"
-                  class="text-danger"></span>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CategoryId" class="form-label font-weight-normal"></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light"><i class="fas fa-tags text-muted"></i></span>
+                                    </div>
+                                    <select asp-for="CategoryId" class="form-control">
+                                        <option value="">-- Select Category --</option>
+                                        @if (ViewBag.Categories != null)
+                                        {
+                                            foreach (var category in ViewBag.Categories)
+                                            {
+                                                <option value="@category.Id">@category.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <span asp-validation-for="CategoryId" class="text-danger text-sm mt-1 d-block"></span>
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Barcode" class="form-label font-weight-normal"></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light"><i class="fas fa-barcode text-muted"></i></span>
+                                    </div>
+                                    <input asp-for="Barcode" class="form-control" placeholder="Enter barcode" />
+                                </div>
+                                <span asp-validation-for="Barcode" class="text-danger text-sm mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StockQuantity" class="form-label font-weight-normal"></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light"><i class="fas fa-cubes text-muted"></i></span>
+                                    </div>
+                                    <input asp-for="StockQuantity" type="number" class="form-control" placeholder="0" />
+                                </div>
+                                <span asp-validation-for="StockQuantity" class="text-danger text-sm mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CostPrice" class="form-label font-weight-normal"></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light">Ks</span>
+                                    </div>
+                                    <input asp-for="CostPrice" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="CostPrice" class="text-danger text-sm mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SellingPrice" class="form-label font-weight-normal"></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light">Ks</span>
+                                    </div>
+                                    <input asp-for="SellingPrice" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                                </div>
+                                <span asp-validation-for="SellingPrice" class="text-danger text-sm mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer bg-light text-right border-top-0">
+                        <a asp-action="Index" class="btn btn-secondary mr-2 shadow-sm">
+                            <i class="fas fa-times mr-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-warning shadow-sm font-weight-bold">
+                            <i class="fas fa-save mr-1"></i> Update Product
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <div class="mb-3">
-
-            <label asp-for="Barcode"
-                   class="form-label"></label>
-
-            <input asp-for="Barcode"
-                   class="form-control" />
-
-            <span asp-validation-for="Barcode"
-                  class="text-danger"></span>
-
-        </div>
-
-        <div class="mb-3">
-
-            <label asp-for="CostPrice"
-                   class="form-label"></label>
-
-            <input asp-for="CostPrice"
-                   type="number"
-                   step="0.01"
-                   class="form-control" />
-
-            <span asp-validation-for="CostPrice"
-                  class="text-danger"></span>
-
-        </div>
-
-        <div class="mb-3">
-
-            <label asp-for="SellingPrice"
-                   class="form-label"></label>
-
-            <input asp-for="SellingPrice"
-                   type="number"
-                   step="0.01"
-                   class="form-control" />
-
-            <span asp-validation-for="SellingPrice"
-                  class="text-danger"></span>
-
-        </div>
-
-        <div class="mb-3">
-
-            <label asp-for="StockQuantity"
-                   class="form-label"></label>
-
-            <input asp-for="StockQuantity"
-                   type="number"
-                   class="form-control" />
-
-            <span asp-validation-for="StockQuantity"
-                  class="text-danger"></span>
-
-        </div>
-
-        <div class="mb-3">
-
-            <label asp-for="CategoryId"
-                   class="form-label"></label>
-
-            <select asp-for="CategoryId"
-                    class="form-select">
-
-                <option value="">
-                    -- Select Category --
-                </option>
-
-                @if (ViewBag.Categories != null)
-                {
-                    foreach (var category in ViewBag.Categories)
-                    {
-                        <option value="@category.Id">
-                            @category.Name
-                        </option>
-                    }
-                }
-
-            </select>
-
-            <span asp-validation-for="CategoryId"
-                  class="text-danger"></span>
-
-        </div>
-
-        <button type="submit"
-                class="btn btn-primary">
-
-            Update
-
-        </button>
-
-        <a asp-action="Index"
-           class="btn btn-secondary">
-
-            Back
-
-        </a>
-
-    </form>
-
+    </div>
 </div>
 
-@section Scripts
-{
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
