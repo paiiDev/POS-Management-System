@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="~/lib/adminlte/plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="~/lib/adminlte/dist/css/adminlte.min.css">
+    <!-- Sweet Alert -->
+    <link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -47,6 +49,90 @@
     <script src="~/lib/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="~/lib/adminlte/dist/js/adminlte.min.js"></script>
+    <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $(document).on('click', '.swal-delete', function (e) {
+                e.preventDefault(); 
+
+                var url = $(this).attr('href');
+                var form = $(this).closest('form'); 
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This action cannot be undone!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545', 
+                    cancelButtonColor: '#6c757d', 
+                    confirmButtonText: '<i class="fas fa-trash-alt mr-1"></i> Yes, delete it!'
+                }).then((result) => {
+                   
+                    if (result.isConfirmed) {
+                        if (form.length > 0) {
+                            form.submit(); 
+                        } else if (url) {
+                            window.location.href = url; 
+                        }
+                    }
+                });
+            });
+
+            
+            $(document).on('click', '.swal-logout', function (e) {
+                e.preventDefault();
+
+                var url = $(this).attr('href');
+                var form = $(this).closest('form');
+
+                Swal.fire({
+                    title: 'Ready to Leave?',
+                    text: "Select 'Logout' below if you are ready to end your current session.",
+                    icon: 'question', 
+                    showCancelButton: true,
+                    confirmButtonColor: '#007bff',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-sign-out-alt mr-1"></i> Logout'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (form.length > 0) {
+                            form.submit();
+                        } else if (url) {
+                            window.location.href = url;
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', '.swal-void', function (e) {
+                e.preventDefault();
+
+                var url = $(this).attr('href');
+                var form = $(this).closest('form');
+
+                Swal.fire({
+                    title: 'Are you sure to void this sale?',
+                    text: "Select 'Void' below if you are ready to void this sale.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-ban mr-1"></i> Void'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (form.length > 0) {
+                            form.submit();
+                        } else if (url) {
+                            window.location.href = url;
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -59,12 +59,6 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a asp-controller="Sale" asp-action="ViewSaleTransactions" class="nav-link @(currentController == "Sale" && currentAction == "ViewSaleTransactions" ? "active" : "")">
-                        <i class="nav-icon fas fa-shopping-cart"></i>
-                        <p>Sales</p>
-                    </a>
-                </li>
 
                 <li class="nav-item">
                     <form asp-controller="Product" asp-action="Index">
@@ -73,7 +67,7 @@
                             <p>Products</p>
                         </a>
                     </form>
-                    
+
                 </li>
 
                 <li class="nav-item">
@@ -83,6 +77,22 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a asp-controller="Sale" asp-action="CreateSale" class="nav-link @(currentController == "Sale" && currentAction == "CreateSale" ? "active" : "")">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>Create Sale</p>
+                    </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a asp-controller="Sale" asp-action="ViewSaleTransactions" class="nav-link @(currentController == "Sale" && currentAction == "ViewSaleTransactions" ? "active" : "")">
+                        <i class="nav-icon fas fa-receipt" style="color: rgb(255, 255, 255);"></i>
+                        <p>Sale Transaction</p>
+                    </a>
+                </li>
+
+
                
 
         
@@ -91,7 +101,7 @@
                 {
                     <li class="nav-item">
                         <a asp-controller="Sale" asp-action="VoidedSaleTransactions" class="nav-link @(currentController == "Sale" && currentAction == "VoidedSaleTransactions" ? "active" : "")">
-                            <i class="nav-icon fas fa-users"></i>
+                            <i class="nav-icon fas fa-ban" style="color: rgb(255, 255, 255);"></i>
                             <p>Voided Sales</p>
                         </a>
                     </li>

@@ -5,97 +5,87 @@
     ViewData["Title"] = "Void Log Details";
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <h2>Void Log Details</h2>
-
-        <a  asp-action="VoidedSaleTransactions"
-           class="btn btn-secondary">
-            Back
-        </a>
-
+    <div class="row align-items-center mb-4">
+        <div class="col-sm-6">
+            <h3 class="m-0 text-dark font-weight-bold">
+                <i class="fas fa-file-invoice mr-2 text-danger"></i> Void Log Details
+            </h3>
+        </div>
+        <div class="col-sm-6 text-right mt-3 mt-sm-0">
+            <a asp-action="VoidedSaleTransactions" class="btn btn-outline-secondary shadow-sm">
+                <i class="fas fa-arrow-left mr-1"></i> Back to Voided Sales
+            </a>
+        </div>
     </div>
 
-    <div class="card shadow-sm border-danger">
+    <!-- Details Card -->
+    <div class="card card-danger card-outline shadow-sm border-0 mb-4">
 
-        <div class="card-header bg-danger text-white">
-            <h5 class="mb-0">Voided Sale Information</h5>
+        <div class="card-header bg-transparent border-bottom-0 pb-0 pt-3">
+            <h5 class="card-title font-weight-bold text-danger">
+                <i class="fas fa-ban mr-2"></i> Voided Sale Information
+            </h5>
         </div>
 
         <div class="card-body">
 
-            <div class="row mb-4">
+            <!-- Summary Box -->
+            <div class="bg-light p-4 rounded mb-4 shadow-sm">
+                <div class="row text-center text-md-left">
 
-                <div class="col-md-6">
+                    <!-- Invoice No -->
+                    <div class="col-6 col-md-3 mb-3 mb-md-0">
+                        <span class="text-muted d-block text-sm text-uppercase font-weight-bold">
+                            <i class="fas fa-receipt mr-1"></i> Invoice No
+                        </span>
+                        <span class="font-weight-bold text-dark" style="font-size: 1.15rem;">#@Model.InvoiceNo</span>
+                    </div>
 
-                    <label class="fw-bold">
-                        Invoice No
-                    </label>
+                    <!-- Voided Amount -->
+                    <div class="col-6 col-md-3 mb-3 mb-md-0">
+                        <span class="text-muted d-block text-sm text-uppercase font-weight-bold">
+                            <i class="fas fa-money-bill-wave mr-1"></i> Voided Amount
+                        </span>
+                        <span class="font-weight-bold text-danger" style="font-size: 1.2rem;">
+                            @Model.VoidedAmount.ToString("C")
+                        </span>
+                    </div>
 
-                    <p>@Model.InvoiceNo</p>
+                    <!-- Cashier Name -->
+                    <div class="col-6 col-md-3 mb-3 mb-md-0">
+                        <span class="text-muted d-block text-sm text-uppercase font-weight-bold">
+                            <i class="fas fa-user-tie mr-1"></i> Cashier Name
+                        </span>
+                        <span class="font-weight-bold text-dark">@Model.CashierName</span>
+                    </div>
+
+                    <!-- Voided At -->
+                    <div class="col-6 col-md-3">
+                        <span class="text-muted d-block text-sm text-uppercase font-weight-bold">
+                            <i class="far fa-calendar-times mr-1"></i> Voided At
+                        </span>
+                        <span class="font-weight-bold text-dark">@Model.VoidedAt.ToString("dd MMM yyyy")</span><br />
+                        <small class="text-muted">@Model.VoidedAt.ToString("hh:mm tt")</small>
+                    </div>
 
                 </div>
-
-                <div class="col-md-6">
-
-                    <label class="fw-bold">
-                        Voided Amount
-                    </label>
-
-                    <p class="text-danger fw-bold">
-                        @Model.VoidedAmount.ToString("C")
-                    </p>
-
-                </div>
-
-       
-
             </div>
 
-            <div class="row mb-4">
-
-                <div class="col-md-6">
-
-                    <label class="fw-bold">
-                        Cashier Name
-                    </label>
-
-                    <p>@Model.CashierName</p>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <label class="fw-bold">
-                        Voided At
-                    </label>
-
-                    <p>
-                        @Model.VoidedAt.ToString("dd MMM yyyy hh:mm tt")
-                    </p>
-
-                </div>
-
-            </div>
-
-            <div class="mb-3">
-
-                <label class="fw-bold">
-                    Void Reason
+            <!-- Reason Box -->
+            <div class="form-group mb-0">
+                <label class="font-weight-bold text-dark mb-2">
+                    <i class="fas fa-comment-dots mr-1 text-muted"></i> Reason for Voiding
                 </label>
-
-                <div class="border rounded p-3 bg-light">
-
-                    @Model.Reason
-
+                <div class="p-4 rounded shadow-sm" style="background-color: #fff5f5; border-left: 4px solid #dc3545;">
+                    <p class="m-0 text-dark font-italic" style="font-size: 1.05rem;">
+                        "@Model.Reason"
+                    </p>
                 </div>
-
             </div>
 
         </div>
-
     </div>
 
 </div>

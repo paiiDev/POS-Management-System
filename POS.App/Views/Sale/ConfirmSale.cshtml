@@ -4,168 +4,134 @@
 @model SaleDto
 
 @{
-    ViewData["Title"] = "Confirm Sale";
+    ViewData["Title"] = "Sale Details";
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <h2>Sale Details</h2>
-
-        <a asp-action="ViewSaleTransactions"
-           class="btn btn-secondary">
-            Sale Transactions
-        </a>
-
+    <div class="row align-items-center mb-4">
+        <div class="col-sm-6">
+            <h3 class="m-0 text-dark font-weight-bold">
+                <i class="fas fa-file-invoice-dollar mr-2 text-primary"></i> Sale Details
+            </h3>
+        </div>
+        <div class="col-sm-6 text-right mt-3 mt-sm-0">
+            <a asp-action="ViewSaleTransactions" class="btn btn-outline-secondary shadow-sm">
+                <i class="fas fa-list mr-1"></i> View All Transactions
+            </a>
+        </div>
     </div>
 
-    <div class="card shadow-sm mb-4">
-
-        <div class="card-header">
-            <h5 class="mb-0">Invoice Information</h5>
+    <div class="card card-primary card-outline shadow-sm border-0 mb-4">
+        <div class="card-header bg-transparent border-bottom-0 pb-0 pt-3">
+            <h5 class="card-title font-weight-bold text-dark">
+                <i class="fas fa-info-circle mr-2 text-info"></i> Invoice Information
+            </h5>
         </div>
-
         <div class="card-body">
-
-            <div class="row mb-3">
-
-                <div class="col-md-3">
-                    <label class="fw-bold">Invoice No</label>
-                    <p>@Model.InvoiceNo</p>
+            <div class="row text-center text-md-left">
+                <div class="col-6 col-md-3 mb-3 mb-md-0">
+                    <span class="text-muted d-block text-sm text-uppercase font-weight-bold"><i class="fas fa-receipt mr-1"></i> Invoice No</span>
+                    <span class="font-weight-bold text-primary" style="font-size: 1.15rem;">#@Model.InvoiceNo</span>
                 </div>
 
-                <div class="col-md-3">
-                    <label class="fw-bold">Sale Date</label>
-                    <p>@Model.SaleDate.ToString("dd MMM yyyy hh:mm tt")</p>
+                <div class="col-6 col-md-3 mb-3 mb-md-0">
+                    <span class="text-muted d-block text-sm text-uppercase font-weight-bold"><i class="far fa-calendar-alt mr-1"></i> Sale Date</span>
+                    <span class="font-weight-bold text-dark">@Model.SaleDate.ToString("dd MMM yyyy")</span><br />
+                    <small class="text-muted">@Model.SaleDate.ToString("hh:mm tt")</small>
                 </div>
 
-                <div class="col-md-3">
-                    <label class="fw-bold">Total Amount</label>
-                    <p class="fw-bold text-success">
-                        @Model.TotalAmount.ToString("#,##0 Ks")
-                    </p>
+                <div class="col-6 col-md-3">
+                    <span class="text-muted d-block text-sm text-uppercase font-weight-bold"><i class="fas fa-user-tie mr-1"></i> Cashier</span>
+                    <span class="font-weight-bold text-dark">@Model.CashierName</span>
                 </div>
 
-                <div class="col-md-3">
-                    <label class="fw-bold">Cashier </label>
-                    <p class="fw-bold text-success">
-                        @Model.CashierName
-                    </p>
+                <div class="col-6 col-md-3">
+                    <span class="text-muted d-block text-sm text-uppercase font-weight-bold"><i class="fas fa-money-bill-wave mr-1"></i> Total Amount</span>
+                    <span class="font-weight-bold text-success" style="font-size: 1.2rem;">@Model.TotalAmount.ToString("#,##0") Ks</span>
                 </div>
-
-
             </div>
-
         </div>
-
     </div>
 
-    <div class="card shadow-sm">
-
-        <div class="card-header">
-            <h5 class="mb-0">Purchased Items</h5>
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light">
+            <h5 class="card-title font-weight-bold m-0 text-dark">
+                <i class="fas fa-shopping-basket mr-2 text-secondary"></i> Purchased Items
+            </h5>
         </div>
-
-        <div class="card-body">
-
-            <table class="table table-bordered table-hover align-middle">
-
-                <thead class="table-light">
-                    <tr>
-                        <th>Product</th>
-                        <th width="120">Unit Price</th>
-                        <th width="120">Quantity</th>
-                        <th width="150">Subtotal</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    @foreach (var item in Model.Items)
-                    {
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0 text-nowrap">
+                    <thead class="bg-white">
                         <tr>
-
-                            <td>
-                                @item.ProductName
-                            </td>
-
-                            <td>
-                                @item.UnitPrice.ToString("#,##0 Ks")
-                            </td>
-
-                            <td>
-                                @item.Quantity
-                            </td>
-
-                            <td class="fw-bold">
-                                @item.SubTotal.ToString("#,##0 Ks")
-                            </td>
-
+                            <th class="border-top-0 text-muted">Product Item</th>
+                            <th class="border-top-0 text-muted text-right" width="150">Unit Price</th>
+                            <th class="border-top-0 text-muted text-center" width="120">Qty</th>
+                            <th class="border-top-0 text-muted text-right" width="180">Subtotal</th>
                         </tr>
-                    }
-
-                </tbody>
-
-                <tfoot>
-
-                    <tr>
-
-                        <td colspan="3"
-                            class="text-end fw-bold">
-                            Grand Total
-                        </td>
-
-                      
-                        <td class="fw-bold text-success">
-                            @Model.TotalAmount.ToString("#,##0 Ks")
-                        </td>
-
-                    </tr>
-
-                </tfoot>
-
-            </table>
-
-            <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
-
-                @if(ViewBag.From == "Create")
-                {
-                    if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="ConfirmVoidSale"
-                           asp-route-id="@Model.Id"
-                           class="btn btn-danger w-25">
-                            Void Sale
-                        </a>
-                    }
-                   
-                    <a asp-action="CreateSale"
-                       class="btn btn-success w-25">
-                        Ok
-                    </a>
-                }
-                else 
-                {
-                    if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="ConfirmVoidSale"
-                           asp-route-id="@Model.Id"
-                           class="btn btn-danger w-25">
-                            Void Sale
-                        </a>
-                    }
-
-                    <a asp-action="ViewSaleTransactions"
-                       class="btn btn-secondary w-25">
-                        Cancel
-                    </a>
-                }  
-
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td class="font-weight-bold text-dark">
+                                    <i class="fas fa-box-open text-muted mr-2"></i> @item.ProductName
+                                </td>
+                                <td class="text-right">
+                                    @item.UnitPrice.ToString("#,##0") <small class="text-muted">Ks</small>
+                                </td>
+                                <td class="text-center font-weight-bold">
+                                    <span class="badge badge-light border shadow-sm px-2 py-1" style="font-size: 0.9rem;">x @item.Quantity</span>
+                                </td>
+                                <td class="text-right font-weight-bold text-primary">
+                                    @item.SubTotal.ToString("#,##0") <small class="text-muted">Ks</small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="bg-light">
+                        <tr>
+                            <td colspan="3" class="text-right font-weight-bold text-uppercase align-middle text-dark">
+                                Grand Total :
+                            </td>
+                            <td class="text-right font-weight-bold text-success" style="font-size: 1.25rem;">
+                                @Model.TotalAmount.ToString("#,##0") <small class="text-muted">Ks</small>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
-
         </div>
 
-    </div>
+        <div class="card-footer bg-white border-top p-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
 
+                <div class="mb-3 mb-sm-0 w-100 text-center text-sm-left">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="ConfirmVoidSale" asp-route-id="@Model.Id" class="btn btn-outline-danger shadow-sm px-4">
+                            <i class="fas fa-ban mr-1"></i> Void Sale
+                        </a>
+                    }
+                </div>
+
+                <div class="w-100 text-center text-sm-right">
+                    @if (ViewBag.From == "Create")
+                    {
+                        <a asp-action="CreateSale" class="btn btn-success shadow-sm px-5 font-weight-bold">
+                            <i class="fas fa-check-circle mr-1"></i> Complete & Next
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="ViewSaleTransactions" class="btn btn-secondary shadow-sm px-4">
+                            <i class="fas fa-arrow-left mr-1"></i> Back to List
+                        </a>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,43 +1,58 @@
-﻿@model POS.Shared.DTOs.Category.UpdateCategoryDto
+﻿@using POS.Shared.DTOs.Category
+@model UpdateCategoryDto
 
-<div class="container mt-4">
+@{
+    ViewData["Title"] = "Edit Category";
+}
 
-    <h2>Edit Category</h2>
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <!-- Form သေးငယ်သောကြောင့် အကျယ်ကို col-md-6 နှင့် col-lg-5 ခန့်သာ ပေးထားပါသည် -->
+        <div class="col-md-6 col-lg-5">
+            <div class="card card-warning card-outline shadow-sm border-0">
 
-    <form asp-action="Edit" method="post">
+                <div class="card-header bg-transparent">
+                    <h4 class="card-title font-weight-bold m-0">
+                        <i class="fas fa-edit mr-2 text-warning"></i> Edit Category
+                    </h4>
+                </div>
 
-        <!-- Hidden Id -->
-        <input type="hidden" asp-for="Id" />
+                <!-- Edit Form -->
+                <form asp-action="Edit" method="post">
 
-        <!-- Category Name -->
-        <div class="mb-3">
+                    <!-- Hidden Id (C# မှ ပြန်ဖမ်းရန် အရေးကြီးပါသည်) -->
+                    <input type="hidden" asp-for="Id" />
 
-            <label asp-for="Name" class="form-label"></label>
+                    <div class="card-body">
 
-            <input asp-for="Name"
-                   class="form-control"
-                   placeholder="Enter category name" />
+                        <div class="form-group mb-3">
+                            <label asp-for="Name" class="form-label font-weight-normal">Category Name</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light"><i class="fas fa-tag text-muted"></i></span>
+                                </div>
+                                <input asp-for="Name" class="form-control" placeholder="Enter category name" autofocus />
+                            </div>
+                            <span asp-validation-for="Name" class="text-danger text-sm mt-1 d-block"></span>
+                        </div>
 
-            <span asp-validation-for="Name"
-                  class="text-danger"></span>
+                    </div>
 
+                    <div class="card-footer bg-light text-right border-top-0">
+                        <a asp-action="Index" class="btn btn-secondary mr-2 shadow-sm">
+                            <i class="fas fa-times mr-1"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-warning shadow-sm font-weight-bold">
+                            <i class="fas fa-save mr-1"></i> Update
+                        </button>
+                    </div>
+                </form>
+
+            </div>
         </div>
-
-        <!-- Buttons -->
-        <div class="d-flex gap-2">
-
-            <button type="submit"
-                    class="btn btn-primary">
-                Update
-            </button>
-
-            <a asp-action="Index"
-               class="btn btn-secondary">
-                Cancel
-            </a>
-
-        </div>
-
-    </form>
-
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

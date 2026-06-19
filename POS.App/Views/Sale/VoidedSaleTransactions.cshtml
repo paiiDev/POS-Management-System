@@ -1,99 +1,98 @@
 ﻿@using POS.Shared.DTOs.Sales
 @using System.Globalization
 
-
 @model List<SaleDto>
 
 @{
-    ViewData["Title"] = "Voided Sale Transactions";
+    ViewData["Title"] = "Voided Sales Transactions";
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <h2>Voided Sales Transactions</h2>
-
-
+    <div class="row align-items-center mb-4">
+        <div class="col-sm-6">
+            <h3 class="m-0 text-dark font-weight-bold">
+                <i class="fas fa-file-excel mr-2 text-danger"></i> Voided Sales Transactions
+            </h3>
+        </div>
     </div>
 
     @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
     {
-        <div class="alert alert-danger" role="alert">
-            @ViewBag.Error
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i> @ViewBag.Error
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     }
 
-    @if (Model == null || !Model.Any())
-    {
-        <div class="alert alert-info">
-            No voided sales transactions found.
-        </div>
-    }
-    else
-    {
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
+    <div class="card card-danger card-outline shadow-sm border-0">
+        <div class="card-body p-0">
+
+            @if (Model == null || !Model.Any())
+            {
+                <div class="py-5 text-center text-muted">
+                    <i class="fas fa-folder-open fa-3x mb-3 text-light"></i>
+                    <h5 class="font-weight-normal">No voided sales found.</h5>
+                    <p class="small">There are currently no cancelled or voided transactions in the system.</p>
+                </div>
+            }
+            else
+            {
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle mb-0">
-
-                        <thead class="table-dark">
-                        <tr>
-                            <th>Invoice No</th>
-                            <th>Date</th>
-                            <th>Total Amount</th>
-                            <th>Status</th>
-
-                            <th width="150">Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        @foreach (var sale in Model)
-                        {
+                    <table class="table table-hover table-striped align-middle mb-0 text-nowrap">
+                        <thead class="bg-light">
                             <tr>
-
-                                <td>
-                                    @sale.InvoiceNo
-                                </td>
-
-                                <td>
-                                    @sale.SaleDate.ToString("dd MMM yyyy hh:mm tt")
-                                </td>
-
-                                <td>
-                                    @sale.TotalAmount.ToString("#,##0 Ks")
-                                </td>
-
-                                <td>
-                                    @sale.Status
-                                </td>
-
-                              
-
-                                <td>
-
-                                    <a asp-action="VoidedSaleDetails"
-                                       asp-route-id="@sale.Id"
-                                       class="btn btn-info btn-sm">
-                                        Details
-                                    </a>
-
-                                   
-
-                                </td>
-
+                                <th class="border-top-0 text-muted">Invoice No</th>
+                                <th class="border-top-0 text-muted">Date & Time</th>
+                                <th class="border-top-0 text-muted text-right">Total Amount</th>
+                                <th class="border-top-0 text-muted text-center">Status</th>
+                                <th class="border-top-0 text-muted text-center" width="120">Actions</th>
                             </tr>
-                        }
+                        </thead>
+                        <tbody>
+                            @foreach (var sale in Model)
+                            {
+                                <tr>
+                                    <td class="font-weight-bold text-danger">
+                                        #@sale.InvoiceNo
+                                    </td>
 
-                    </tbody>
+                                    <td>
+                                        <div class="text-dark"><i class="far fa-calendar-alt text-muted mr-1"></i> @sale.SaleDate.ToString("dd MMM yyyy")</div>
+                                        <small class="text-muted"><i class="far fa-clock mr-1"></i> @sale.SaleDate.ToString("hh:mm tt")</small>
+                                    </td>
 
-                </table>
+                                    <td class="text-right font-weight-bold text-dark">
+                                        @sale.TotalAmount.ToString("#,##0") <small class="text-muted">Ks</small>
+                                    </td>
 
-            </div>
-            </div>
+                                    <td class="text-center">
+                                        <span class="badge badge-danger px-2 py-1 shadow-sm">
+                                            <i class="fas fa-ban mr-1"></i> @sale.Status
+                                        </span>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a asp-action="VoidedSaleDetails" asp-route-id="@sale.Id" class="btn btn-sm btn-outline-info shadow-sm" title="View Details">
+                                            <i class="fas fa-eye mr-1"></i> Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
-    }
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="card-footer bg-white text-muted text-sm border-top-0">
+                Showing @Model.Count voided transactions.
+            </div>
+        }
+    </div>
 
 </div>

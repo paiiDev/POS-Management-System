@@ -5,92 +5,80 @@
     ViewData["Title"] = "Void Sale";
 }
 
-<div class="container mt-4">
-
+<div class="container-fluid mt-4">
     <div class="row justify-content-center">
-
-        <div class="col-md-6">
+        <div class="col-md-8 col-lg-6">
 
             @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
             {
-                <div class="alert alert-danger" role="alert">
-                    @ViewBag.Error
+                <div class="alert alert-danger shadow-sm border-0 mb-4" role="alert">
+                    <i class="fas fa-exclamation-circle mr-2"></i> @ViewBag.Error
                 </div>
             }
 
-            <div class="card shadow-sm border-danger">
+            <div class="alert alert-warning shadow-sm border-0 mb-4" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                <strong>Caution!</strong> You are about to void this sale. Please provide a valid reason below.
+            </div>
 
-                <div class="card-header bg-danger text-white">
-                    <h4 class="mb-0">Void Sale</h4>
+            <div class="card card-danger card-outline shadow-sm border-0">
+
+                <div class="card-header bg-transparent border-bottom-0 pb-0 pt-3">
+                    <h4 class="card-title font-weight-bold text-danger m-0">
+                        <i class="fas fa-ban mr-2"></i> Void Sale Confirmation
+                    </h4>
                 </div>
 
                 <div class="card-body">
 
-                    <div class="mb-3">
-
-                        <label class="fw-bold">Invoice No</label>
-                        <p>@Model.InvoiceNo</p>
-
+                    <div class="bg-light p-3 rounded mb-4 shadow-sm text-center text-sm-left">
+                        <div class="row">
+                            <div class="col-sm-4 mb-3 mb-sm-0">
+                                <span class="text-muted d-block text-sm font-weight-bold"><i class="fas fa-receipt mr-1"></i> Invoice No</span>
+                                <span class="font-weight-bold text-dark" style="font-size: 1.1rem;">#@Model.InvoiceNo</span>
+                            </div>
+                            <div class="col-sm-4 mb-3 mb-sm-0">
+                                <span class="text-muted d-block text-sm font-weight-bold"><i class="fas fa-user-tie mr-1"></i> Cashier</span>
+                                <span class="font-weight-bold text-dark">@Model.CashierName</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="text-muted d-block text-sm font-weight-bold"><i class="fas fa-money-bill-wave mr-1"></i> Total Amount</span>
+                                <span class="font-weight-bold text-danger" style="font-size: 1.1rem;">@Model.TotalAmount.ToString("#,##0") Ks</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
+                    <form asp-action="VoidSaleConfirmed" method="post" id="voidForm">
 
-                        <label class="fw-bold">Total Amount</label>
-                        <p>@Model.TotalAmount.ToString("#,##0 Ks")</p>
+                        <input type="hidden" name="SaleId" value="@Model.Id" />
 
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold">Cashier </label>
-                        <p class="fw-bold text-success">
-                            @Model.CashierName
-                        </p>
-                    </div>
-
-
-                    <form asp-action="VoidSaleConfirmed"
-                          method="post">
-
-                        <input type="hidden"
-                               name="SaleId"
-                               value="@Model.Id" />
-
-                        <div class="mb-3">
-
-                            <label class="form-label fw-bold">
-                                Void Reason
+                        <div class="form-group mb-0">
+                            <label class="form-label font-weight-bold text-dark">
+                                Void Reason <span class="text-danger">*</span>
                             </label>
-
                             <textarea name="Reason"
                                       class="form-control"
                                       rows="4"
-                                      placeholder="Enter reason for voiding this sale..."></textarea>
-
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-
-                            <a asp-action="VoidSale"
-                               asp-route-id="@Model.Id"
-                               class="btn btn-secondary">
-                                Cancel
-                            </a>
-
-                            <button type="submit"
-                                    class="btn btn-danger">
-                                Void Sale
-                            </button>
-
+                                      placeholder="Please explain why this sale is being voided..."
+                                      required
+                                      autofocus></textarea>
                         </div>
 
                     </form>
 
                 </div>
 
+                <div class="card-footer bg-white text-right border-top-0 pt-0 pb-3">
+                    <a asp-action="SaleDetails" asp-route-id="@Model.Id" class="btn btn-secondary mr-2 shadow-sm">
+                        <i class="fas fa-times mr-1"></i> Cancel
+                    </a>
+
+                    <button type="submit" form="voidForm" class="btn btn-danger shadow-sm font-weight-bold swal-void">
+                        <i class="fas fa-trash-alt mr-1"></i> Confirm Void
+                    </button>
+                </div>
+
             </div>
-
         </div>
-
     </div>
-
 </div>
