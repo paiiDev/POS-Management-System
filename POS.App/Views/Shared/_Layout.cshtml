@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="~/lib/adminlte/dist/css/adminlte.min.css">
     <!-- Sweet Alert -->
     <link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.min.css">
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -24,11 +25,19 @@
 
         <!-- 2. Main Sidebar (ဘယ်ဘက် Menu) နေရာ -->
         @await Html.PartialAsync("_Sidebar")
-
+ 
+  
+       
         <!-- 3. Content Wrapper (အလယ်က အဓိက အပြောင်းအလဲဖြစ်မည့် နေရာ) -->
         <div class="content-wrapper">
+
+       
+
             <section class="content p-1">
                 <div class="container-fluid">
+                    <!-- Breadcrumbs -->
+                    @await Html.PartialAsync("_Breadcrumbs")
+
                     <!-- သက်ဆိုင်ရာ View များ၏ ကုဒ်များ ဝင်လာမည့်နေရာ -->
                     @RenderBody()
                 </div>

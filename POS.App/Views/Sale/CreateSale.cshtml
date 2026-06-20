@@ -5,22 +5,66 @@
 
 @{
     ViewData["Title"] = "Create Sale";
+    ViewData["ParentTitle"] = "Sale Transactions";
+    ViewData["ParentUrl"] = "/Sale/ViewSaleTransactions";
+    ViewData["Icon"] = "fas fa-file-invoice-dollar mr-2 text-primary";
+
     var products = ViewBag.Products as IEnumerable<ProductDto> ?? Enumerable.Empty<ProductDto>();
 }
 
 <style>
-    /* Product Card Hover Effect များအတွက် Custom CSS */
-    .product-card {
-        transition: all 0.3s ease;
-        border-radius: 12px;
+    /* -----------------------------------------
+           Modern Product Card UI
+           ----------------------------------------- */
+    .custom-product-card {
+        border-radius: 16px !important;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        background: #ffffff;
+        border: 1px solid rgba(0,0,0,0.05) !important;
     }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+        .custom-product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border-color: rgba(13, 110, 253, 0.1) !important;
         }
 
-    /* Scrollbar ကို သေးငယ်သပ်ရပ်အောင် ပြင်ဆင်ခြင်း */
+    .icon-circle {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    .custom-product-card:hover .icon-circle {
+        background-color: #e7f1ff;
+        transform: scale(1.1);
+    }
+
+        .custom-product-card:hover .icon-circle i {
+            color: #0d6efd !important;
+        }
+
+    .add-btn {
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+        border: 1px solid #eeeeee;
+        color: #6c757d;
+    }
+
+    .custom-product-card:hover .add-btn {
+        background-color: #0d6efd;
+        color: #ffffff !important;
+        border-color: #0d6efd;
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+    }
+
+    /* -----------------------------------------
+           Custom Scrollbar
+           ----------------------------------------- */
     .custom-scroll::-webkit-scrollbar {
         width: 6px;
     }
@@ -39,36 +83,39 @@
     <div class="row">
 
         <div class="col-lg-7 col-xl-8 mb-4">
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="m-0 text-dark font-weight-bold">
-                    <i class="fas fa-boxes text-primary mr-2"></i> Products
-                </h3>
-                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm shadow-sm">
-                    <i class="fas fa-arrow-left mr-1"></i> Back
-                </a>
-            </div>
-
             <div class="row custom-scroll" style="height: 75vh; overflow-y: auto; overflow-x: hidden; padding-right: 5px; padding-top: 5px;">
                 @if (products.Any())
                 {
                     @foreach (var product in products)
                     {
-                        <div class="col-6 col-md-4 col-xl-3 mb-3">
-                            <div class="card h-100 shadow-sm border-0 product-card"
+                        <div class="col-6 col-md-4 col-xl-3 mb-4">
+                            <div class="card h-100 custom-product-card"
                                  style="cursor: pointer;"
-                                 onclick="addToCart(@product.Id, '@product.Name', @product.SellingPrice)">
+                                 onclick="addToCart(@product.Id, '@Html.Raw(product.Name.Replace("'", "\\'"))', @product.SellingPrice)">
 
-                                <div class="card-body text-center d-flex flex-column justify-content-center p-3">
-                                    <div class="mb-2">
-                                        <i class="fas fa-box-open fa-2x text-info opacity-50"></i>
+                                <div class="card-body text-center d-flex flex-column justify-content-center p-4">
+
+                                    <div class="d-flex justify-content-center mb-3">
+                                        <div class="icon-circle d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-box-open text-secondary fa-lg"></i>
+                                        </div>
                                     </div>
-                                    <h6 class="card-title text-dark font-weight-bold mb-1" style="font-size: 1rem;">@product.Name</h6>
-                                    <p class="card-text text-success font-weight-bold mb-3" style="font-size: 0.95rem;">@product.SellingPrice.ToString("N0") Ks</p>
 
-                                    <button class="btn btn-primary btn-sm mt-auto w-100 shadow-sm" style="border-radius: 20px;">
-                                        <i class="fas fa-cart-plus mr-1"></i> Add
+                                    <h6 class="card-title text-dark font-weight-bold mb-2" style="font-size: 1.05rem; line-height: 1.4;">
+                                        @product.Name
+                                    </h6>
+
+                                    <div class="mb-3 mt-auto">
+                                        <span class="text-primary font-weight-bold" style="font-size: 1.1rem;">
+                                            @product.SellingPrice.ToString("N0")
+                                            <small class="text-muted font-weight-normal">Ks</small>
+                                        </span>
+                                    </div>
+
+                                    <button class="btn add-btn btn-sm w-100 font-weight-bold py-2">
+                                        <i class="fas fa-plus mr-1"></i> Add
                                     </button>
+
                                 </div>
                             </div>
                         </div>
@@ -77,7 +124,7 @@
                 else
                 {
                     <div class="col-12">
-                        <div class="alert alert-info shadow-sm">
+                        <div class="alert alert-info shadow-sm border-0" style="border-radius: 12px;">
                             <i class="fas fa-info-circle mr-2"></i> No products available at the moment.
                         </div>
                     </div>
@@ -86,20 +133,19 @@
         </div>
 
         <div class="col-lg-5 col-xl-4">
-
             <div class="sticky-top" style="top: 15px;">
 
-                <form id="saleForm" asp-action="Create" method="post" class="card card-primary card-outline shadow-sm border-0 mb-4">
+                <form id="saleForm" asp-action="Create" method="post" class="card shadow-sm border-0 mb-4" style="border-radius: 16px;">
 
                     @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
                     {
-                        <div class="alert alert-danger mx-3 mt-3 mb-0" role="alert">
+                        <div class="alert alert-danger mx-3 mt-3 mb-0 border-0 shadow-sm" role="alert" style="border-radius: 12px;">
                             <i class="fas fa-exclamation-triangle mr-1"></i> @ViewBag.Error
                         </div>
                     }
                     <div asp-validation-summary="ModelOnly" class="text-danger mx-3 mt-3 mb-0"></div>
 
-                    <div class="card-header bg-transparent border-bottom-0 pt-3 pb-2">
+                    <div class="card-header bg-transparent border-bottom-0 pt-4 pb-3">
                         <h4 class="mb-0 font-weight-bold text-dark">
                             <i class="fas fa-shopping-basket text-primary mr-2"></i> Current Sale
                         </h4>
@@ -109,36 +155,40 @@
                         <table class="table table-hover mb-0 text-sm">
                             <thead class="bg-light sticky-top">
                                 <tr>
-                                    <th class="border-top-0 border-bottom-0 text-muted">Item</th>
-                                    <th class="border-top-0 border-bottom-0 text-muted text-center" width="85">Qty</th>
+                                    <th class="border-top-0 border-bottom-0 text-muted ps-3">Item</th>
+                                    <th class="border-top-0 border-bottom-0 text-muted text-center" width="90">Qty</th>
                                     <th class="border-top-0 border-bottom-0 text-muted text-right">Subtotal</th>
-                                    <th class="border-top-0 border-bottom-0" width="40"></th>
+                                    <th class="border-top-0 border-bottom-0 pe-3" width="40"></th>
                                 </tr>
                             </thead>
                             <tbody id="cartBody">
                                 <tr>
                                     <td colspan="4" class="text-center text-muted py-5">
-                                        <i class="fas fa-shopping-cart fa-2x mb-3 text-light"></i><br />
-                                        No items added yet.
+                                        <div class="icon-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
+                                            <i class="fas fa-shopping-cart fa-2x text-secondary opacity-50"></i>
+                                        </div>
+                                        <span class="font-weight-bold">Empty Cart</span><br />
+                                        <small>Please add items to proceed.</small>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="card-footer bg-white border-top">
-                        <div class="d-flex justify-content-between align-items-center mb-3 p-3 rounded" style="background-color: #f8f9fa;">
+                    <div class="card-footer bg-white border-top p-4" style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                        <div class="d-flex justify-content-between align-items-center mb-4 p-3" style="background-color: #f8f9fa; border-radius: 12px;">
                             <h5 class="m-0 font-weight-bold text-dark">Total:</h5>
-                            <h4 class="m-0 font-weight-bold text-success" id="cartTotal">0 Ks</h4>
+                            <h4 class="m-0 font-weight-bold text-primary" id="cartTotal">0 Ks</h4>
                         </div>
 
                         <div id="hiddenInputsContainer"></div>
 
-                        <button type="submit" class="btn btn-success btn-lg btn-block shadow-sm font-weight-bold" id="btnCompleteSale" disabled style="border-radius: 8px;">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block shadow-sm font-weight-bold py-3" id="btnCompleteSale" disabled style="border-radius: 12px;">
                             <i class="fas fa-check-circle mr-1"></i> Complete Sale
                         </button>
                     </div>
                 </form>
+
             </div>
         </div>
 
@@ -196,8 +246,11 @@
                 cartBody.innerHTML = `
                     <tr>
                         <td colspan="4" class="text-center text-muted py-5">
-                            <i class="fas fa-shopping-cart fa-2x mb-3 text-light"></i><br/>
-                            No items added yet.
+                            <div class="icon-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
+                                <i class="fas fa-shopping-cart fa-2x text-secondary opacity-50"></i>
+                            </div>
+                            <span class="font-weight-bold">Empty Cart</span><br/>
+                            <small>Please add items to proceed.</small>
                         </td>
                     </tr>`;
                 cartTotal.innerText = "0 Ks";
@@ -211,22 +264,21 @@
                 let subtotal = item.price * item.qty;
                 totalAmount += subtotal;
 
-                // Cart Item များကို Modern Look ဖြင့် ဆွဲပါမည်
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td class="align-middle">
-                        <div class="font-weight-bold text-dark">${item.name}</div>
-                        <small class="text-primary font-weight-bold">${item.price.toLocaleString()} Ks</small>
+                    <td class="align-middle ps-3">
+                        <div class="font-weight-bold text-dark mb-1">${item.name}</div>
+                        <small class="text-muted">${item.price.toLocaleString()} Ks</small>
                     </td>
                     <td class="align-middle">
-                        <input type="number" class="form-control form-control-sm text-center font-weight-bold"
-                               value="${item.qty}" min="1" onchange="updateQty(${item.id}, this)">
+                        <input type="number" class="form-control form-control-sm text-center font-weight-bold bg-light border-0"
+                               value="${item.qty}" min="1" onchange="updateQty(${item.id}, this)" style="border-radius: 8px;">
                     </td>
                     <td class="align-middle text-right font-weight-bold text-dark">
                         ${subtotal.toLocaleString()}
                     </td>
-                    <td class="align-middle text-center">
-                        <button type="button" class="btn btn-sm text-danger" onclick="removeFromCart(${item.id})" style="background: none; border: none;" title="Remove Item">
+                    <td class="align-middle text-center pe-3">
+                        <button type="button" class="btn btn-sm text-danger" onclick="removeFromCart(${item.id})" style="background: none; border: none; border-radius: 50%;" title="Remove Item">
                             <i class="fas fa-times-circle fa-lg"></i>
                         </button>
                     </td>
@@ -242,5 +294,7 @@
 
             cartTotal.innerText = totalAmount.toLocaleString() + " Ks";
         }
+
+        renderCart();
     </script>
 }

@@ -1,0 +1,31 @@
+﻿       <div class="content-header pt-3 pb-2">
+           <div class="container-fluid">
+               <div class="row mb-2 align-items-center">
+
+                   <div class="col-sm-6 pb-3 pb-sm-0">
+               
+                <h4 class="m-0 font-weight-bold text-dark">
+                    <i class="@ViewData["Icon"]"></i> &nbsp; @ViewData["Title"]
+                       </h4>
+                   </div>
+
+                   <div class="col-sm-6">
+                       <ol class="breadcrumb float-sm-right bg-transparent p-0 m-0 text-md">
+                           <li class="breadcrumb-item">
+                               <a href="/Home/Index" class="text-primary"><i class="fas fa-home"></i> Home</a>
+                           </li>
+
+                           @if (ViewData["ParentTitle"] != null && ViewData["ParentUrl"] != null)
+                           {
+                               <li class="breadcrumb-item">
+                                   <a href="@ViewData["ParentUrl"]" class="text-primary">@ViewData["ParentTitle"]</a>
+                               </li>
+                           }
+
+                           <li class="breadcrumb-item active text-muted">@ViewData["Title"]</li>
+                       </ol>
+                   </div>
+
+               </div>
+           </div>
+       </div>
