@@ -10,6 +10,7 @@ namespace POS.Database.Interfaces
     public interface IProductRepository
     {
         Task<List<Product>> GetAllProductsAsync();
+        Task<(IEnumerable<Product> products, int totalCount)> GetProductsPagedAsync(int pageNumber, int pageSize);
         Task<Entities.Product?> GetProductByIdAsync(int id);
         Task<List<Product>> GetProductsforCreateSale(List<int> productIds);
         Task CreateProductAsync(Product product);

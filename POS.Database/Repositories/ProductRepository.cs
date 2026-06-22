@@ -18,10 +18,21 @@ namespace POS.Database.Repositories
             _dbContext = dbContext;
         }
 
-
         public async Task<List<Product>> GetAllProductsAsync()
         {
             return await _dbContext.Products.Include(p => p.Category).AsNoTracking().ToListAsync();
+        }
+
+
+        public async Task<(IEnumerable<Product> products, int totalCount)> GetProductsPagedAsync(int pageNumber, int pageSize)
+        {
+            var query =  _dbContext.Products.Include(p => p.Category).AsQueryable();
+
+            var totalCount = await query.CountAsync();
+
+            var products = await query.OrderByDescending(p => p.Id).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return (products, totalCount);
         }
 
 

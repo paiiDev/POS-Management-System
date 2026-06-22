@@ -22,9 +22,11 @@ namespace POS.App.Controllers
 
 
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var result = await _productService.GetAllProductsAsync();
+            int pageSize = 10;
+
+            var result = await _productService.GetProductsPagedAsync(page, pageSize);
             if (!result.IsSuccess)
             {
                 TempData["ErrorMessage"] = result.Error;

@@ -2,6 +2,7 @@ using POS.Database.Entities;
 using POS.Database.Interfaces;
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
+using POS.Shared.DTOs.Pagination;
 using POS.Shared.DTOs.Product;
 using POS.Shared.Helpers;
 using System;
@@ -29,8 +30,6 @@ namespace POS.Domain.Services
             {
                 var result = await _productRepository.GetAllProductsAsync();
 
-              
-
                 var products = result.Select(x => new ProductDto
                 {
                     Id = x.Id,
@@ -48,6 +47,43 @@ namespace POS.Domain.Services
             catch (Exception ex)
             {
                 return Result<List<ProductDto>>.Failure(ex.Message);
+            }
+        }
+
+
+
+        public async Task<Result<PagedResult<ProductDto>>> GetProductsPagedAsync(int pageNumber, int pageSize)
+        {
+            try
+            {
+                var (products, totalCount) = await _productRepository.GetProductsPagedAsync(pageNumber, pageSize);
+
+              
+
+                var dtoList = products.Select(x => new ProductDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Barcode = x.Barcode,
+                    CostPrice = x.CostPrice,
+                    SellingPrice = x.SellingPrice,
+                    StockQuantity = x.StockQuantity,
+                    CategoryId = x.CategoryId,
+                    CategoryName = x.Category.Name
+                }).ToList();
+
+                  var result =  new PagedResult<ProductDto>
+                {
+                    Items = dtoList,
+                    TotalCount = totalCount,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+                return Result<PagedResult<ProductDto>>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                return Result<PagedResult<ProductDto>>.Failure(ex.Message);
             }
         }
 
