@@ -10,6 +10,8 @@ namespace POS.Database.Interfaces
     public interface IUserRepository
     {
         Task<List<User>> GetAllUsersAsync();
+
+        Task<(IEnumerable<User> users, int totalCount)> GetUsersPagedAsync(int pageNumber, int pageSize);
         Task<User?> GetUserByIdAsync(int id);
         Task  CreateUserAsync(User user);
         Task UpdateUserAsync(User user);
