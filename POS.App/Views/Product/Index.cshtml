@@ -6,6 +6,7 @@
 @{
     ViewData["Title"] = "Product Management";
     ViewData["Icon"] = "nav-icon fas fa-box text-primary";
+    int rowNo = (Model.PageNumber - 1) * Model.PageSize + 1;
 }
 
 <div class="container-fluid mt-4">
@@ -61,7 +62,7 @@
                             @foreach (var item in Model.Items)
                             {
                                 <tr>
-                                    <td class="text-muted">#@item.Id</td>
+                                    <td class="text-muted">#@rowNo</td>
 
                                     <td>
                                         <div class="font-weight-bold text-dark">@item.Name</div>
@@ -112,6 +113,7 @@
                                         </td>
                                     }
                                 </tr>
+                                rowNo++;
                             }
                         </tbody>
 

@@ -15,9 +15,10 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var users = await _userService.GetAllUsersAsync();
+            int pageSize = 10; 
+            var users = await _userService.GetPagedUsersAsync(page, pageSize);
             if (!users.IsSuccess)
             {
                 ViewBag.Error = users.Error;

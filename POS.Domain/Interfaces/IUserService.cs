@@ -1,5 +1,6 @@
 ﻿using POS.Shared.Common;
 using POS.Shared.DTOs.Category;
+using POS.Shared.DTOs.Pagination;
 using POS.Shared.DTOs.User;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace POS.Domain.Interfaces
     {
         
         Task<Result<List<UserDto>>> GetAllUsersAsync();
+        Task<Result<PagedResult<UserDto>>> GetPagedUsersAsync(int pageNumber, int pageSize);
         Task<Result<UserDto?>> GetUserByIdAsync(int id);
         Task<Result<bool>> CreateUserAsync(CreateUserDto dto);
         Task<Result<bool>> UpdateUserAsync(UpdateUserDto dto);
