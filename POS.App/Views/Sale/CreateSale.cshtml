@@ -9,13 +9,13 @@
     ViewData["ParentUrl"] = "/Sale/ViewSaleTransactions";
     ViewData["Icon"] = "fas fa-file-invoice-dollar mr-2 text-primary";
 
-    var products = ViewBag.Products as IEnumerable<ProductDto> ?? Enumerable.Empty<ProductDto>();
+    var productsPage = ViewBag.Products as POS.Shared.DTOs.Pagination.PagedResult<ProductDto>;
+    var products = productsPage?.Items ?? new List<ProductDto>();
+
 }
 
 <style>
-    /* -----------------------------------------
-           Modern Product Card UI
-           ----------------------------------------- */
+
     .custom-product-card {
         border-radius: 16px !important;
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -62,9 +62,7 @@
         box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
     }
 
-    /* -----------------------------------------
-           Custom Scrollbar
-           ----------------------------------------- */
+    
     .custom-scroll::-webkit-scrollbar {
         width: 6px;
     }
@@ -118,6 +116,7 @@
 
                                 </div>
                             </div>
+                           
                         </div>
                     }
                 }
@@ -130,6 +129,38 @@
                     </div>
                 }
             </div>
+            @if (productsPage != null && productsPage.Items.Any())
+            {
+                <div class="card-footer bg-white border-top-0 d-flex flex-column flex-sm-row justify-content-between align-items-center">
+
+                    <div class="text-muted text-sm mb-2 mb-sm-0">
+                        Showing Page <strong>@productsPage.PageNumber</strong> of <strong>@productsPage.TotalPages</strong>
+                        (Total @productsPage.TotalCount items)
+                    </div>
+
+                    <nav aria-label="Product pagination">
+                        <ul class="pagination pagination-sm m-0">
+
+                            <li class="page-item @(!productsPage.HasPreviousPage ? "disabled" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(productsPage.PageNumber - 1)">Previous</a>
+                            </li>
+
+                            @for (int i = 1; i <= productsPage.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == productsPage.PageNumber ? "active" : "")">
+                                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                                </li>
+                            }
+
+                            <li class="page-item @(!productsPage.HasNextPage ? "disabled" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(productsPage.PageNumber + 1)">Next</a>
+                            </li>
+
+                        </ul>
+                    </nav>
+
+                </div>
+            }
         </div>
 
         <div class="col-lg-5 col-xl-4">
