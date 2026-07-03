@@ -27,17 +27,25 @@ namespace POS.Database.Repositories
         }
 
 
-        public async Task<List<Sale>> GetAllPaidSalesAsync()
+        public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedPaidSalesAsync(int pageNumber, int pageSize)
         {
-            return await _dbContext.Sales
+
+            var query = _dbContext.Sales.Where(s => s.Status == "Paid");
+
+            var totalCount = await query.CountAsync();
+
+             var sales = await query
                 .IgnoreQueryFilters()
                 .Include(s => s.SaleItems)
                 .ThenInclude(si => si.Product)
                 .Include(u => u.User)
-                .Where(s => s.Status == "Paid")
                 .AsNoTracking()
                 .OrderByDescending(s => s.SaleDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return (sales, totalCount);
         }
 
         public async Task<List<Sale>> GetAllVoidedSalesAsync()

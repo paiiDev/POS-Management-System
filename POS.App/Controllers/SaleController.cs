@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.Domain.Interfaces;
+using POS.Shared.DTOs.Pagination;
 using POS.Shared.DTOs.Sales;
 using POS.Shared.DTOs.VoidLog;
 using POS.Shared.Extensions;
@@ -65,13 +66,14 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ViewSaleTransactions()
+        public async Task<IActionResult> ViewSaleTransactions(int page = 1)
         {
-            var result = await _salesService.GetAllPaidSalesAsync();
+            int pageSize = 10;
+            var result = await _salesService.GetAllPagedPaidSalesAsync(page, pageSize);
             if (!result.IsSuccess || result.Value is null)
             {
                 ViewBag.Error = result.Error;
-                return View(new List<SaleDto>());
+                return View(new PagedResult<SaleDto>());
             }
             return View(result.Value);
         }

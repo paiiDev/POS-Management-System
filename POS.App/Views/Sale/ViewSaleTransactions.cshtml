@@ -1,7 +1,8 @@
-﻿@using POS.Shared.DTOs.Sales
+﻿@using POS.Shared.DTOs.Pagination
+@using POS.Shared.DTOs.Sales
 @using System.Globalization
 
-@model List<SaleDto>
+@model PagedResult<SaleDto>
 
 @{
     ViewData["Title"] =  "Sales Transactions";
@@ -35,7 +36,7 @@
     <div class="card card-primary card-outline shadow-sm border-0">
         <div class="card-body p-0">
 
-            @if (Model == null || !Model.Any())
+            @if (Model == null || !Model.Items.Any())
             {
                 <div class="py-5 text-center text-muted">
                     <i class="fas fa-box-open fa-3x mb-3 text-light"></i>
@@ -61,7 +62,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var sale in Model)
+                            @foreach (var sale in Model.Items)
                             {
                                 <tr>
                                     <td class="font-weight-bold text-primary">
@@ -123,11 +124,36 @@
                 </div>
             }
         </div>
-
-        @if (Model != null && Model.Any())
+        @if (Model != null && Model.TotalPages > 0)
         {
-            <div class="card-footer bg-white text-muted text-sm border-top-0">
-                Showing @Model.Count transactions.
+            <div class="card-footer bg-white border-top-0 d-flex flex-column flex-sm-row justify-content-between align-items-center">
+
+                <div class="text-muted text-sm mb-2 mb-sm-0">
+                    Showing Page <strong>@Model.PageNumber</strong> of <strong>@Model.TotalPages</strong>
+                    (Total @Model.TotalCount items)
+                </div>
+
+                <nav aria-label="Product pagination">
+                    <ul class="pagination pagination-sm m-0">
+
+                        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                            <a class="page-link" asp-action="ViewSaleTransactions" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
+                        </li>
+
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                <a class="page-link" asp-action="ViewSaleTransactions" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                            <a class="page-link" asp-action="ViewSaleTransactions" asp-route-page="@(Model.PageNumber + 1)">Next</a>
+                        </li>
+
+                    </ul>
+                </nav>
+
             </div>
         }
     </div>
