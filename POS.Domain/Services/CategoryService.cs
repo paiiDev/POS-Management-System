@@ -3,6 +3,7 @@ using POS.Database.Interfaces;
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Category;
+using POS.Shared.DTOs.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,6 @@ namespace POS.Domain.Services
         {
             _categoryRepository = categoryRepository;
         }
-
-
 
         public async Task<Result<List<CategoryDto>>> GetAllCategoriesAsync()
         {
@@ -43,6 +42,38 @@ namespace POS.Domain.Services
             catch (Exception ex)
             {
                 return Result<List<CategoryDto>>.Failure(ex.Message);
+            }
+        }
+
+        public async Task<Result<PagedResult<CategoryDto>>> GetAllPagedCategoriesAsync(int pageNumber, int pageSize)
+        {
+            try
+            {
+                var result = await _categoryRepository.GetAllPagedCategoriesAsync(pageNumber, pageSize);
+                if (result.Items == null || !result.Items.Any())
+                {
+                    return Result<PagedResult<CategoryDto>>.Failure("No categories found.");
+                }
+
+                var dto = result.Items.Select(c => new CategoryDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                }).ToList();
+
+                var pagedResult = new PagedResult<CategoryDto>
+                {
+                    Items = dto,
+                    TotalCount = result.TotalCount,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+
+                return Result<PagedResult<CategoryDto>>.Success(pagedResult);
+            }
+            catch (Exception ex)
+            {
+                return Result<PagedResult<CategoryDto>>.Failure(ex.Message);
             }
         }
 

@@ -13,7 +13,7 @@ namespace POS.Database.Interfaces
 
         Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedPaidSalesAsync(int pageNumber, int pageSize);
 
-        Task<List<Sale>> GetAllVoidedSalesAsync();
+        Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedVoidedSalesAsync(int pageNumber, int pageSize);
 
 
         Task<Sale?> GetSaleByIdAsync(int id);

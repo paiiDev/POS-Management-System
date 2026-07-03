@@ -166,15 +166,13 @@ namespace POS.Domain.Services
             }
         }
 
-        public async Task<Result<List<SaleDto>>> GetAllVoidedSalesAsync()
+        public async Task<Result<PagedResult<SaleDto>>> GetAllPagedVoidedSalesAsync(int pageNumber, int pageSize)
         {
             try
             {
-                var result = await _salesRepository.GetAllVoidedSalesAsync();
+                var (sales, totalCount) = await _salesRepository.GetAllPagedVoidedSalesAsync(pageNumber, pageSize);
 
-
-
-                var sales = result.Select(s => new SaleDto
+                var dto = sales.Select(s => new SaleDto
                 {
                     Id = s.Id,
                     InvoiceNo = s.InvoiceNo,
@@ -191,12 +189,20 @@ namespace POS.Domain.Services
                     }).ToList()
                 }).ToList();
 
-                return Result<List<SaleDto>>.Success(sales);
+                var pagedResult = new PagedResult<SaleDto>
+                {
+                    Items = dto,
+                    TotalCount = totalCount,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+
+                return Result<PagedResult<SaleDto>>.Success(pagedResult);
 
             }
             catch (Exception ex)
             {
-                return Result<List<SaleDto>>.Failure($"An error occurred while retrieving sales: {ex.Message}");
+                return Result<PagedResult<SaleDto>>.Failure($"An error occurred while retrieving sales: {ex.Message}");
             }
         }
 

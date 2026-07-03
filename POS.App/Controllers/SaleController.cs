@@ -92,13 +92,14 @@ namespace POS.App.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> VoidedSaleTransactions()
+        public async Task<IActionResult> VoidedSaleTransactions(int page = 1)
         {
-            var result = await _salesService.GetAllVoidedSalesAsync();
+            int pageSize = 10;
+            var result = await _salesService.GetAllPagedVoidedSalesAsync(page, pageSize);
             if (!result.IsSuccess || result.Value is null)
             {
                 ViewBag.Error = result.Error;
-                return View(new List<SaleDto>());
+                return View(new PagedResult<SaleDto>());
             }
             return View(result.Value);
         }

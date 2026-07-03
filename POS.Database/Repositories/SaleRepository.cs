@@ -48,9 +48,13 @@ namespace POS.Database.Repositories
             return (sales, totalCount);
         }
 
-        public async Task<List<Sale>> GetAllVoidedSalesAsync()
+        public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedVoidedSalesAsync(int pageNumber, int pageSize)
         {
-            return await _dbContext.Sales
+            var query = _dbContext.Sales.Where(s => s.Status == "Voided");
+
+            var totalCount = await query.CountAsync();
+
+            var sales = await query
                 .IgnoreQueryFilters()
                 .Include(s => s.SaleItems)
                 .ThenInclude(si => si.Product)
@@ -59,6 +63,8 @@ namespace POS.Database.Repositories
                 .AsNoTracking()
                 .OrderByDescending(s => s.SaleDate)
                 .ToListAsync();
+
+            return (sales, totalCount);
         }
 
 
