@@ -12,7 +12,7 @@ namespace POS.Domain.Interfaces
     public interface IProductService
     {
         Task<Result<List<ProductDto>>> GetAllProductsAsync();
-        Task<Result<PagedResult<ProductDto>>> GetProductsPagedAsync(int pageNumer, int pageSize);
+        Task<Result<PagedResult<ProductDto>>> GetProductsPagedAsync(string? searchTerm,int pageNumber, int pageSize);
         Task<Result<ProductDto>> GetProductByIdAsync(int id);
         Task<Result<bool>> CreateProductAsync(CreateProductDto createProductDto);
         Task<Result<bool>> UpdateProductAsync(UpdateProductDto updateProductDto);

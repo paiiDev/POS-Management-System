@@ -24,9 +24,14 @@ namespace POS.Database.Repositories
         }
 
 
-        public async Task<(IEnumerable<Product> products, int totalCount)> GetProductsPagedAsync(int pageNumber, int pageSize)
+        public async Task<(IEnumerable<Product> products, int totalCount)> GetProductsPagedAsync(string? searchTerm,int pageNumber, int pageSize)
         {
             var query =  _dbContext.Products.Include(p => p.Category).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(p => p.Name.Contains(searchTerm) || p.Barcode.Contains(searchTerm));
+            }
 
             var totalCount = await query.CountAsync();
 
