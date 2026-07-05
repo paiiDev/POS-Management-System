@@ -32,6 +32,7 @@ namespace POS.App.Controllers
                 TempData["ErrorMessage"] = result.Error;
                 return RedirectToAction("Error", "Home");
             }
+            ViewBag.CurrentSearch = searchString;
             return View(result.Value);
         }
 

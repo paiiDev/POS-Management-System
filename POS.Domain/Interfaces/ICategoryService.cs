@@ -13,7 +13,7 @@ namespace POS.Domain.Interfaces
     public interface ICategoryService
     {
         Task<Result<List<CategoryDto>>> GetAllCategoriesAsync();
-        Task<Result<PagedResult<CategoryDto>>> GetAllPagedCategoriesAsync(int pageNumber, int pageSize);
+        Task<Result<PagedResult<CategoryDto>>> GetAllPagedCategoriesAsync(string? searchTerm, int pageNumber, int pageSize);
 
         Task<Result<CategoryDto?>> GetCategoryByIdAsync(int id);
 

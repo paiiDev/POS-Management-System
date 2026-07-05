@@ -19,15 +19,16 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
             int pageSize = 10;
-            var result = await _categoryService.GetAllPagedCategoriesAsync(page, pageSize);
+            var result = await _categoryService.GetAllPagedCategoriesAsync(searchString, page, pageSize);
             if (!result.IsSuccess) 
             {
                 TempData["ErrorMessage"] = result.Error;
                 return View();
             }
+            ViewBag.CurrentSearch = searchString;
             return View(result.Value);
         }
 

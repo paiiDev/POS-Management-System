@@ -9,10 +9,35 @@
     int rowNo = (Model.PageNumber - 1) * Model.PageSize + 1;
 }
 
+
+
 <div class="container-fluid mt-4">
 
     <div class="row align-items-center mb-4">
         <div class="col-sm-6">
+            <div class="row mb-3 mx-2">
+                <div class="col-md-8 ">
+                    <form asp-action="Index" method="get">
+                        <div class="input-group">
+                            <input type="text" name="searchString" value="@ViewBag.CurrentSearch"
+                                   class="form-control" placeholder="Search by name or barcode...">
+
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+
+                                @if (!string.IsNullOrEmpty(ViewBag.CurrentSearch))
+                                {
+                                    <a asp-action="Index" class="btn btn-outline-secondary" title="Clear Search">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="col-sm-6 text-right mt-3 mt-sm-0">
             @if (User.IsInRole("Admin"))

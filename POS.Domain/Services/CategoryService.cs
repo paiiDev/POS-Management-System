@@ -45,11 +45,11 @@ namespace POS.Domain.Services
             }
         }
 
-        public async Task<Result<PagedResult<CategoryDto>>> GetAllPagedCategoriesAsync(int pageNumber, int pageSize)
+        public async Task<Result<PagedResult<CategoryDto>>> GetAllPagedCategoriesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
             try
             {
-                var result = await _categoryRepository.GetAllPagedCategoriesAsync(pageNumber, pageSize);
+                var result = await _categoryRepository.GetAllPagedCategoriesAsync(searchTerm, pageNumber, pageSize);
                 if (result.Items == null || !result.Items.Any())
                 {
                     return Result<PagedResult<CategoryDto>>.Failure("No categories found.");
