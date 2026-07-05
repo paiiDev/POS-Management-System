@@ -14,7 +14,29 @@
 
     <div class="row align-items-center mb-4">
         <div class="col-sm-6">
-            
+            <div class="row mb-3 mx-2">
+                <div class="col-md-8 ">
+                    <form asp-action="ViewSaleTransactions" method="get">
+                        <div class="input-group">
+                            <input type="text" name="searchString" value="@ViewBag.CurrentSearch"
+                                   class="form-control" placeholder="Search by INV number ...">
+
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+
+                                @if (!string.IsNullOrEmpty(ViewBag.CurrentSearch))
+                                {
+                                    <a asp-action="ViewSaleTransactions" class="btn btn-outline-secondary" title="Clear Search">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="col-sm-6 text-right mt-3 mt-sm-0">
             <a asp-action="CreateSale" class="btn btn-primary shadow-sm">
@@ -137,18 +159,18 @@
                     <ul class="pagination pagination-sm m-0">
 
                         <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
-                            <a class="page-link" asp-action="ViewSaleTransactions" asp-route-page="@(Model.PageNumber - 1)">Previous</a>
+                            <a class="page-link" asp-action="ViewSaleTransactions" asp-route-page="@(Model.PageNumber - 1)" asp-route-searchString="@ViewBag.CurrentSearch">Previous</a>
                         </li>
 
                         @for (int i = 1; i <= Model.TotalPages; i++)
                         {
                             <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                                <a class="page-link" asp-action="ViewSaleTransactions" asp-route-page="@i">@i</a>
+                                <a class="page-link" asp-action="ViewSaleTransactions" asp-route-page="@i" asp-route-searchString="@ViewBag.CurrentSearch">@i</a>
                             </li>
                         }
 
                         <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
-                            <a class="page-link" asp-action="ViewSaleTransactions" asp-route-page="@(Model.PageNumber + 1)">Next</a>
+                            <a class="page-link" asp-action="ViewSaleTransactions" asp-route-page="@(Model.PageNumber + 1)" asp-route-searchString="@ViewBag.CurrentSearch">Next</a>
                         </li>
 
                     </ul>

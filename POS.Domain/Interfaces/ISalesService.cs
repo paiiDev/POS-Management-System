@@ -14,9 +14,8 @@ namespace POS.Domain.Interfaces
     {
         Task<Result<SaleResponseDto>> CreateSaleAsync(CreateSaleDto dto);
 
-        Task<Result<PagedResult<SaleDto>>> GetAllPagedPaidSalesAsync(int pageNumber, int pageSize);
-
-        Task<Result<PagedResult<SaleDto>>> GetAllPagedVoidedSalesAsync(int pageNumber, int pageSize);
+        Task<Result<PagedResult<SaleDto>>> GetAllPagedPaidSalesAsync(string? searchTerm, int pageNumber, int pageSize);
+        Task<Result<PagedResult<SaleDto>>> GetAllPagedVoidedSalesAsync(string? searchTerm, int pageNumber, int pageSize);
 
         Task<Result<VoidLogDetailsDto>> GetVoidLogBySaleIdAsync(int saleId);
 

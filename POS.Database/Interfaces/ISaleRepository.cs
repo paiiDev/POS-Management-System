@@ -11,9 +11,9 @@ namespace POS.Database.Interfaces
     {
         Task CreateSaleAsync(Sale sale);
 
-        Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedPaidSalesAsync(int pageNumber, int pageSize);
+        Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedPaidSalesAsync(string? searchTerm, int pageNumber, int pageSize);
 
-        Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedVoidedSalesAsync(int pageNumber, int pageSize);
+        Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedVoidedSalesAsync(string? searchTerm, int pageNumber, int pageSize);
 
 
         Task<Sale?> GetSaleByIdAsync(int id);

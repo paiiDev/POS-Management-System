@@ -27,10 +27,16 @@ namespace POS.Database.Repositories
         }
 
 
-        public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedPaidSalesAsync(int pageNumber, int pageSize)
+        public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedPaidSalesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
 
             var query = _dbContext.Sales.Where(s => s.Status == "Paid");
+
+            if(!string.IsNullOrEmpty(searchTerm))
+            {
+                var keywords = searchTerm.Trim();
+                query = query.Where(s => s.InvoiceNo.Contains(keywords));
+            }
 
             var totalCount = await query.CountAsync();
 
@@ -48,9 +54,15 @@ namespace POS.Database.Repositories
             return (sales, totalCount);
         }
 
-        public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedVoidedSalesAsync(int pageNumber, int pageSize)
+        public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedVoidedSalesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
             var query = _dbContext.Sales.Where(s => s.Status == "Voided");
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var keywords = searchTerm.Trim();
+                query = query.Where(s => s.InvoiceNo.Contains(keywords));
+            }
 
             var totalCount = await query.CountAsync();
 

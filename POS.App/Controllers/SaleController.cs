@@ -66,15 +66,16 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ViewSaleTransactions(int page = 1)
+        public async Task<IActionResult> ViewSaleTransactions(string searchString,int page = 1)
         {
             int pageSize = 10;
-            var result = await _salesService.GetAllPagedPaidSalesAsync(page, pageSize);
+            var result = await _salesService.GetAllPagedPaidSalesAsync(searchString, page, pageSize);
             if (!result.IsSuccess || result.Value is null)
             {
                 ViewBag.Error = result.Error;
                 return View(new PagedResult<SaleDto>());
             }
+            ViewBag.CurrentSearch = searchString;
             return View(result.Value);
         }
 
@@ -92,15 +93,16 @@ namespace POS.App.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> VoidedSaleTransactions(int page = 1)
+        public async Task<IActionResult> VoidedSaleTransactions(string searchString, int page = 1)
         {
             int pageSize = 10;
-            var result = await _salesService.GetAllPagedVoidedSalesAsync(page, pageSize);
+            var result = await _salesService.GetAllPagedVoidedSalesAsync(searchString, page, pageSize);
             if (!result.IsSuccess || result.Value is null)
             {
                 ViewBag.Error = result.Error;
                 return View(new PagedResult<SaleDto>());
             }
+            ViewBag.CurrentSearch = searchString;
             return View(result.Value);
         }
 

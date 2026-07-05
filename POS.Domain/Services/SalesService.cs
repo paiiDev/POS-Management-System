@@ -124,12 +124,11 @@ namespace POS.Domain.Services
 
         }
 
-        public async Task<Result<PagedResult<SaleDto>>> GetAllPagedPaidSalesAsync(int pageNumber, int pageSize)
+        public async Task<Result<PagedResult<SaleDto>>> GetAllPagedPaidSalesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
             try
             {
-                var (sales, totalCount) = await _salesRepository.GetAllPagedPaidSalesAsync(pageNumber, pageSize);
-
+                var (sales, totalCount) = await _salesRepository.GetAllPagedPaidSalesAsync(searchTerm, pageNumber, pageSize);
                
 
                 var dto = sales.Select(s => new SaleDto
@@ -166,11 +165,11 @@ namespace POS.Domain.Services
             }
         }
 
-        public async Task<Result<PagedResult<SaleDto>>> GetAllPagedVoidedSalesAsync(int pageNumber, int pageSize)
+        public async Task<Result<PagedResult<SaleDto>>> GetAllPagedVoidedSalesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
             try
             {
-                var (sales, totalCount) = await _salesRepository.GetAllPagedVoidedSalesAsync(pageNumber, pageSize);
+                var (sales, totalCount) = await _salesRepository.GetAllPagedVoidedSalesAsync(searchTerm, pageNumber, pageSize);
 
                 var dto = sales.Select(s => new SaleDto
                 {
