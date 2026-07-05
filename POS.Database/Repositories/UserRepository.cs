@@ -23,9 +23,16 @@ namespace POS.Database.Repositories
             return await _context.Users.AsNoTracking().ToListAsync();
         }
 
-        public async Task<(IEnumerable<User> users, int totalCount)> GetUsersPagedAsync(int pageNumber, int pageSize)
+        public async Task<(IEnumerable<User> users, int totalCount)> GetUsersPagedAsync(string? searchTerm, int pageNumber, int pageSize)
         {
             var query = _context.Users.AsNoTracking();
+
+            if(!string.IsNullOrEmpty(searchTerm))
+            {
+                var keywords = searchTerm.Trim();
+                query = query.Where(u => u.UserName.Contains(keywords) || u.FullName.Contains(keywords));
+            }
+
             var totalCount = await query.CountAsync();
             var users = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
             return (users, totalCount);

@@ -14,7 +14,7 @@ namespace POS.Domain.Interfaces
     {
         
         Task<Result<List<UserDto>>> GetAllUsersAsync();
-        Task<Result<PagedResult<UserDto>>> GetPagedUsersAsync(int pageNumber, int pageSize);
+        Task<Result<PagedResult<UserDto>>> GetPagedUsersAsync(string? searchTerm, int pageNumber, int pageSize);
         Task<Result<UserDto?>> GetUserByIdAsync(int id);
         Task<Result<bool>> CreateUserAsync(CreateUserDto dto);
         Task<Result<bool>> UpdateUserAsync(UpdateUserDto dto);

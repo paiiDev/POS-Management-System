@@ -43,11 +43,11 @@ namespace POS.Domain.Services
             }
         }
 
-        public async Task<Result<PagedResult<UserDto>>> GetPagedUsersAsync(int pageNumber, int pageSize)
+        public async Task<Result<PagedResult<UserDto>>> GetPagedUsersAsync(string? searchTerm, int pageNumber, int pageSize)
         {
           try
             {
-                var (users, totalCount) = await _userRepository.GetUsersPagedAsync(pageNumber, pageSize);
+                var (users, totalCount) = await _userRepository.GetUsersPagedAsync(searchTerm, pageNumber, pageSize);
                 var userDtos = users.Select(u => new UserDto
                 {
                     Id = u.Id,
