@@ -1,8 +1,147 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model POS.Shared.DTOs.Dashboard.DashboardDto
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid mt-4">
+    <!-- 📊 Row 1: AdminLTE Small Boxes -->
+    <div class="row">
+        <!-- Revenue -->
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success shadow-sm">
+                <div class="inner">
+                    <h3>@Model.TotalRevenue.ToString("N0") <sup style="font-size: 20px">Ks</sup></h3>
+                    <p>Total Revenue</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <a asp-action="Index" asp-controller="Sale" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Inventory -->
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-info shadow-sm">
+                <div class="inner">
+                    <h3>@Model.TotalInventory</h3>
+                    <p>Total Inventory</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <a asp-action="Index" asp-controller="Product" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-warning shadow-sm">
+                <div class="inner">
+                    <h3 class="text-white">@Model.TotalCategories</h3>
+                    <p class="text-white">Categories</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <a asp-action="Index" asp-controller="Category" class="small-box-footer">
+                    <span class="text-white">More info <i class="fas fa-arrow-circle-right"></i></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-danger shadow-sm">
+                <div class="inner">
+                    <h3>@Model.TotalTransactions</h3>
+                    <p>Transactions</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <a asp-action="Index" asp-controller="Sale" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📈 Row 2: Analytics & Top Sellers -->
+    <div class="row">
+        <!-- Performance Analytics Chart -->
+        <div class="col-lg-8">
+            <div class="card card-primary card-outline shadow-sm">
+                <div class="card-header border-0">
+                    <h3 class="card-title">
+                        <i class="fas fa-chart-bar mr-1 text-primary"></i>
+                        Performance Analytics
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Chart placeholder -->
+                    <div class="d-flex align-items-center justify-content-center bg-light" style="height: 380px; border-radius: 4px;">
+                        <span class="text-muted"><i class="fas fa-chart-line mr-2"></i> Chart will be rendered here</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Sellers List -->
+        <div class="col-lg-4">
+            <div class="card card-info card-outline shadow-sm h-100">
+                <div class="card-header border-0">
+                    <h3 class="card-title font-weight-bold">
+                        <i class="fas fa-star text-warning mr-1"></i>
+                        Top Sellers
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="products-list product-list-in-card pl-2 pr-2">
+                        @foreach (var seller in Model.TopSellers)
+                        {
+                            <li class="item">
+                                <div class="product-img ml-2 px-3">
+                                    <!-- 💡 Initial စာလုံးလေးကို ဝိုင်းဝိုင်းလေးထဲ ထည့်ပြခြင်း -->
+                                    <div class="d-flex align-items-center justify-content-center bg-info text-white font-weight-bold shadow-sm"
+                                         style="width: 50px; height: 50px; border-radius: 10px; font-size: 1.3rem;">
+                                        @seller.Initial
+                                    </div>
+                                </div>
+                                <div class="product-info ml-4 pl-1">
+                                    <a href="javascript:void(0)" class="product-title text-dark">
+                                        @seller.ProductName
+                                        <span class="badge badge-success float-right mt-1 px-2 py-1" style="font-size: 0.85rem;">
+                                            @seller.UnitsSold Sold
+                                        </span>
+                                    </a>
+                                    <span class="product-description text-muted small">
+                                        High performing inventory
+                                    </span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card-footer text-center border-top">
+                    <a asp-action="Index" asp-controller="Product" class="text-uppercase text-muted font-weight-bold small">View All Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
