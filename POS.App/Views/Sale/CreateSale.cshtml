@@ -9,13 +9,13 @@
     ViewData["ParentUrl"] = "/Sale/ViewSaleTransactions";
     ViewData["Icon"] = "fas fa-file-invoice-dollar mr-2 text-primary";
 
-    var products = ViewBag.Products as IEnumerable<ProductDto> ?? Enumerable.Empty<ProductDto>();
+    var productsPage = ViewBag.Products as POS.Shared.DTOs.Pagination.PagedResult<ProductDto>;
+    var products = productsPage?.Items ?? new List<ProductDto>();
+
 }
 
 <style>
-    /* -----------------------------------------
-           Modern Product Card UI
-           ----------------------------------------- */
+
     .custom-product-card {
         border-radius: 16px !important;
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -62,9 +62,7 @@
         box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
     }
 
-    /* -----------------------------------------
-           Custom Scrollbar
-           ----------------------------------------- */
+    
     .custom-scroll::-webkit-scrollbar {
         width: 6px;
     }
@@ -78,17 +76,40 @@
         background-color: transparent;
     }
 </style>
+<div class="row mb-3 mx-2">
+    <div class="col-md-8 ">
+        <form asp-action="CreateSale" method="get">
+            <div class="input-group">
+                <input type="text" name="searchString" value="@ViewBag.CurrentSearch"
+                       class="form-control" placeholder="Search by name or barcode...">
 
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+
+                    @if (!string.IsNullOrEmpty(ViewBag.CurrentSearch))
+                    {
+                        <a asp-action="CreateSale" class="btn btn-outline-secondary" title="Clear Search">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="container-fluid mt-4">
     <div class="row">
-
+    
         <div class="col-lg-7 col-xl-8 mb-4">
-            <div class="row custom-scroll" style="height: 75vh; overflow-y: auto; overflow-x: hidden; padding-right: 5px; padding-top: 5px;">
+            <div class="row custom-scroll flex-grow-1 align-content-start" style="height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 5px; padding-top: 5px;">
+                
                 @if (products.Any())
                 {
                     @foreach (var product in products)
                     {
-                        <div class="col-6 col-md-4 col-xl-3 mb-4">
+                        <div class="col-6 col-md-4 col-xl-3 mb-3">
                             <div class="card h-100 custom-product-card"
                                  style="cursor: pointer;"
                                  onclick="addToCart(@product.Id, '@Html.Raw(product.Name.Replace("'", "\\'"))', @product.SellingPrice)">
@@ -118,6 +139,7 @@
 
                                 </div>
                             </div>
+                           
                         </div>
                     }
                 }
@@ -130,6 +152,38 @@
                     </div>
                 }
             </div>
+            @if (productsPage != null && productsPage.Items.Any())
+            {
+                <div class="card-footer bg-white border-top-0 d-flex flex-column flex-sm-row justify-content-between align-items-center">
+
+                    <div class="text-muted text-sm mb-2 mb-sm-0">
+                        Showing Page <strong>@productsPage.PageNumber</strong> of <strong>@productsPage.TotalPages</strong>
+                        (Total @productsPage.TotalCount items)
+                    </div>
+
+                    <nav aria-label="Product pagination">
+                        <ul class="pagination pagination-sm m-0">
+
+                            <li class="page-item @(!productsPage.HasPreviousPage ? "disabled" : "")">
+                                <a class="page-link" asp-action="CreateSale" asp-route-page="@(productsPage.PageNumber - 1)" asp-route-searchString="@ViewBag.CurrentSearch">Previous</a>
+                            </li>
+
+                            @for (int i = 1; i <= productsPage.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == productsPage.PageNumber ? "active" : "")">
+                                    <a class="page-link" asp-action="CreateSale" asp-route-page="@i" asp-route-searchString="@ViewBag.CurrentSearch">@i</a>
+                                </li>
+                            }
+
+                            <li class="page-item @(!productsPage.HasNextPage ? "disabled" : "")">
+                                <a class="page-link" asp-action="CreateSale" asp-route-page="@(productsPage.PageNumber + 1)" asp-route-searchString="@ViewBag.CurrentSearch">Next</a>
+                            </li>
+
+                        </ul>
+                    </nav>
+
+                </div>
+            }
         </div>
 
         <div class="col-lg-5 col-xl-4">

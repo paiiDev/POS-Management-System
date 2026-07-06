@@ -15,14 +15,16 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
-            var users = await _userService.GetAllUsersAsync();
+            int pageSize = 10; 
+            var users = await _userService.GetPagedUsersAsync(searchString, page, pageSize);
             if (!users.IsSuccess)
             {
                 ViewBag.Error = users.Error;
                 return View();
             }
+            ViewBag.CurrentSearch = searchString;
             return View(users.Value);
         }
 

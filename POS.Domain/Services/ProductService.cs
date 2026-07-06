@@ -52,12 +52,11 @@ namespace POS.Domain.Services
 
 
 
-        public async Task<Result<PagedResult<ProductDto>>> GetProductsPagedAsync(int pageNumber, int pageSize)
+        public async Task<Result<PagedResult<ProductDto>>> GetProductsPagedAsync(string? searchTerm,int pageNumber, int pageSize)
         {
             try
             {
-                var (products, totalCount) = await _productRepository.GetProductsPagedAsync(pageNumber, pageSize);
-
+                var (products, totalCount) = await _productRepository.GetProductsPagedAsync(searchTerm, pageNumber, pageSize);
               
 
                 var dtoList = products.Select(x => new ProductDto

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.Domain.Interfaces;
+using POS.Shared.DTOs.Pagination;
 using POS.Shared.DTOs.Sales;
 using POS.Shared.DTOs.VoidLog;
 using POS.Shared.Extensions;
@@ -20,20 +21,20 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateSale()
+        public async Task<IActionResult> CreateSale(string searchString, int page = 1)
         {
-            await LoadProducts();
+            await LoadProducts(page, searchString);
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateSaleDto request)
+        public async Task<IActionResult> Create(string searchString, CreateSaleDto request, int page = 1)
         {
             if(!ModelState.IsValid)
             {
                 ViewBag.Error = "Invalid input data.";
-                await LoadProducts();
+                await LoadProducts(page, searchString);
                 return View("CreateSale", request);
             }
 
@@ -42,7 +43,7 @@ namespace POS.App.Controllers
             if (!result.IsSuccess)
             {
                 ViewBag.Error = result.Error;
-                await LoadProducts();
+                await LoadProducts(page, searchString);
                 return View("CreateSale", request);
             }
 
@@ -65,14 +66,16 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ViewSaleTransactions()
+        public async Task<IActionResult> ViewSaleTransactions(string searchString,int page = 1)
         {
-            var result = await _salesService.GetAllPaidSalesAsync();
+            int pageSize = 10;
+            var result = await _salesService.GetAllPagedPaidSalesAsync(searchString, page, pageSize);
             if (!result.IsSuccess || result.Value is null)
             {
                 ViewBag.Error = result.Error;
-                return View(new List<SaleDto>());
+                return View(new PagedResult<SaleDto>());
             }
+            ViewBag.CurrentSearch = searchString;
             return View(result.Value);
         }
 
@@ -90,14 +93,16 @@ namespace POS.App.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> VoidedSaleTransactions()
+        public async Task<IActionResult> VoidedSaleTransactions(string searchString, int page = 1)
         {
-            var result = await _salesService.GetAllVoidedSalesAsync();
+            int pageSize = 10;
+            var result = await _salesService.GetAllPagedVoidedSalesAsync(searchString, page, pageSize);
             if (!result.IsSuccess || result.Value is null)
             {
                 ViewBag.Error = result.Error;
-                return View(new List<SaleDto>());
+                return View(new PagedResult<SaleDto>());
             }
+            ViewBag.CurrentSearch = searchString;
             return View(result.Value);
         }
 
@@ -187,16 +192,18 @@ namespace POS.App.Controllers
         }
 
 
-        private async Task LoadProducts()
+        private async Task LoadProducts(int page, string? searchString)
         {
-            var products = await _productService.GetAllProductsAsync();
-            if (!products.IsSuccess)
+            int pageSize = 8;
+            var result = await _productService.GetProductsPagedAsync(searchString, page, pageSize);
+            if (!result.IsSuccess)
             {
                 ViewBag.Error = "Failed to retrieve products data.";
                 return;
             }
 
-            ViewBag.Products = products.Value;
+            ViewBag.Products = result.Value;
+            ViewBag.CurrentSearch = searchString;
         }
     }
 }

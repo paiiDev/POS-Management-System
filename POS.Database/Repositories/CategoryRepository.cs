@@ -23,6 +23,25 @@ namespace POS.Database.Repositories
             return await _dbContext.Categories.AsNoTracking().ToListAsync();
         }
 
+        public async Task<(IEnumerable<Category> Items, int TotalCount)> GetAllPagedCategoriesAsync(string? searchTerm, int pageNumber, int pageSize)
+        {
+            var query = _dbContext.Categories.AsNoTracking();
+
+            if(!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(c => c.Name.Contains(searchTerm));
+            }
+
+            var totalCount = await query.CountAsync();
+            var items = await query.OrderByDescending(p => p.Id)
+                        .Skip((pageNumber - 1) * pageSize)
+                         .Take(pageSize)
+                          .ToListAsync();
+
+            return (items, totalCount);
+           
+        }
+
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
             return await _dbContext.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);

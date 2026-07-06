@@ -22,16 +22,17 @@ namespace POS.App.Controllers
 
 
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
             int pageSize = 10;
 
-            var result = await _productService.GetProductsPagedAsync(page, pageSize);
+            var result = await _productService.GetProductsPagedAsync(searchString, page, pageSize);
             if (!result.IsSuccess)
             {
                 TempData["ErrorMessage"] = result.Error;
                 return RedirectToAction("Error", "Home");
             }
+            ViewBag.CurrentSearch = searchString;
             return View(result.Value);
         }
 

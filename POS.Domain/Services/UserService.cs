@@ -2,6 +2,7 @@
 using POS.Database.Interfaces;
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
+using POS.Shared.DTOs.Pagination;
 using POS.Shared.DTOs.User;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,36 @@ namespace POS.Domain.Services
             catch (Exception ex)
             {
                 return Result<List<UserDto>>.Failure($"An error occurred while retrieving users: {ex.Message}");
+            }
+        }
+
+        public async Task<Result<PagedResult<UserDto>>> GetPagedUsersAsync(string? searchTerm, int pageNumber, int pageSize)
+        {
+          try
+            {
+                var (users, totalCount) = await _userRepository.GetUsersPagedAsync(searchTerm, pageNumber, pageSize);
+                var userDtos = users.Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    FullName = u.FullName,
+                    PasswordHash = u.PasswordHash,
+                    Role = u.Role,
+                    CreatedAt = u.CreatedAt
+                }).ToList();
+
+                var pagedResult = new PagedResult<UserDto>
+                {
+                    Items = userDtos,
+                    TotalCount = totalCount,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+                return Result<PagedResult<UserDto>>.Success(pagedResult);
+            }
+            catch (Exception ex)
+            {
+                return Result<PagedResult<UserDto>>.Failure($"An error occurred while retrieving paged users: {ex.Message}");
             }
         }
 

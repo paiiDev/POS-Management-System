@@ -27,22 +27,46 @@ namespace POS.Database.Repositories
         }
 
 
-        public async Task<List<Sale>> GetAllPaidSalesAsync()
+        public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedPaidSalesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
-            return await _dbContext.Sales
+
+            var query = _dbContext.Sales.Where(s => s.Status == "Paid");
+
+            if(!string.IsNullOrEmpty(searchTerm))
+            {
+                var keywords = searchTerm.Trim();
+                query = query.Where(s => s.InvoiceNo.Contains(keywords));
+            }
+
+            var totalCount = await query.CountAsync();
+
+             var sales = await query
                 .IgnoreQueryFilters()
                 .Include(s => s.SaleItems)
                 .ThenInclude(si => si.Product)
                 .Include(u => u.User)
-                .Where(s => s.Status == "Paid")
                 .AsNoTracking()
                 .OrderByDescending(s => s.SaleDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return (sales, totalCount);
         }
 
-        public async Task<List<Sale>> GetAllVoidedSalesAsync()
+        public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedVoidedSalesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
-            return await _dbContext.Sales
+            var query = _dbContext.Sales.Where(s => s.Status == "Voided");
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var keywords = searchTerm.Trim();
+                query = query.Where(s => s.InvoiceNo.Contains(keywords));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var sales = await query
                 .IgnoreQueryFilters()
                 .Include(s => s.SaleItems)
                 .ThenInclude(si => si.Product)
@@ -51,6 +75,8 @@ namespace POS.Database.Repositories
                 .AsNoTracking()
                 .OrderByDescending(s => s.SaleDate)
                 .ToListAsync();
+
+            return (sales, totalCount);
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using POS.Shared.Common;
+using POS.Shared.DTOs.Pagination;
 using POS.Shared.DTOs.Sales;
 using POS.Shared.DTOs.VoidLog;
 using System;
@@ -13,9 +14,8 @@ namespace POS.Domain.Interfaces
     {
         Task<Result<SaleResponseDto>> CreateSaleAsync(CreateSaleDto dto);
 
-        Task<Result<List<SaleDto>>> GetAllPaidSalesAsync();
-
-        Task<Result<List<SaleDto>>> GetAllVoidedSalesAsync();
+        Task<Result<PagedResult<SaleDto>>> GetAllPagedPaidSalesAsync(string? searchTerm, int pageNumber, int pageSize);
+        Task<Result<PagedResult<SaleDto>>> GetAllPagedVoidedSalesAsync(string? searchTerm, int pageNumber, int pageSize);
 
         Task<Result<VoidLogDetailsDto>> GetVoidLogBySaleIdAsync(int saleId);
 

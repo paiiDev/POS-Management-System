@@ -1,16 +1,40 @@
-﻿@using POS.Shared.DTOs.User
-@model List<UserDto>
+﻿@using POS.Shared.DTOs.Pagination
+@using POS.Shared.DTOs.User
+@model PagedResult<UserDto>
 
 @{
     ViewData["Title"] = "User Management";
     ViewData["Icon"] = "nav-icon fas fa-users text-primary";
+    int rowNo = (Model.PageNumber - 1) * Model.PageSize + 1;
 }
 
 <div class="container-fluid mt-4">
 
     <div class="row align-items-center mb-4">
         <div class="col-sm-6">
-           
+            <div class="row mb-3 mx-2">
+                <div class="col-md-8 ">
+                    <form asp-action="Index" method="get">
+                        <div class="input-group">
+                            <input type="text" name="searchString" value="@ViewBag.CurrentSearch"
+                                   class="form-control" placeholder="Search by username or fullname ...">
+
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+
+                                @if (!string.IsNullOrEmpty(ViewBag.CurrentSearch))
+                                {
+                                    <a asp-action="Index" class="btn btn-outline-secondary" title="Clear Search">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="col-sm-6 text-right mt-3 mt-sm-0">
             <a asp-action="CreateUser" class="btn btn-primary shadow-sm">
@@ -22,7 +46,7 @@
     <div class="card card-primary card-outline shadow-sm border-0">
         <div class="card-body p-0">
 
-            @if (Model == null || !Model.Any())
+            @if (Model == null || !Model.Items.Any())
             {
                 <div class="py-5 text-center text-muted">
                     <i class="fas fa-user-slash fa-3x mb-3 text-light"></i>
@@ -44,10 +68,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var user in Model)
+                            @foreach (var user in Model.Items)
                             {
                                 <tr>
-                                    <td class="ps-4 text-muted">#@user.Id</td>
+                                    <td class="ps-4 text-muted">#@rowNo</td>
 
                                     <td>
                                         <div class="font-weight-bold text-dark">@user.FullName</div>
@@ -89,6 +113,8 @@
                                         </div>
                                     </td>
                                 </tr>
+
+                                rowNo++;
                             }
                         </tbody>
                     </table>
@@ -96,10 +122,36 @@
             }
         </div>
 
-        @if (Model != null && Model.Any())
+        @if (Model != null && Model.TotalPages > 0)
         {
-            <div class="card-footer bg-white text-muted text-sm border-top-0">
-                Showing @Model.Count users in the system.
+            <div class="card-footer bg-white border-top-0 d-flex flex-column flex-sm-row justify-content-between align-items-center">
+
+                <div class="text-muted text-sm mb-2 mb-sm-0">
+                    Showing Page <strong>@Model.PageNumber</strong> of <strong>@Model.TotalPages</strong>
+                    (Total @Model.TotalCount items)
+                </div>
+
+                <nav aria-label="Product pagination">
+                    <ul class="pagination pagination-sm m-0">
+
+                        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber - 1)" asp-route-searchString="@ViewBag.CurrentSearch">Previous</a>
+                        </li>
+
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@ViewBag.CurrentSearch">@i</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber + 1)" asp-route-searchString="@ViewBag.CurrentSearch">Next</a>
+                        </li>
+
+                    </ul>
+                </nav>
+
             </div>
         }
     </div>
