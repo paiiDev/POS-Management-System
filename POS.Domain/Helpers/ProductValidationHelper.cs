@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace POS.Shared.Helpers
+namespace POS.Domain.Helpers
 {
     public static class ProductValidationHelper
     {

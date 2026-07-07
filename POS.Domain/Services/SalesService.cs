@@ -7,7 +7,6 @@ using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Sales;
 using POS.Shared.DTOs.VoidLog;
-using POS.Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;

@@ -8,7 +8,8 @@ namespace POS.Shared.DTOs.Dashboard
 {
     public class TopSellerDto
     {
-        public string ProductName { get; set; }
+        public int ProductId { get; set; }
+        public string? ProductName { get; set; }
         public int UnitsSold { get; set; }
         public string Initial => string.IsNullOrEmpty(ProductName) ? "" : ProductName.Substring(0, 1).ToUpper();
     }

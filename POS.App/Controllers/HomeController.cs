@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.App.Models;
+using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Dashboard;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace POS.App.Controllers
 {
@@ -10,31 +12,26 @@ namespace POS.App.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IDashboardService _dashboardService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IDashboardService dashboardService)
         {
             _logger = logger;
+            _dashboardService = dashboardService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var dashboardData = new DashboardDto
-            {
-                TotalRevenue = 1500000,
-                TotalInventory = 91,
-                TotalCategories = 135,
-                TotalTransactions = 741,
-                TopSellers = new List<TopSellerDto>
-            {
-                new TopSellerDto { ProductName = "Elderberry", UnitsSold = 121 },
-                new TopSellerDto { ProductName = "Longan", UnitsSold = 111 },
-                new TopSellerDto { ProductName = "Ackee", UnitsSold = 110 },
-                new TopSellerDto { ProductName = "Miracle fruit", UnitsSold = 109 },
-                new TopSellerDto { ProductName = "Mulberry", UnitsSold = 109 }
-            }
-            };
 
-            return View(dashboardData);
+
+            var result = await _dashboardService.GetDashboardDataAsync();
+            if(!result.IsSuccess)
+            {
+                _logger.LogError("Failed to retrieve dashboard data: {Error}", result.Error);
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+
+            return View(result.Value);
         }
 
         public IActionResult Privacy()
