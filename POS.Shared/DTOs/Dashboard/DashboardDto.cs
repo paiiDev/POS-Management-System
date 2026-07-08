@@ -17,5 +17,6 @@ namespace POS.Shared.DTOs.Dashboard
 
         public List<string> RevenueLabels { get; set; } = new List<string>();
         public List<decimal> RevenueData { get; set; } = new List<decimal>();
+        public List<decimal> CostData { get; set; } = new List<decimal>();
     }
 }

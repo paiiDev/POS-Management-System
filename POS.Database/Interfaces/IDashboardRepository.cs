@@ -17,5 +17,7 @@ namespace POS.Database.Interfaces
         Task<List<TopSellerDto>> GetTopSellersAsync(int count);
         Task<Dictionary<DateTime, decimal>> GetLast7DaysRevenueAsync(DateTime startDate);
 
+        Task<List<DailyFinancialDto>> GetDailyFinancialsAsync(DateTime startDate);
+
     }
 }

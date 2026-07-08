@@ -44,16 +44,25 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-      
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a href="/" class="nav-link @(currentController == "Home" ? "active" : "")">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
+                }
 
                 <li class="nav-item">
-                    <a href="/" class="nav-link @(currentController == "Home" ? "active" : "")">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>Dashboard</p>
+                    <a asp-controller="Sale" asp-action="CreateSale" class="nav-link @(currentController == "Sale" && currentAction == "CreateSale" ? "active" : "")">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>Create Sale</p>
                     </a>
                 </li>
 
-
+         
+              
                 <li class="nav-item">
                     <form asp-controller="Product" asp-action="Index">
                         <a asp-controller="Product" asp-action="Index" class="nav-link @(currentController == "Product" ? "active" : "")">
@@ -71,12 +80,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a asp-controller="Sale" asp-action="CreateSale" class="nav-link @(currentController == "Sale" && currentAction == "CreateSale" ? "active" : "")">
-                        <i class="nav-icon fas fa-shopping-cart"></i>
-                        <p>Create Sale</p>
-                    </a>
-                </li>
+             
 
 
                 <li class="nav-item">

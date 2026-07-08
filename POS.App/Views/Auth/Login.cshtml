@@ -15,21 +15,22 @@
 
     <style>
         body {
-            /* နောက်ခံအရောင်အပြော့ */
             background-color: #e8ecef;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 15px; /* Mobile ပေါ်မှာ ဘေးကပ်မသွားအောင် ပတ်ပတ်လည် space ချန်ခြင်း */
             font-family: 'Source Sans Pro', sans-serif;
         }
 
         .login-wrapper {
             display: flex;
+            flex-direction: row; /* Desktop မှာ ဘေးချင်းယှဉ်ထားမည် */
             width: 900px;
-            max-width: 95%;
-            height: 550px;
+            max-width: 100%;
+            min-height: 550px;
             background: #ffffff;
             border-radius: 10px;
             overflow: hidden;
@@ -53,12 +54,11 @@
         .right-side {
             background-color: #f4f7fa;
             width: 60%;
-            padding: 60px 80px;
+            padding: 40px 60px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             position: relative;
-            /* လှိုင်းပုံစံ Background SVG */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23e6ecf2' fill-opacity='1' d='M0,256L48,229.3C96,203,192,149,288,154.7C384,160,480,224,576,218.7C672,213,768,139,864,128C960,117,1056,171,1152,197.3C1248,224,1344,224,1392,224L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
             background-size: cover;
             background-position: bottom;
@@ -108,7 +108,7 @@
             color: #1a3b5c;
             font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .form-control {
@@ -124,8 +124,6 @@
                 box-shadow: none;
             }
 
-       
-
         .forgot-link {
             color: #458bbb;
             font-size: 0.9rem;
@@ -139,6 +137,66 @@
                 color: #1a3b5c;
                 text-decoration: underline;
             }
+
+        /* 💡 MOBILE RESPONSIVE MEDIA QUERIES (ဖုန်းမျက်နှာပြင်များအတွက် ပြင်ဆင်ချက်) */
+        @@media (max-width: 768px) {
+            .login-wrapper
+
+        {
+            flex-direction: column; /* 💡 ဘေးချင်းယှဉ်ရာမှ အပေါ်အောက်ပုံစံသို့ ပြောင်းလဲခြင်း */
+            min-height: auto;
+        }
+
+        .left-side {
+            width: 100%;
+            padding: 30px;
+            text-align: center;
+            flex-direction: row; /* Mobile ပေါ်မှာ ဘယ်ဘက်ခြမ်းက အရာတွေကို တန်းစီပြရန် */
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .center-icon {
+            font-size: 2.5rem; /* Icon ကို သေးလိုက်ခြင်း */
+            margin: 0;
+        }
+
+        .pos-title {
+            font-size: 1.8rem; /* စာလုံးအရွယ်အစား လျှော့ချခြင်း */
+            margin-bottom: 0;
+            text-align: left;
+            br
+
+        {
+            display: none;
+        }
+        /* Mobile တွင် စာသားကို တစ်တန်းတည်းပြရန် */
+        }
+
+        .right-side {
+            width: 100%;
+            padding: 30px 20px; /* Mobile ပေါ်တွင် form ဘေးပတ်ပတ်လည် padding ကို လျှော့ချခြင်း */
+        }
+
+        .main-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        /* Mobile ပေါ်တွင် Login ခလုတ်အောက်က ကွက်လပ်ကို အနည်းငယ်ချန်ရန် */
+        .row .col-4 {
+            width: 100%;
+            max-width: 100%;
+            flex: 0 0 100%;
+        }
+
+        .btn-block {
+            width: 100%; /* ခလုတ်ကို မျက်နှာပြင်အပြည့် ပြောင်းခြင်း */
+        }
+
+        }
     </style>
 </head>
 <body>
@@ -162,7 +220,7 @@
             <p class="sub-title">Point of Sale</p>
             <h2 class="main-title">Sign in</h2>
 
-            @if(!string.IsNullOrEmpty(ViewBag.Error))
+            @if (!string.IsNullOrEmpty(ViewBag.Error))
             {
                 <div id="error-alert" class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 0.9rem;">
                     <i class="fas fa-exclamation-circle"></i> <span class="text-danger">@ViewBag.Error</span>
@@ -194,26 +252,26 @@
                             <div class="col-4">
                                 <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                             </div>
-
                         </div>
                     </form>
                 </div>
+            </div>
         </div>
     </div>
 
+    <script src="~/adminlte/plugins/jquery/jquery.min.js"></script>
+    <script src="~/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/adminlte/dist/js/adminlte.min.js"></script>
 
-        <script src="~/adminlte/plugins/jquery/jquery.min.js"></script>
-        <script src="~/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="~/adminlte/dist/js/adminlte.min.js"></script>
-
-        <script>
-            $(document).ready(function() {
+    <script>
+        $(document).ready(function() {
+            if ($("#error-alert").length > 0) {
                 setTimeout(function() {
                     $("#error-alert").fadeOut("slow");
                 }, 3000);
-            });
-        </script>
+            }
+        });
+    </script>
 
 </body>
-
 </html>

@@ -11,5 +11,6 @@ namespace POS.Domain.Interfaces
     public interface IDashboardService
     {
         Task<Result<DashboardDto>> GetDashboardDataAsync();
+
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace POS.App.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -19,7 +19,6 @@ namespace POS.App.Controllers
             _logger = logger;
             _dashboardService = dashboardService;
         }
-
         public async Task<IActionResult> Index()
         {
 

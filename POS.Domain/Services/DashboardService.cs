@@ -32,23 +32,28 @@ namespace POS.Domain.Services
            
             var startDate = DateTime.Today.AddDays(-6);
             var dailyRevenues = await _dashboardRepo.GetLast7DaysRevenueAsync(startDate);
+            var financialData = await _dashboardRepo.GetDailyFinancialsAsync(startDate);
 
             for (int i = 0; i < 7; i++)
             {
                 var targetDate = startDate.AddDays(i);
 
-                
                 dashboardDto.RevenueLabels.Add(targetDate.ToString("ddd"));
 
-                
-                if (dailyRevenues.ContainsKey(targetDate))
+                var dayData = financialData.FirstOrDefault(f => f.Date.Date == targetDate.Date);
+
+               
+                if (dayData != null)
                 {
-                    dashboardDto.RevenueData.Add(dailyRevenues[targetDate]);
+                    dashboardDto.RevenueData.Add(dayData.TotalRevenue);
+                    dashboardDto.CostData.Add(dayData.TotalCost);
                 }
                 else
                 {
                     dashboardDto.RevenueData.Add(0);
+                    dashboardDto.CostData.Add(0);
                 }
+
             }
 
        

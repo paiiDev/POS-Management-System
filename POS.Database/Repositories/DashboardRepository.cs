@@ -63,10 +63,33 @@ namespace POS.Database.Repositories
                 .Select(s => new { s.SaleDate, s.TotalAmount })
                 .ToListAsync();
 
-           
             return sales
                 .GroupBy(s => s.SaleDate.Date)
                 .ToDictionary(g => g.Key, g => g.Sum(s => s.TotalAmount));
+        }
+
+        public async Task<List<DailyFinancialDto>> GetDailyFinancialsAsync(DateTime startDate)
+        {
+            var dailyFinancials = await _context.SaleItems
+                                    .Include(s => s.Sale)
+                                    .Include(s => s.Product)
+                                    .Where(s => s.Sale.Status == "Paid" && s.Sale.SaleDate >= startDate)
+                                    .Select(s => new DailyFinancialDto
+                                    {
+                                        Date = s.Sale.SaleDate.Date,
+                                        TotalRevenue = s.Quantity * s.Product.SellingPrice,
+                                        TotalCost = s.Quantity * s.Product.CostPrice
+                                    }) .ToListAsync();
+
+            return dailyFinancials.GroupBy(x => x.Date)
+                                  .Select(g => new DailyFinancialDto
+                                  {
+                                      Date = g.Key,
+                                      TotalRevenue = g.Sum(x => x.TotalRevenue),
+                                      TotalCost = g.Sum(x => x.TotalCost)
+                                  })
+                                  .OrderBy(x => x.Date)
+                                  .ToList();
         }
     }
 }
