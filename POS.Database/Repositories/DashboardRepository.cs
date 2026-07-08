@@ -54,5 +54,19 @@ namespace POS.Database.Repositories
                 .ToListAsync();
             return topSellers;
         }
+
+        public async Task<Dictionary<DateTime, decimal>> GetLast7DaysRevenueAsync(DateTime startDate)
+        {
+            
+            var sales = await _context.Sales
+                .Where(s => s.Status == "Paid" && s.SaleDate >= startDate)
+                .Select(s => new { s.SaleDate, s.TotalAmount })
+                .ToListAsync();
+
+           
+            return sales
+                .GroupBy(s => s.SaleDate.Date)
+                .ToDictionary(g => g.Key, g => g.Sum(s => s.TotalAmount));
+        }
     }
 }

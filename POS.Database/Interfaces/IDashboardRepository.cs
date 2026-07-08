@@ -15,6 +15,7 @@ namespace POS.Database.Interfaces
         Task<int> GetTotalCategoriesAsync();
         Task<int> GetTotalTransactionsAsync();
         Task<List<TopSellerDto>> GetTopSellersAsync(int count);
+        Task<Dictionary<DateTime, decimal>> GetLast7DaysRevenueAsync(DateTime startDate);
 
     }
 }

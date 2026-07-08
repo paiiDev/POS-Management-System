@@ -14,5 +14,8 @@ namespace POS.Shared.DTOs.Dashboard
         public int TotalTransactions { get; set; }
 
         public List<TopSellerDto> TopSellers { get; set; } = new List<TopSellerDto>();
+
+        public List<string> RevenueLabels { get; set; } = new List<string>();
+        public List<decimal> RevenueData { get; set; } = new List<decimal>();
     }
 }

@@ -17,7 +17,7 @@
                 <div class="icon">
                     <i class="fas fa-hand-holding-usd"></i>
                 </div>
-                <a asp-action="Index" asp-controller="Sale" class="small-box-footer">
+                <a asp-action="ViewSaleTransactions" asp-controller="Sale" class="small-box-footer">
                     More info <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -65,7 +65,7 @@
                 <div class="icon">
                     <i class="fas fa-file-invoice-dollar"></i>
                 </div>
-                <a asp-action="Index" asp-controller="Sale" class="small-box-footer">
+                <a asp-action="ViewSaleTransactions" asp-controller="Sale" class="small-box-footer">
                     More info <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -89,9 +89,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-center bg-light" style="height: 380px; border-radius: 4px;">
-                        <span class="text-muted"><i class="fas fa-chart-line mr-2"></i> Chart will be rendered here</span>
-                    </div>
+                    <div id="performanceChart" style="min-height: 350px;"></div>
                 </div>
             </div>
         </div>
@@ -142,3 +140,54 @@
         </div>
     </div>
 </div>
+
+@@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var options = {
+            series: [{
+                name: 'Revenue',
+                data: @Html.Raw(Json.Serialize(Model.RevenueData))
+            }],
+            chart: {
+                type: 'area',
+                height: 350,
+                toolbar: { show: false }
+            },
+            colors: ['#0d6efd'],
+            dataLabels: { enabled: false },
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            xaxis: {
+                categories: @Html.Raw(Json.Serialize(Model.RevenueLabels)),
+                tooltip: { enabled: false }
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (value) {
+                        return value.toLocaleString() + " Ks";
+                    }
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.4,
+                    opacityTo: 0.05,
+                    stops: [0, 100]
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#performanceChart"), options);
+        chart.render();
+
+    });
+</script>
+}

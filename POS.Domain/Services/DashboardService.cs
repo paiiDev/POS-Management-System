@@ -29,6 +29,29 @@ namespace POS.Domain.Services
                 TotalTransactions = await _dashboardRepo.GetTotalTransactionsAsync(),
                 TopSellers = await _dashboardRepo.GetTopSellersAsync(5)
             };
+           
+            var startDate = DateTime.Today.AddDays(-6);
+            var dailyRevenues = await _dashboardRepo.GetLast7DaysRevenueAsync(startDate);
+
+            for (int i = 0; i < 7; i++)
+            {
+                var targetDate = startDate.AddDays(i);
+
+                
+                dashboardDto.RevenueLabels.Add(targetDate.ToString("ddd"));
+
+                
+                if (dailyRevenues.ContainsKey(targetDate))
+                {
+                    dashboardDto.RevenueData.Add(dailyRevenues[targetDate]);
+                }
+                else
+                {
+                    dashboardDto.RevenueData.Add(0);
+                }
+            }
+
+       
 
             return Result<DashboardDto>.Success(dashboardDto);
         }
