@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using POS.Database.Context;
 using POS.Database.Interfaces;
 using POS.Database.Repositories;
+using POS.Domain.Helpers;
 using POS.Domain.Interfaces;
 using POS.Domain.Services;
 using POS.Shared.Common;
-using POS.Shared.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +33,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

@@ -1,8 +1,255 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model POS.Shared.DTOs.Dashboard.DashboardDto
+
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success shadow-sm">
+                <div class="inner">
+                    <h3>@Model.TotalRevenue.ToString("N0") <sup style="font-size: 12px">Ks</sup></h3>
+                    <p>Total Revenue</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <a href="#financialChart" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-info shadow-sm">
+                <div class="inner">
+                    <h3>@Model.TotalInventory</h3>
+                    <p>Total Inventory</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <a asp-action="Index" asp-controller="Product" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-warning shadow-sm">
+                <div class="inner">
+                    <h3 class="text-white">@Model.TotalCategories</h3>
+                    <p class="text-white">Categories</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <a asp-action="Index" asp-controller="Category" class="small-box-footer">
+                    <span class="text-white">More info <i class="fas fa-arrow-circle-right"></i></span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-danger shadow-sm">
+                <div class="inner">
+                    <h3>@Model.TotalTransactions</h3>
+                    <p>Transactions</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <a asp-action="ViewSaleTransactions" asp-controller="Sale" class="small-box-footer">
+                    More info <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-lg-8">
+            <div class="card card-primary card-outline shadow-sm h-100">
+                <div class="card-header border-0">
+                    <h3 class="card-title">
+                        <i class="fas fa-chart-bar mr-1 text-primary"></i>
+                        Performance Analytics (Revenue)
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="performanceChart" style="min-height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card card-info card-outline shadow-sm h-100">
+                <div class="card-header border-0">
+                    <h3 class="card-title font-weight-bold">
+                        <i class="fas fa-star text-warning mr-1"></i>
+                        Top Sellers
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="products-list product-list-in-card pl-2 pr-2">
+                        @if (Model.TopSellers != null)
+                        {
+                            @foreach (var seller in Model.TopSellers)
+                            {
+                                <li class="item">
+                                    <div class="product-img ml-2 px-3">
+                                        <div class="d-flex align-items-center justify-content-center bg-info text-white font-weight-bold shadow-sm"
+                                             style="width: 50px; height: 50px; border-radius: 10px; font-size: 1.3rem;">
+                                            @seller.Initial
+                                        </div>
+                                    </div>
+                                    <div class="product-info ml-4 pl-1">
+                                        <a href="javascript:void(0)" class="product-title text-dark">
+                                            @seller.ProductName
+                                            <span class="badge badge-success float-right mt-1 px-2 py-1" style="font-size: 0.85rem;">
+                                                @seller.UnitsSold Sold
+                                            </span>
+                                        </a>
+                                        <span class="product-description text-muted small">
+                                            High performing inventory
+                                        </span>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="card-footer text-center border-top">
+                    <a asp-action="Index" asp-controller="Product" class="text-uppercase text-muted font-weight-bold small">View All Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-12">
+            <div class="card card-success card-outline shadow-sm">
+                <div class="card-header border-0">
+                    <h3 class="card-title">
+                        <i class="fas fa-balance-scale mr-1 text-success"></i>
+                        Revenue vs Expenses Analytics
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="financialChart" style="min-height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+          
+            var labelsData = @Html.Raw(Json.Serialize(Model.RevenueLabels)) || [];
+            var revenueData = @Html.Raw(Json.Serialize(Model.RevenueData)) || [];
+            var costData = @Html.Raw(Json.Serialize(Model.CostData)) || [];
+
+     
+            var options1 = {
+                series: [{
+                    name: 'Revenue (ဝင်ငွေ)',
+                    data: revenueData
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: { show: false }
+                },
+                colors: ['#28a745'],
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '45%'
+                    }
+                },
+                dataLabels: { enabled: false },
+                xaxis: {
+                    categories: labelsData,
+                    tooltip: { enabled: false }
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return value.toLocaleString() + " Ks";
+                        }
+                    }
+                }
+            };
+
+            var chart1 = new ApexCharts(document.querySelector("#performanceChart"), options1);
+            chart1.render();
+
+            var options2 = {
+                series: [
+                    {
+                        name: 'Total Revenue (ရောင်းရငွေ)',
+                        type: 'area',
+                        data: revenueData
+                    },
+                    {
+                        name: 'Total Cost (ဝယ်ရင်းစရိတ်)',
+                        type: 'line',
+                        data: costData
+                    }
+                ],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    stacked: false,
+                    toolbar: { show: false }
+                },
+                colors: ['#0d6efd', '#dc3545'],
+                stroke: {
+                    width: [3, 4],
+                    curve: 'smooth'
+                },
+                fill: {
+                    opacity: [0.2, 1],
+                    type: 'solid'
+                },
+                xaxis: {
+                   
+                    categories: labelsData,
+                    tooltip: { enabled: false }
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return value.toLocaleString() + " Ks";
+                        }
+                    }
+                }
+                
+            };
+
+            var chart2 = new ApexCharts(document.querySelector("#financialChart"), options2);
+            chart2.render();
+
+        });
+    </script>
+}

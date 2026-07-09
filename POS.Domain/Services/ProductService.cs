@@ -1,10 +1,10 @@
 using POS.Database.Entities;
 using POS.Database.Interfaces;
+using POS.Domain.Helpers;
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Pagination;
 using POS.Shared.DTOs.Product;
-using POS.Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -21,7 +21,14 @@ namespace POS.App.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                if(User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index", "Home");
+                } else
+                {
+                    return RedirectToAction("CreateSale", "Sale");
+
+                }
             }
             return View();
         }
@@ -54,7 +61,16 @@ namespace POS.App.Controllers
 
              await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal, authProperties);
 
-             return RedirectToAction("Index", "Home");
+            var userRole = principal.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
+
+            if (userRole == "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+
+
+            }
+            return RedirectToAction("CreateSale", "Sale");
+
         }
 
 

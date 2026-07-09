@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\POS.Database\POS.Database.csproj" />
     <ProjectReference Include="..\POS.Domain\POS.Domain.csproj" />
+    <ProjectReference Include="..\POS.Shared\POS.Shared.csproj" />
   </ItemGroup>
 
 </Project>

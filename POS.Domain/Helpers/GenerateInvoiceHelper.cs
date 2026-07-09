@@ -1,13 +1,14 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using POS.Database.Context;
+using POS.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace POS.Shared.Helpers
+namespace POS.Domain.Helpers
 {
     public class GenerateInvoiceHelper : IGenerateInvoiceHelper
     {
