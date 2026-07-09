@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using POS.Database.Context;
 using POS.Database.Interfaces;
@@ -7,6 +8,7 @@ using POS.Domain.Helpers;
 using POS.Domain.Interfaces;
 using POS.Domain.Services;
 using POS.Shared.Common;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +49,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
     });
+
+// Configure Data Protection for production (important for shared hosting)
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "data-protection-keys")));
 
 var app = builder.Build();
 
