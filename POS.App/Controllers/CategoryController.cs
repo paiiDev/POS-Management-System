@@ -78,10 +78,15 @@ namespace POS.App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateCategoryDto request)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+
             var result = await _categoryService.UpdateCategoryAsync(request);
             if (!result.IsSuccess)
             {
-                TempData["ErrorMessage"] = result.Error;
+                ModelState.AddModelError(string.Empty, result.Error);
                 return View(request);
             }
             return RedirectToAction("Index");

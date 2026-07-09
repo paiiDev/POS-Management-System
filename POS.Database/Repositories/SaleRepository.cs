@@ -29,6 +29,8 @@ namespace POS.Database.Repositories
 
         public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedPaidSalesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
+            pageNumber = Math.Max(pageNumber, 1);
+            pageSize = Math.Max(pageSize, 1);
 
             var query = _dbContext.Sales.Where(s => s.Status == "Paid");
 
@@ -56,6 +58,9 @@ namespace POS.Database.Repositories
 
         public async Task<(IEnumerable<Sale> sales, int totalCount)> GetAllPagedVoidedSalesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
+            pageNumber = Math.Max(pageNumber, 1);
+            pageSize = Math.Max(pageSize, 1);
+
             var query = _dbContext.Sales.Where(s => s.Status == "Voided");
 
             if (!string.IsNullOrEmpty(searchTerm))
@@ -74,6 +79,8 @@ namespace POS.Database.Repositories
                 .Where(s => s.Status == "Voided")
                 .AsNoTracking()
                 .OrderByDescending(s => s.SaleDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
 
             return (sales, totalCount);

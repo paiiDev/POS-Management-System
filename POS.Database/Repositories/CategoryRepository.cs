@@ -25,6 +25,9 @@ namespace POS.Database.Repositories
 
         public async Task<(IEnumerable<Category> Items, int TotalCount)> GetAllPagedCategoriesAsync(string? searchTerm, int pageNumber, int pageSize)
         {
+            pageNumber = Math.Max(pageNumber, 1);
+            pageSize = Math.Max(pageSize, 1);
+
             var query = _dbContext.Categories.AsNoTracking();
 
             if(!string.IsNullOrEmpty(searchTerm))
