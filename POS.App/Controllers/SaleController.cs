@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.Domain.Interfaces;
 using POS.Shared.DTOs.Pagination;
@@ -40,9 +40,9 @@ namespace POS.App.Controllers
 
             request.UserId = User.GetUserId();
             var result = await _salesService.CreateSaleAsync(request);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Value == null)
             {
-                ViewBag.Error = result.Error;
+                ViewBag.Error = result.Error ?? "Failed to create sale";
                 await LoadProducts(page, searchString);
                 return View("CreateSale", request);
             }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.Database.Entities;
 using POS.Domain.Interfaces;
@@ -73,9 +73,9 @@ namespace POS.App.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var result = await _productService.GetProductByIdAsync(id);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Value == null)
             {
-                TempData["ErrorMessage"] = result.Error;
+                TempData["ErrorMessage"] = result.Error ?? "Product not found";
                 return RedirectToAction(nameof(Index));
             }
             
@@ -109,7 +109,7 @@ namespace POS.App.Controllers
             if (!result.IsSuccess)
             {
                 await LoadCategoriesAsync();
-                ModelState.AddModelError(string.Empty, "Failed to upate product: " + result.Error);
+                ModelState.AddModelError(string.Empty, "Failed to update product: " + result.Error);
                 return View(request);
             }
             return RedirectToAction(nameof(Index));
@@ -120,9 +120,9 @@ namespace POS.App.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _productService.GetProductByIdAsync(id);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Value == null)
             {
-                TempData["ErrorMessage"] = result.Error;
+                TempData["ErrorMessage"] = result.Error ?? "Product not found";
                 return RedirectToAction(nameof(Index));
             }
 

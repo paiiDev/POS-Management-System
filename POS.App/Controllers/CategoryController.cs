@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.Database.Entities;
 using POS.Domain.Interfaces;
@@ -86,7 +86,7 @@ namespace POS.App.Controllers
             var result = await _categoryService.UpdateCategoryAsync(request);
             if (!result.IsSuccess)
             {
-                ModelState.AddModelError(string.Empty, result.Error);
+                ModelState.AddModelError(string.Empty, result.Error ?? "Failed to update category");
                 return View(request);
             }
             return RedirectToAction("Index");
@@ -97,16 +97,16 @@ namespace POS.App.Controllers
         public  async Task<IActionResult> Delete(int id)
         {
             var result = await _categoryService.GetCategoryByIdAsync(id);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Value == null)
             {
-                TempData["ErrorMessage"] = result.Error;
-                return View();
+                TempData["ErrorMessage"] = result.Error ?? "Category not found";
+                return RedirectToAction(nameof(Index));
             }
 
             var dto = new CategoryDto
             {
-                Id = result!.Value!.Id,
-                Name = result!.Value!.Name,
+                Id = result.Value.Id,
+                Name = result.Value.Name,
             };
             return View(dto);
         }

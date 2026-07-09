@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,9 +46,9 @@ namespace POS.App.Controllers
             }
 
             var result = await _authService.LoginAsync(request);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Value == null)
             {
-                ViewBag.Error = result.Error;
+                ViewBag.Error = result.Error ?? "Invalid username or password";
                 return View("Login", request);
             }
 
@@ -59,7 +59,7 @@ namespace POS.App.Controllers
                     IssuedUtc = DateTimeOffset.UtcNow
                 };
 
-             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal, authProperties);
+             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
 
             var userRole = principal.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
 
