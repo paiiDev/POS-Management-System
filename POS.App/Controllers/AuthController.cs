@@ -75,12 +75,31 @@ namespace POS.App.Controllers
 
 
         [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync();
+            await PerformLogout();
             return RedirectToAction("Login", "Auth");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogoutConfirmed()
+        {
+            await PerformLogout();
+            return RedirectToAction("Login", "Auth");
+        }
+
+        private async Task PerformLogout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            // Clear all cookies explicitly
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
         }
 
         [AllowAnonymous]

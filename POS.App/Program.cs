@@ -48,6 +48,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
+        
+        // Cookie settings for production
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Use Always for HTTPS
+        options.Cookie.SameSite = SameSiteMode.Lax;
     });
 
 // Configure Data Protection for production (important for shared hosting)
