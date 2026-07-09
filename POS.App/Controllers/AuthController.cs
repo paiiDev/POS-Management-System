@@ -19,15 +19,14 @@ namespace POS.App.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            if (User.Identity != null && User.Identity.IsAuthenticated)
+            if (User.Identity != null && User.Identity.IsAuthenticated,!string.IsNullOrEmpty(User!.Identity!.Name)
             {
                 if(User.IsInRole("Admin"))
                 {
                     return RedirectToAction("Index", "Home");
-                } else
+                } else 
                 {
                     return RedirectToAction("CreateSale", "Sale");
-
                 }
             }
             return View();
