@@ -19,7 +19,7 @@ namespace POS.App.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            if (User.Identity != null && User.Identity.IsAuthenticated,!string.IsNullOrEmpty(User!.Identity!.Name)
+            if (User.Identity != null && User.Identity.IsAuthenticated && !string.IsNullOrEmpty(User!.Identity!.Name))
             {
                 if(User.IsInRole("Admin"))
                 {
