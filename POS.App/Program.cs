@@ -56,25 +56,6 @@ builder.Services.AddDataProtection()
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    
-    // Apply any pending migrations
-    await dbContext.Database.MigrateAsync();
-
-    int AdminId = SystemUser.DefaultAdminId; 
-    if (!dbContext.Users.Any(u => u.Id == AdminId))
-    {
-        var defaultAdminHash = BCrypt.Net.BCrypt.HashPassword("Admin123");
-
-        await dbContext.Database.ExecuteSqlInterpolatedAsync($@"
-            SET IDENTITY_INSERT dbo.Users ON;
-            INSERT INTO dbo.Users (Id, UserName, FullName, PasswordHash, Role, CreatedAt)
-            VALUES ({AdminId}, {SystemUser.DefaultAdminUserName}, {SystemUser.DefaultAdminFullName}, {defaultAdminHash}, {SystemUser.AdminRole}, SYSUTCDATETIME());
-            SET IDENTITY_INSERT dbo.Users OFF;");
-    }
-}
 
 
 
