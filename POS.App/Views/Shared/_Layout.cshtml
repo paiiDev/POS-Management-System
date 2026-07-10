@@ -20,15 +20,12 @@
 
      
 
-        <!-- 1. Top Navbar (Header) မလာခင် နေရာ -->
         @await Html.PartialAsync("_Navbar")
 
-        <!-- 2. Main Sidebar (ဘယ်ဘက် Menu) နေရာ -->
         @await Html.PartialAsync("_Sidebar")
  
   
        
-        <!-- 3. Content Wrapper (အလယ်က အဓိက အပြောင်းအလဲဖြစ်မည့် နေရာ) -->
         <div class="content-wrapper">
 
        
@@ -38,17 +35,12 @@
                     <!-- Breadcrumbs -->
                     @await Html.PartialAsync("_Breadcrumbs")
 
-                    <!-- သက်ဆိုင်ရာ View များ၏ ကုဒ်များ ဝင်လာမည့်နေရာ -->
                     @RenderBody()
                 </div>
             </section>
         </div>
 
-        <!-- 4. Footer နေရာ -->
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2026 <a href="#">Paii POS System</a>.</strong> All rights reserved.
-        </footer>
-
+       
     </div>
     <!-- ./wrapper -->
     <!-- REQUIRED SCRIPTS -->

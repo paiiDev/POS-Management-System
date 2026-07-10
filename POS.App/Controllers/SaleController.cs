@@ -29,11 +29,20 @@ namespace POS.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string searchString, CreateSaleDto request, int page = 1)
+        public async Task<IActionResult> Create(string? searchString, CreateSaleDto request, int page = 1)
         {
             if(!ModelState.IsValid)
             {
-                ViewBag.Error = "Invalid input data.";
+                // Collect all validation errors
+                var errorMessages = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+                
+                ViewBag.Error = errorMessages.Any() 
+                    ? string.Join("; ", errorMessages) 
+                    : "Invalid input data.";
+                
                 await LoadProducts(page, searchString);
                 return View("CreateSale", request);
             }

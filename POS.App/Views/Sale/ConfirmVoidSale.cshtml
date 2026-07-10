@@ -68,19 +68,22 @@
                                       autofocus></textarea>
                         </div>
 
+                        <div class="card-footer bg-white text-right border-top-0 pt-0 pb-3">
+                            <a asp-action="SaleDetails" asp-route-id="@Model.Id" class="btn btn-secondary mr-2 shadow-sm">
+                                <i class="fas fa-times mr-1"></i> Cancel
+                            </a>
+
+                            <button type="submit" form="voidForm" class="btn btn-danger shadow-sm font-weight-bold swal-void">
+                                <i class="fas fa-trash-alt mr-1"></i> Confirm Void
+                            </button>
+                        </div>
+
+
                     </form>
 
                 </div>
 
-                <div class="card-footer bg-white text-right border-top-0 pt-0 pb-3">
-                    <a asp-action="SaleDetails" asp-route-id="@Model.Id" class="btn btn-secondary mr-2 shadow-sm">
-                        <i class="fas fa-times mr-1"></i> Cancel
-                    </a>
-
-                    <button type="submit" form="voidForm" class="btn btn-danger shadow-sm font-weight-bold swal-void">
-                        <i class="fas fa-trash-alt mr-1"></i> Confirm Void
-                    </button>
-                </div>
+              
 
             </div>
         </div>
