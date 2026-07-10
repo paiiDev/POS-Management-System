@@ -24,7 +24,7 @@
             <div class="info">
                 <div class="d-flex">
                     <a href="#" class="d-block fs-1">
-                        @User.GetFullName() &nbsp;| &nbsp;
+                        @User.GetFullName() 
                     </a>
                     @if (User.IsInRole("Admin"))
                     {
@@ -32,7 +32,8 @@
                     }
                     else
                     {
-                        <span class="text-blue">Cashier </span>
+                        <span class="text-white">&nbsp;| &nbsp; </span>
+                        <span class="text-blue"> Cashier </span>
                     }
                 </div>
                
