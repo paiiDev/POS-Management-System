@@ -7,6 +7,12 @@ wwwroot/lib/** linguist-vendored
 wwwroot/js/** linguist-vendored
 node_modules/** linguist-vendored
 
+*.js linguist-detectable=false
+*.html linguist-detectable=false
+*.css linguist-detectable=false
+
+*.cs linguist-detectable=true
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #
