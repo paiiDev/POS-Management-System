@@ -57,7 +57,7 @@
 
                             <dt class="col-sm-5 text-muted mb-0">Category</dt>
                             <dd class="col-sm-7 mb-0">
-                                <span class="badge badge-secondary px-2 py-1 shadow-sm">@Model.CategoryName</span>
+                                <span class="badge badge-secondary px-2 py-1 shadow-sm">@(Model.CategoryName != null ? Model.CategoryName : "No category")</span>
                             </dd>
                         </dl>
                     </div>

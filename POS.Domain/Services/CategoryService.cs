@@ -34,7 +34,7 @@ namespace POS.Domain.Services
                 var categories = result.Select(c => new CategoryDto
                 {
                     Id = c.Id,
-                    Name = c.Name,
+                    Name = c.Name ?? "No category",
                 }).ToList();
 
                 return Result<List<CategoryDto>>.Success(categories);

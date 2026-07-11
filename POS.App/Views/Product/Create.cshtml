@@ -38,7 +38,7 @@
                                     {
                                         @foreach (var category in ViewBag.Categories)
                                         {
-                                            <option value="@category.Id">@category.Name</option>
+                                            <option value="@category.Id">@(category.Name != null ? category.Name : "No category")</option>
                                         }
                                     }
                                 </select>

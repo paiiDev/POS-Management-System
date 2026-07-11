@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using POS.Database.Context;
 using POS.Database.Entities;
 using POS.Database.Interfaces;
@@ -20,13 +20,22 @@ namespace POS.Database.Repositories
 
         public async Task<List<Product>> GetAllProductsAsync()
         {
-            return await _dbContext.Products.Include(p => p.Category).AsNoTracking().ToListAsync();
+            return await _dbContext.Products
+                .IgnoreQueryFilters()
+                .Where(p => !p.IsDeleted)
+                .Include(p => p.Category)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
 
-        public async Task<(IEnumerable<Product> products, int totalCount)> GetProductsPagedAsync(string? searchTerm,int pageNumber, int pageSize)
+      
+       public async Task<(IEnumerable<Product> products, int totalCount)> GetProductsPagedAsync(string? searchTerm, int pageNumber, int pageSize)
         {
-            var query =  _dbContext.Products.Include(p => p.Category).AsQueryable();
+            var query = _dbContext.Products
+                .IgnoreQueryFilters()
+                .Where(p => !p.IsDeleted) 
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -35,7 +44,13 @@ namespace POS.Database.Repositories
 
             var totalCount = await query.CountAsync();
 
-            var products = await query.OrderByDescending(p => p.Id).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            var products = await query
+                .OrderByDescending(p => p.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(p => p.Category)
+                .AsNoTracking()
+                .ToListAsync();
 
             return (products, totalCount);
         }
@@ -43,7 +58,12 @@ namespace POS.Database.Repositories
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await _dbContext.Products.Include(p => p.Category).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Products
+                .IgnoreQueryFilters()
+                .Where(p => !p.IsDeleted)
+                .Include(p => p.Category)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Product>> GetProductsforCreateSale(List<int> productIds)

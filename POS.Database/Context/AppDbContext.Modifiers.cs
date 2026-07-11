@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using POS.Database.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,8 +14,7 @@ namespace POS.Database.Context
         {
             modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
             modelBuilder.Entity<Category>().HasQueryFilter(c => !c.IsDeleted);
-            modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted && !p.Category.IsDeleted);
-
+            modelBuilder.Entity<Product>().HasQueryFilter(p => !p.IsDeleted); 
         }
     }
 }

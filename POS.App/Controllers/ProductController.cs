@@ -78,16 +78,17 @@ namespace POS.App.Controllers
                 TempData["ErrorMessage"] = result.Error ?? "Product not found";
                 return RedirectToAction(nameof(Index));
             }
-            
-            var dto = new UpdateProductDto { 
-                        Id = result.Value.Id, 
-                        Name=result.Value.Name, 
-                        Barcode=result.Value.Barcode, 
-                        CostPrice=result.Value.CostPrice, 
-                        SellingPrice=result.Value.SellingPrice,
-                        StockQuantity =result.Value.StockQuantity, 
-                        CategoryId=result.Value.CategoryId 
-                        };
+
+            var dto = new UpdateProductDto
+            {
+                Id = result.Value.Id,
+                Name = result.Value.Name,
+                Barcode = result.Value.Barcode,
+                CostPrice = result.Value.CostPrice,
+                SellingPrice = result.Value.SellingPrice,
+                StockQuantity = result.Value.StockQuantity,
+                CategoryId = result.Value.CategoryId
+            };
 
             await LoadCategoriesAsync();
             return View(dto);

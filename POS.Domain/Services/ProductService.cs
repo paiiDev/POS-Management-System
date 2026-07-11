@@ -39,7 +39,7 @@ namespace POS.Domain.Services
                     SellingPrice = x.SellingPrice,
                     StockQuantity = x.StockQuantity,
                     CategoryId = x.CategoryId,
-                    CategoryName = x.Category.Name
+                    CategoryName = x.Category?.Name ?? "Unknown Category"
                 }).ToList();
 
                 return Result<List<ProductDto>>.Success(products);
@@ -49,6 +49,7 @@ namespace POS.Domain.Services
                 return Result<List<ProductDto>>.Failure(ex.Message);
             }
         }
+
 
 
 
@@ -68,7 +69,7 @@ namespace POS.Domain.Services
                     SellingPrice = x.SellingPrice,
                     StockQuantity = x.StockQuantity,
                     CategoryId = x.CategoryId,
-                    CategoryName = x.Category.Name
+                    CategoryName = x.Category?.Name ?? "Unknown Category"
                 }).ToList();
 
                   var result =  new PagedResult<ProductDto>
@@ -106,7 +107,7 @@ namespace POS.Domain.Services
                     SellingPrice = result.SellingPrice,
                     StockQuantity = result.StockQuantity,
                     CategoryId = result.CategoryId,
-                    CategoryName = result.Category.Name
+                    CategoryName = result.Category?.Name ?? "Unknown Category"
                 };
 
                 return Result<ProductDto>.Success(product);
@@ -195,14 +196,22 @@ namespace POS.Domain.Services
                     return Result<bool>.Failure("Product not found.");
                 }
 
+            
+
+                {
+                   
+                    if (dto.CategoryId != existingProduct.CategoryId)
+                    {
+                        var isCategoryIdExist = await _categoryRepository.GetCategoryByIdAsync(dto.CategoryId);
+                        if (isCategoryIdExist is null)
+                        {
+                            return Result<bool>.Failure("Product category not found or has been deleted.");
+                        }
+                    }
+                }
+
                 var productName = dto.Name.Trim();
                 var barcode = dto.Barcode.Trim();
-
-                var isCategoryIdExist = await _categoryRepository.GetCategoryByIdAsync(dto.CategoryId);
-                if (isCategoryIdExist is null)
-                {
-                    return Result<bool>.Failure("Product category not found.");
-                }
 
                 var products = await _productRepository.GetAllProductsAsync();
                 var existingBarCode = products.Any(x => x.Barcode.Trim() == barcode && x.Id != dto.Id );

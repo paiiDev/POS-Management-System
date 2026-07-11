@@ -121,7 +121,7 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <span class="badge badge-secondary px-2 py-1">@item.CategoryName</span>
+                                        <span class="badge badge-secondary px-2 py-1">@(item.CategoryName != null ? item.CategoryName : "No category")</span>
                                     </td>
 
                                     @if (User.IsInRole("Admin"))
