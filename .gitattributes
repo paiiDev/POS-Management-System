@@ -3,8 +3,9 @@
 ###############################################################################
 * text=auto
 
-wwwroot/lib/**/* linguist-vendored
-wwwroot/adminlte/**/* linguist-vendored
+wwwroot/lib/** linguist-vendored
+wwwroot/js/** linguist-vendored
+node_modules/** linguist-vendored
 
 ###############################################################################
 # Set default behavior for command prompt diff.
