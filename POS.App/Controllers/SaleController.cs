@@ -56,8 +56,8 @@ namespace POS.App.Controllers
                 return View("CreateSale", request);
             }
 
+            TempData["ClearCart"] = true;
             var saleId = result.Value.Id;
-
             return RedirectToAction("ConfirmSale", new { id = saleId });
         }
 
@@ -71,6 +71,7 @@ namespace POS.App.Controllers
                 return NotFound(result.Error);
             }
             ViewBag.From = from;
+            
             return View(result.Value);
         }
 

@@ -139,3 +139,19 @@
         </div>
     </div>
 </div>
+
+@if (TempData["ClearCart"] != null && (bool)TempData["ClearCart"]! == true)
+{
+    <script>
+
+        localStorage.removeItem("posCart");
+
+
+        if (typeof cart !== 'undefined') {
+            cart = [];
+            if (typeof renderCart === 'function') {
+                renderCart();
+            }
+        }
+    </script>
+}
