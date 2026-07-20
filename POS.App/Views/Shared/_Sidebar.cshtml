@@ -16,6 +16,8 @@
             <div class="image" style="padding-left: 20px;">
                 @if(User.IsInRole("Admin")){
                 <i class="fas fa-user-tie fa-lg text-light"></i>
+                } else if(User.IsInRole("Manager")) {
+                <i class="fas fa-user-cog fa-lg text-light"></i>
                 } else {
                 <i class="fas fa-user fa-lg text-light"></i>
                 }
@@ -29,6 +31,11 @@
                     @if (User.IsInRole("Admin"))
                     {
                         <span class="text-blue"></span>
+                    }
+                    else if (User.IsInRole("Manager"))
+                    {
+                        <span class="text-white">&nbsp;| &nbsp; </span>
+                        <span class="text-blue"> Manager </span>
                     }
                     else
                     {
@@ -96,7 +103,7 @@
 
         
 
-                @if(User.IsInRole("Admin"))
+                @if(User.IsInRole("Admin") || User.IsInRole("Manager"))
                 {
                     <li class="nav-item">
                         <a asp-controller="Sale" asp-action="VoidedSaleTransactions" class="nav-link @(currentController == "Sale" && currentAction == "VoidedSaleTransactions" ? "active" : "")">
@@ -104,7 +111,10 @@
                             <p>Voided Sales</p>
                         </a>
                     </li>
+                }
 
+                @if(User.IsInRole("Admin"))
+                {
                     <li class="nav-item">
                         <a asp-controller="User" asp-action="Index" class="nav-link @(currentController == "User" ? "active" : "")">
                             <i class="nav-icon fas fa-users"></i>

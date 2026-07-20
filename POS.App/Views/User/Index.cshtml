@@ -85,6 +85,12 @@
                                                 <i class="fas fa-user-shield mr-1"></i> @user.Role
                                             </span>
                                         }
+                                        else if (user.Role == "Manager")
+                                        {
+                                            <span class="badge badge-warning px-2 py-1 shadow-sm">
+                                                <i class="fas fa-user-cog mr-1"></i> @user.Role
+                                            </span>
+                                        }
                                         else if (user.Role == "Cashier")
                                         {
                                             <span class="badge badge-success px-2 py-1 shadow-sm">

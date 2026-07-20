@@ -10,5 +10,7 @@ namespace POS.Shared.Common
         public const string DefaultAdminUserName = "Admin";
         public const string DefaultAdminFullName = "System Administrator";
         public const string AdminRole = "Admin";
+
+        public const string ManagerRole = "Manager";
     }
 }

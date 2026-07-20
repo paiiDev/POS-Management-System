@@ -76,7 +76,7 @@
                                 <th class="border-top-0 text-muted">Date & Time</th>
                                 <th class="border-top-0 text-muted text-right">Total Amount</th>
                                 <th class="border-top-0 text-muted text-center">Status</th>
-                                @if (User.IsInRole("Admin"))
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                                 {
                                     <th class="border-top-0 text-muted">Cashier</th>
                                 }
@@ -115,7 +115,7 @@
                                         }
                                     </td>
 
-                                    @if (User.IsInRole("Admin"))
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                                     {
                                         <td>
                                             <span class="text-muted"><i class="fas fa-user-tag mr-1"></i> @sale.CashierName</span>
@@ -128,7 +128,7 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
 
-                                            @if (User.IsInRole("Admin") && sale.Status != "Voided")
+                                            @if ((User.IsInRole("Admin") || User.IsInRole("Manager")) && sale.Status != "Voided")
                                             {
                                                 <a asp-action="VoidSale" asp-route-id="@sale.Id"
                                                    class="btn btn-sm btn-outline-danger"

@@ -102,7 +102,7 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> VoidedSaleTransactions(string searchString, int page = 1)
         {
             int pageSize = 10;
@@ -118,7 +118,7 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> VoidedSaleDetails(int Id)
         {
             var result = await _salesService.GetVoidLogBySaleIdAsync(Id);
@@ -128,7 +128,7 @@ namespace POS.App.Controllers
 
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> VoidSale(int id)
         {
            if(id <= 0)
@@ -147,7 +147,7 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> ConfirmVoidSale(int id)
         {
             if (id <= 0)
@@ -165,7 +165,7 @@ namespace POS.App.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VoidSaleConfirmed(VoidLogDto request)
         {

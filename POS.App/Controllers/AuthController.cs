@@ -24,10 +24,10 @@ namespace POS.App.Controllers
                 if(User.IsInRole("Admin"))
                 {
                     return RedirectToAction("Index", "Home");
-                } else if(User.IsInRole("Cashier"))
+                } else if(User.IsInRole("Manager") || User.IsInRole("Cashier"))
                 {
                     return RedirectToAction("CreateSale", "Sale");
-                } 
+                }
             }
             return View();
         }
@@ -65,8 +65,6 @@ namespace POS.App.Controllers
             if (userRole == "Admin")
             {
                 return RedirectToAction("Index", "Home");
-
-
             }
             return RedirectToAction("CreateSale", "Sale");
 

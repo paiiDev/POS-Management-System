@@ -198,6 +198,11 @@ namespace POS.Domain.Services
                 return SystemUser.AdminRole;
             }
 
+            if (string.Equals(role, SystemUser.ManagerRole, StringComparison.OrdinalIgnoreCase))
+            {
+                return SystemUser.ManagerRole;
+            }
+
             if (string.Equals(role, SystemUser.DefaultCashierRole, StringComparison.OrdinalIgnoreCase))
             {
                 return SystemUser.DefaultCashierRole;

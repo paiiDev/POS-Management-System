@@ -33,14 +33,14 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         public IActionResult Create()
         {
            return View();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCategoryDto request)
         {
@@ -58,7 +58,7 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         public async  Task<IActionResult> Edit(int id)
         {
             var result = await _categoryService.GetCategoryByIdAsync(id);
@@ -74,7 +74,7 @@ namespace POS.App.Controllers
 
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateCategoryDto request)
         {
@@ -93,7 +93,7 @@ namespace POS.App.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         public  async Task<IActionResult> Delete(int id)
         {
             var result = await _categoryService.GetCategoryByIdAsync(id);
@@ -113,7 +113,7 @@ namespace POS.App.Controllers
 
 
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

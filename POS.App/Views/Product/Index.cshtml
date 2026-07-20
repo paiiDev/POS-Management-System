@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="col-sm-6 text-right mt-3 mt-sm-0">
-            @if (User.IsInRole("Admin"))
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
             {
                 <a asp-action="Create" class="btn btn-primary shadow-sm">
                     <i class="fas fa-plus-circle mr-1"></i> Create Product
@@ -69,14 +69,14 @@
                             <tr>
                                 <th class="border-top-0 text-muted">ID</th>
                                 <th class="border-top-0 text-muted">Product Info</th>
-                                @if (User.IsInRole("Admin"))
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                                 {
                                     <th class="border-top-0 text-muted text-right">Cost Price</th>
                                 }
                                 <th class="border-top-0 text-muted text-right">Selling Price</th>
                                 <th class="border-top-0 text-muted text-center">Stock</th>
                                 <th class="border-top-0 text-muted text-center">Category</th>
-                                @if (User.IsInRole("Admin"))
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                                 {
                                     <th class="border-top-0 text-muted text-center" width="120">Actions</th>
                                 }
@@ -94,7 +94,7 @@
                                         <small class="text-muted"><i class="fas fa-barcode mr-1"></i>@item.Barcode</small>
                                     </td>
 
-                                    @if (User.IsInRole("Admin"))
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                                     {
                                         <td class="text-right">
                                             @item.CostPrice.ToString("#,##0") <small class="text-muted">Ks</small>
@@ -124,7 +124,7 @@
                                         <span class="badge badge-secondary px-2 py-1">@(item.CategoryName != null ? item.CategoryName : "No category")</span>
                                     </td>
 
-                                    @if (User.IsInRole("Admin"))
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                                     {
                                         <td class="text-center">
                                             <div class="btn-group" role="group">

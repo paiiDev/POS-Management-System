@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="col-sm-6 text-right mt-3 mt-sm-0">
-            @if (User.IsInRole("Admin"))
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
             {
                 <a asp-action="Create" class="btn btn-primary shadow-sm">
                     <i class="fas fa-plus-circle mr-1"></i> Create Category
@@ -67,7 +67,7 @@
                             <tr>
                                 <th class="border-top-0 text-muted" width="100">ID</th>
                                 <th class="border-top-0 text-muted">Category Name</th>
-                                @if (User.IsInRole("Admin"))
+                                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                                 {
                                     <th class="border-top-0 text-muted text-center" width="150">Actions</th>
                                 }
@@ -84,7 +84,7 @@
                                         @item.Name
                                     </td>
 
-                                    @if (User.IsInRole("Admin"))
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                                     {
                                         <td class="text-center">
                                             <div class="btn-group" role="group">
