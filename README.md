@@ -17,6 +17,40 @@
 - **Dashboard**: Overview of business operations
 - **Invoice Generation**: Generate detailed invoices for sales transactions
 
+## Screenshots
+
+### Sign In
+
+![Sign In](images/sign%20in.png)
+
+### Dashboard
+
+![Dashboard](images/dashboard.png)
+
+### Create Sale
+
+![Create Sale](images/create%20sale.png)
+
+### Product Management
+
+![Product Management](images/product%20management.png)
+
+### Category Management
+
+![Category Management](images/category%20management.png)
+
+### Sale Transactions
+
+![Sale Transactions](images/sale%20transaction.png)
+
+### Voided Sales
+
+![Voided Sales](images/voided%20sales.png)
+
+### User Management
+
+![User Management](images/user%20management.png)
+
 ## Tech Stack
 
 ### Backend
