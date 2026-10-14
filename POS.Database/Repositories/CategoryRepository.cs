@@ -63,7 +63,6 @@ namespace POS.Database.Repositories
             {
                 existingCategory.Id  = category.Id;
                 existingCategory.Name = category.Name;
-                existingCategory.Products = category.Products;
                 await _dbContext.SaveChangesAsync();
             }
             

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using POS.Database.Entities;
-using POS.Domain.Interfaces;
+using POS.Core.Interfaces.IServices;
 using POS.Shared.DTOs.Category;
 using POS.Shared.DTOs.Product;
 using System.Runtime.InteropServices;

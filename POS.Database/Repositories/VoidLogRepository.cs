@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace POS.Database.Repositories
 {
-    public class VoidLogRepository : IVoidLog
+    public class VoidLogRepository : IVoidLogRepository
     {
         private readonly AppDbContext _dbContext;
         public VoidLogRepository(AppDbContext dbContext)

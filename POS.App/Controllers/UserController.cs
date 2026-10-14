@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using POS.Domain.Interfaces;
+using POS.Core.Interfaces.IServices;
 using POS.Shared.DTOs.User;
 
 namespace POS.App.Controllers

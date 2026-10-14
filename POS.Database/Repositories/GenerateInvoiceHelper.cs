@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace POS.Domain.Helpers
+namespace POS.Infrastructure.Helpers
 {
     public class GenerateInvoiceHelper : IGenerateInvoiceHelper
     {

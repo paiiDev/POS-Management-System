@@ -1,7 +1,7 @@
+using POS.Core.Interfaces.IServices;
 using POS.Database.Entities;
 using POS.Database.Interfaces;
 using POS.Domain.Helpers;
-using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Pagination;
 using POS.Shared.DTOs.Product;

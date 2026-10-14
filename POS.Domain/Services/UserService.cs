@@ -1,6 +1,6 @@
-﻿using POS.Database.Entities;
+﻿using POS.Core.Interfaces.IServices;
+using POS.Database.Entities;
 using POS.Database.Interfaces;
-using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Pagination;
 using POS.Shared.DTOs.User;
@@ -30,7 +30,6 @@ namespace POS.Domain.Services
                     Id = u.Id,
                    UserName = u.UserName,
                     FullName = u.FullName,
-                    PasswordHash = u.PasswordHash,
                     Role = u.Role,
                     CreatedAt = u.CreatedAt
                 }).ToList();
@@ -53,7 +52,6 @@ namespace POS.Domain.Services
                     Id = u.Id,
                     UserName = u.UserName,
                     FullName = u.FullName,
-                    PasswordHash = u.PasswordHash,
                     Role = u.Role,
                     CreatedAt = u.CreatedAt
                 }).ToList();
@@ -87,7 +85,6 @@ namespace POS.Domain.Services
                     Id = user.Id,
                     UserName = user.UserName,
                     FullName = user.FullName,
-                    PasswordHash = user.PasswordHash,
                     Role = user.Role,
                     CreatedAt = user.CreatedAt
                 };
@@ -110,7 +107,7 @@ namespace POS.Domain.Services
                     return Result<bool>.Failure("Please select a valid user role.");
                 }
 
-                var hasedPassword = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash);
+                var hasedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
                 var existingUser = await _userRepository.GetUserByUserNameAsync(dto.UserName.Trim());
 
                 if (existingUser != null)

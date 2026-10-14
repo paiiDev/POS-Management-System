@@ -21,10 +21,10 @@ namespace POS.Shared.DTOs.User
 
         [Required(ErrorMessage = "Password is required.")]
         [StringLength(50, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]
-        public string PasswordHash { get; set; } = null!;
+        public string Password { get; set; } = null!;
 
         [Required(ErrorMessage = "Confirm password is required.")]
-        [Compare("PasswordHash", ErrorMessage = "The password and confirmation password do not match.")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = null!;
 
         [Required(ErrorMessage = "Role is required.")]

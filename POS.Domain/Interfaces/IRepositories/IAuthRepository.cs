@@ -9,7 +9,7 @@ namespace POS.Database.Interfaces
 {
     public interface IAuthRepository
     {
-        Task<User?> GetDataByUsernameAsync(string username);
+        Task<User?> GetUserByUsernameAsync(string username);
 
     }
 }

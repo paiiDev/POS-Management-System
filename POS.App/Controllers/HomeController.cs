@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.App.Models;
-using POS.Domain.Interfaces;
+using POS.Core.Interfaces.IServices;
 using POS.Shared.DTOs.Dashboard;
 using System.Diagnostics;
 using System.Threading.Tasks;

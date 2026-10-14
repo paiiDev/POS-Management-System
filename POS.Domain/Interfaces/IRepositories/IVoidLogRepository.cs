@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace POS.Database.Interfaces
 {
-    public interface IVoidLog
+    public interface IVoidLogRepository
     {
         Task CreateVoidLogAsync(Entities.VoidLog voidLog);
 

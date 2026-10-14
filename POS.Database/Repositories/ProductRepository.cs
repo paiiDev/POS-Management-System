@@ -66,7 +66,7 @@ namespace POS.Database.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Product>> GetProductsforCreateSale(List<int> productIds)
+        public async Task<List<Product>> GetProductsForSaleAsync(List<int> productIds)
         {
             return await _dbContext.Products.Where(x => productIds.Contains(x.Id)).ToListAsync();
         }
@@ -105,6 +105,14 @@ namespace POS.Database.Repositories
                 product.IsDeleted = true;
                 await _dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<Product>> GetProductsForVoidRestoreAsync(List<int> productIds)
+        {
+            return await _dbContext.Products
+                .IgnoreQueryFilters() 
+                .Where(p => productIds.Contains(p.Id))
+                .ToListAsync();
         }
     }
 }

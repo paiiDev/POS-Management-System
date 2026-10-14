@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using POS.Core.DTOs.Auth;
+using POS.Core.Interfaces.IServices;
 using POS.Database.Interfaces;
-using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Auth;
 using System;
@@ -20,41 +20,38 @@ namespace POS.Domain.Services
             _authRepository = authRepository;
         }
 
-        public async Task<Result<ClaimsPrincipal>> LoginAsync(LoginDto dto)
+        public async Task<Result<AuthenticatedUserDto>> LoginAsync(LoginDto dto)
         {
             try
             {
                 if(dto is null)
                 {
-                    return Result<ClaimsPrincipal>.Failure("Invalid login data.");
+                    return Result<AuthenticatedUserDto>.Failure("Invalid login data.");
                 }
 
-                var user = await _authRepository.GetDataByUsernameAsync(dto.Username.Trim());
+                var user = await _authRepository.GetUserByUsernameAsync(dto.Username.Trim());
                 if(user is null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 {
-                    return Result<ClaimsPrincipal>.Failure("Invalid username or password.");
+                    return Result<AuthenticatedUserDto>.Failure("Invalid username or password.");
                 }
 
                 var role = string.Equals(user.Role, SystemUser.AdminRole, StringComparison.OrdinalIgnoreCase)
                     ? SystemUser.AdminRole
                     : user.Role;
 
-                var claims = new List<Claim>
+                var authUser = new AuthenticatedUserDto
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim("FullName", string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName),
-                    new Claim(ClaimTypes.Role, role),
-                    new Claim("UserId", user.Id.ToString())
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    FullName = string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName,
+                    Role = role
                 };
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-
-                return Result<ClaimsPrincipal>.Success(principal);
-
-            } catch(Exception ex)
+                return Result<AuthenticatedUserDto>.Success(authUser);
+            }
+            catch (Exception ex)
             {
-              return Result<ClaimsPrincipal>.Failure($"An error occurred during login: {ex.Message}");
+                return Result<AuthenticatedUserDto>.Failure($"An error occurred during login: {ex.Message}");
             }
         }
     }

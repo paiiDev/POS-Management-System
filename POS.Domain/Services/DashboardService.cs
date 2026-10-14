@@ -1,5 +1,5 @@
-﻿using POS.Database.Interfaces;
-using POS.Domain.Interfaces;
+﻿using POS.Core.Interfaces.IServices;
+using POS.Database.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Dashboard;
 using System;

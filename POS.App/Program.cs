@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
+using POS.Core.Interfaces.IRepositories;
+using POS.Core.Interfaces.IServices;
 using POS.Database.Context;
 using POS.Database.Interfaces;
 using POS.Database.Repositories;
 using POS.Domain.Helpers;
 using POS.Domain.Interfaces;
 using POS.Domain.Services;
+using POS.Infrastructure.Repositories;
 using POS.Shared.Common;
 using System.IO;
 
@@ -28,7 +31,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<IGenerateInvoiceHelper, GenerateInvoiceHelper>();
 builder.Services.AddScoped<ISalesService, SalesService>();
-builder.Services.AddScoped<IVoidLog, VoidLogRepository>();
+builder.Services.AddScoped<IVoidLogRepository, VoidLogRepository>();
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -38,6 +41,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

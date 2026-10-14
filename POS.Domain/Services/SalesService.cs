@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using POS.Database.Entities;
+﻿using POS.Database.Entities;
 using POS.Database.Interfaces;
-using POS.Database.Context;
-using POS.Database.Repositories;
+
 using POS.Domain.Interfaces;
 using POS.Shared.Common;
 using POS.Shared.DTOs.Sales;
@@ -14,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using POS.Shared.DTOs.Pagination;
+using POS.Core.Interfaces.IServices;
+using POS.Core.Interfaces.IRepositories;
 
 namespace POS.Domain.Services
 {
@@ -22,15 +22,15 @@ namespace POS.Domain.Services
         private readonly ISaleRepository _salesRepository;
         private readonly IProductRepository _productRepository;
         private readonly IGenerateInvoiceHelper _generateInvoiceHelper;
-        private readonly IVoidLog _voidLogRepository;
-        private readonly AppDbContext _dbContext;
-        public SalesService(ISaleRepository saleRepository, IProductRepository productRepository, IGenerateInvoiceHelper generateInvoice, IVoidLog voidLogRepository, AppDbContext dbContext)
+        private readonly IVoidLogRepository _voidLogRepository;
+        private readonly IUnitOfWork _unitOfWork;
+        public SalesService(ISaleRepository saleRepository, IProductRepository productRepository, IGenerateInvoiceHelper generateInvoice, IVoidLogRepository voidLogRepository, IUnitOfWork unitOfWork)
         {
             _salesRepository = saleRepository;
             _productRepository = productRepository;
             _generateInvoiceHelper = generateInvoice;
             _voidLogRepository = voidLogRepository;
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<SaleResponseDto>> CreateSaleAsync(CreateSaleDto dto)
@@ -52,7 +52,7 @@ namespace POS.Domain.Services
 
                 var productIds = mergedProductIds.Select(i => i.ProductId).ToList();
 
-                var products = await _productRepository.GetProductsforCreateSale(productIds);
+                var products = await _productRepository.GetProductsForSaleAsync(productIds);
 
                 if (products.Count != productIds.Count)
                 {
@@ -246,7 +246,7 @@ namespace POS.Domain.Services
         {
             try
             {
-                await using var transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+                 using var transaction = await _unitOfWork.BeginTransactionAsync();
                 var sale = await _salesRepository.GetSaleForUpdateAsync(dto.SaleId);
                 if (sale == null)
                 {
@@ -261,15 +261,23 @@ namespace POS.Domain.Services
 
                 sale.Status = "Voided";
 
+                var productIds = sale.SaleItems.Select(i => i.ProductId).Distinct().ToList();
+                var products = await _productRepository.GetProductsForVoidRestoreAsync(productIds);
+                var productDict = products.ToDictionary(p => p.Id);
+
                 foreach (var item in sale.SaleItems)
                 {
-                    if (item.Product != null)
+                    if (productDict.TryGetValue(item.ProductId, out var product))
                     {
-                        item.Product.StockQuantity += item.Quantity;
+                        product.StockQuantity += item.Quantity;
+                    }
+                    else
+                    {
+                        return Result<VoidLogDto>.Failure($"Cannot restore stock: Product #{item.ProductId} not found.");
                     }
                 }
 
-                var voidLog = new Database.Entities.VoidLog
+                var voidLog = new VoidLog
                 {
                     SaleId = sale.Id,
                     InvoiceNo = sale.InvoiceNo,
@@ -281,7 +289,7 @@ namespace POS.Domain.Services
 
                 await _voidLogRepository.CreateVoidLogAsync(voidLog);
                 await _salesRepository.UpdateSaleAsync(sale);
-                await transaction.CommitAsync();
+                await _unitOfWork.CommitTransactionAsync();
                 return Result<VoidLogDto>.Success(dto);
 
             }

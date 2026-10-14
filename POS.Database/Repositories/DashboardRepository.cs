@@ -77,7 +77,7 @@ namespace POS.Database.Repositories
                                     .Select(s => new DailyFinancialDto
                                     {
                                         Date = s.Sale.SaleDate.Date,
-                                        TotalRevenue = s.Quantity * s.Product.SellingPrice,
+                                        TotalRevenue = s.Quantity * s.SubTotal,
                                         TotalCost = s.Quantity * s.Product.CostPrice
                                     }) .ToListAsync();
 

@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using POS.Domain.Interfaces;
+using POS.Core.Interfaces.IServices;
 using POS.Shared.DTOs.Auth;
+using System.Security.Claims;
 
 namespace POS.App.Controllers
 {
@@ -51,22 +52,27 @@ namespace POS.App.Controllers
                 return View("Login", request);
             }
 
-            var principal = result.Value;
+            var user = result.Value;
+
+            var claims = new List<Claim>
+           {
+               new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("FullName", user.FullName),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("UserId", user.Id.ToString())
+           };
+
+           var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+           var principal = new ClaimsPrincipal(identity);
+
             var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    IssuedUtc = DateTimeOffset.UtcNow
-                };
-
-             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
-
-            var userRole = principal.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value;
-
-            if (userRole == "Admin")
             {
-                return RedirectToAction("Index", "Home");
-            }
-            return RedirectToAction("CreateSale", "Sale");
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8),
+            };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme ,principal, authProperties);
+            return RedirectToAction("Index", "Home");
 
         }
 

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace POS.Domain.Interfaces
+namespace POS.Core.Interfaces.IServices
 {
     public interface IProductService
     {

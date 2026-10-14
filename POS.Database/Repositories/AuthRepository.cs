@@ -18,7 +18,7 @@ namespace POS.Database.Repositories
             _context = context;
         }
 
-        public async Task<User?> GetDataByUsernameAsync(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.UserName == username);
         }
