@@ -42,6 +42,8 @@ namespace POS.Domain.Services
                     return Result<SaleResponseDto>.Failure("Sale must contain at least one item");
                 }
 
+                using var transaction = await _unitOfWork.BeginTransactionAsync();
+
                 var mergedProductIds = dto.Items.GroupBy(i => i.ProductId)
                     .Select(g => new CreateSaleItemDto
                     {
@@ -60,7 +62,6 @@ namespace POS.Domain.Services
                 }
 
                 decimal totalAmount = 0;
-                var generatedInvoiceNo = await _generateInvoiceHelper.GenerateInvoiceNumber();
                 var saleItems = new List<SaleItem>();
                 var productDict = products.ToDictionary(p => p.Id);
 
@@ -83,7 +84,6 @@ namespace POS.Domain.Services
                         return Result<SaleResponseDto>.Failure($"Insufficient stock for product {product.Name}");
                     }
 
-
                     decimal subTotalAmount = product.SellingPrice * item.Quantity;
                     totalAmount += subTotalAmount;
 
@@ -98,8 +98,9 @@ namespace POS.Domain.Services
                     saleItems.Add(saleItem);
 
                     product.StockQuantity -= item.Quantity;
-
                 }
+
+                var generatedInvoiceNo = await _generateInvoiceHelper.GenerateInvoiceNumber();
 
                 var sale = new Sale
                 {
@@ -107,20 +108,24 @@ namespace POS.Domain.Services
                     SaleDate = DateTime.UtcNow.AddHours(6).AddMinutes(30),
                     UserId = dto.UserId > 0 ? dto.UserId : SystemUser.DefaultCashierId,
                     TotalAmount = totalAmount,
+                    Status = "Paid", 
                     SaleItems = saleItems,
                 };
 
                 await _salesRepository.CreateSaleAsync(sale);
+                await _unitOfWork.CommitTransactionAsync();
 
-                return Result<SaleResponseDto>.Success(new SaleResponseDto { Id = sale.Id, InvoiceNumber = generatedInvoiceNo });
-
-
+                return Result<SaleResponseDto>.Success(new SaleResponseDto
+                {
+                    Id = sale.Id,
+                    InvoiceNumber = generatedInvoiceNo
+                });
             }
             catch (Exception ex)
             {
+                await _unitOfWork.RollbackTransactionAsync();
                 return Result<SaleResponseDto>.Failure($"An error occurred while creating the sale: {ex.Message}");
             }
-
         }
 
         public async Task<Result<PagedResult<SaleDto>>> GetAllPagedPaidSalesAsync(string? searchTerm, int pageNumber, int pageSize)

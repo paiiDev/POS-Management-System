@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.Core.Interfaces.IServices;
+using POS.Shared.Common;
 using POS.Shared.DTOs.Auth;
 using System.Security.Claims;
 
@@ -72,7 +73,13 @@ namespace POS.App.Controllers
             };
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme ,principal, authProperties);
-            return RedirectToAction("Index", "Home");
+            if (string.Equals(user.Role, SystemUser.AdminRole, StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("Index", "Home");
+            } 
+
+
+            return RedirectToAction("CreateSale", "Sale");
 
         }
 

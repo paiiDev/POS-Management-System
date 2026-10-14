@@ -71,13 +71,12 @@ namespace POS.Database.Repositories
         public async Task<List<DailyFinancialDto>> GetDailyFinancialsAsync(DateTime startDate)
         {
             var dailyFinancials = await _context.SaleItems
-                                    .Include(s => s.Sale)
-                                    .Include(s => s.Product)
+                                   
                                     .Where(s => s.Sale.Status == "Paid" && s.Sale.SaleDate >= startDate)
                                     .Select(s => new DailyFinancialDto
                                     {
                                         Date = s.Sale.SaleDate.Date,
-                                        TotalRevenue = s.Quantity * s.SubTotal,
+                                        TotalRevenue = s.SubTotal,
                                         TotalCost = s.Quantity * s.Product.CostPrice
                                     }) .ToListAsync();
 

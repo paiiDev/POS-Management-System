@@ -6,7 +6,7 @@ using POS.Core.Interfaces.IServices;
 using POS.Database.Context;
 using POS.Database.Interfaces;
 using POS.Database.Repositories;
-using POS.Domain.Helpers;
+using POS.Infrastructure.Helpers;
 using POS.Domain.Interfaces;
 using POS.Domain.Services;
 using POS.Infrastructure.Repositories;
